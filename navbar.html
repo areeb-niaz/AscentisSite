@@ -1,0 +1,30 @@
+<style>
+  .navbar-logo {
+    max-width: 128px;
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  @media (min-width: 768px) {
+    .navbar-logo {
+      max-width: 160px;
+    }
+  }
+</style>
+<header id="main-navbar" class="fixed top-0 left-0 w-full z-50 flex items-center justify-between whitespace-nowrap px-4 md:px-10 py-5 transition-colors duration-300">
+  <a href="index.html" class="flex items-center gap-4 text-white">
+    <img src="icons/ascentis-labs-icon.png" alt="Ascentis Labs Logo" class="navbar-logo" />
+  </a>
+  <div class="flex flex-1 justify-end gap-4 md:gap-8">
+    <div class="flex items-center gap-9">
+      <a class="text-white text-sm font-medium leading-normal" href="solutions.html">Solutions</a>
+    </div>
+    <button
+      class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#eb7813] text-white text-sm font-bold leading-normal tracking-[0.015em] transition-all duration-200 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-[#eb7813]/40"
+      onclick="window.location.href='https://forms.ascentislabs.com/contact'"
+    >
+      <span class="truncate">Lets Talk</span>
+      <svg class="ml-2 w-4 h-4 inline-block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+</header> 

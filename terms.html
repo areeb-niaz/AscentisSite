@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-[#181411]">
+  <div class="flex flex-col min-h-screen">
+    <div id="navbar-container"></div>
+    <main class="flex-grow">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 text-white">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold mb-4">Ascentis Labs Terms of Service</h1>
+            <p class="date mb-6"><strong>Effective Date:</strong> July 10, 2025</p>
+    
+            <h2 class="text-2xl font-bold mt-8 mb-4">1. Services</h2>
+            <p>Ascentis Labs provides AI-driven automation design, build, and support services ("Services") as outlined in individual proposals or contracts.</p>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">2. Client Obligations</h2>
+            <ul class="list-disc ml-8 space-y-2">
+              <li>Provide timely access to required data, systems, and approvals</li>
+              <li>Supply accurate project requirements and feedback</li>
+              <li>Obtain and maintain all necessary third-party access or permissions</li>
+            </ul>
+    
+            <h2 class="text-2xl font-bold mt-8 mb-4">3. Fees & Payment</h2>
+            <ul class="list-disc ml-8 space-y-2">
+                <li>Fees are defined in your signed agreement</li>
+                <li>Invoices are due within 15 days</li>
+                <li>Late payments may incur a 1.5% monthly interest</li>
+                <li>Work may pause if payment is over 30 days late</li>
+            </ul>
+    
+            <h2 class="text-2xl font-bold mt-8 mb-4">4. Intellectual Property</h2>
+            <ul class="list-disc ml-8 space-y-2">
+              <li>You retain ownership of your original data and inputs</li>
+              <li>Upon full payment, you receive a non-exclusive, perpetual license to use final deliverables for your internal business use</li>
+              <li>Ascentis Labs retains ownership of all underlying tools, frameworks, models, and systems used in delivery</li>
+            </ul>
+    
+            <h2 class="text-2xl font-bold mt-8 mb-4">5. Confidentiality</h2>
+            <p>Both parties agree to protect each other's confidential information and not disclose it without written consent, unless required by law.</p>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">6. No Guarantees</h2>
+            <p>Ascentis Labs does not guarantee specific results, outcomes, or business performance improvements from use of its services.</p>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">7. Limitation of Liability</h2>
+            <ul class="list-disc ml-8 space-y-2">
+                <li>Liability is limited to total fees paid in the 6 months preceding the claim</li>
+                <li>Ascentis Labs is not liable for indirect, incidental, or consequential damages</li>
+            </ul>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">8. Termination</h2>
+            <ul class="list-disc ml-8 space-y-2">
+                <li>Either party may terminate for material breach with 10 days' written notice if the breach is not resolved</li>
+                <li>Upon termination, all work completed to date is billable</li>
+            </ul>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">9. Retainer Agreements</h2>
+            <p>Where applicable, ongoing support or retainer services will be governed by separate written agreements.</p>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">10. Governing Law</h2>
+            <p>This Agreement is governed by the laws of Ontario, Canada. Disputes will be resolved via binding arbitration in Toronto under the Arbitration Act of Ontario.</p>
+
+            <p class="mt-8">Contact: <a href="mailto:team@ascentislabs.com" class="text-[#eb7813] hover:underline">team@ascentislabs.com</a> for questions or legal inquiries.</p>
+        </div>
+      </div>
+    </main>
+    <div id="footer-container"></div>
+  </div>
+  <button id="scrollTopBtn" title="Go to top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+    </svg>
+  </button>
+  <script src="script/script.js"></script>
+  <script>
+    // Load Navbar and initialize
+    fetch('navbar.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('navbar-container').innerHTML = data;
+        initializeNavbar(); // This function is from script.js
+      });
+
+    // Load Footer
+    fetch('footer.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('footer-container').innerHTML = data;
+      });
+  </script>
+</body>
+</html> 

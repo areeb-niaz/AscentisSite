@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-[#181411]">
+  <div class="flex flex-col min-h-screen">
+    <div id="navbar-container"></div>
+    <main class="flex-grow">
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 text-white">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-3xl font-bold mb-4">Ascentis Labs Privacy Policy</h1>
+            <p class="date mb-6"><strong>Effective Date:</strong> July 10, 2025</p>
+    
+            <h2 class="text-2xl font-bold mt-8 mb-4">1. Information We Collect</h2>
+            <ul class="list-disc ml-8 space-y-2">
+              <li><strong>Contact Data:</strong> Name, email address, company.</li>
+              <li><strong>Usage Data:</strong> Form submissions, service requests, support tickets.</li>
+              <li><strong>Technical Data:</strong> IP address, browser type, device information, cookies.</li>
+            </ul>
+    
+            <h2 class="text-2xl font-bold mt-8 mb-4">2. How We Use Your Data</h2>
+            <ul class="list-disc ml-8 space-y-2">
+              <li>Deliver and manage our AI automation services.</li>
+              <li>Communicate updates, support requests, and billing.</li>
+              <li>Analyze and improve system performance and user experience.</li>
+              <li>Protect against fraud, abuse, and security threats.</li>
+            </ul>
+    
+            <h2 class="text-2xl font-bold mt-8 mb-4">3. Data Sharing</h2>
+            <ul class="list-disc ml-8 space-y-2">
+              <li><strong>Service Providers:</strong> Hosting (e.g., AWS/Render), analytics (e.g., Google Analytics), email tools (e.g., MailerLite).</li>
+              <li><strong>Legal Compliance:</strong> In response to valid legal requests or to protect rights.</li>
+            </ul>
+    
+            <h2 class="text-2xl font-bold mt-8 mb-4">4. Security</h2>
+            <p>We implement industry-standard measures (encryption, access controls) to safeguard your data.</p>
+    
+            <h2 class="text-2xl font-bold mt-8 mb-4">5. Cookies & Tracking</h2>
+            <p>We use cookies and similar technologies for session management, analytics, and performance optimization.</p>
+    
+            <h2 class="text-2xl font-bold mt-8 mb-4">6. Your Rights</h2>
+            <p>You can request access, correction, or deletion of your personal data at any time. Email us at <a href="mailto:team@ascentislabs.com" class="text-[#eb7813] hover:underline">team@ascentislabs.com</a>.</p>
+        </div>
+      </div>
+    </main>
+    <div id="footer-container"></div>
+  </div>
+  <button id="scrollTopBtn" title="Go to top">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+    </svg>
+  </button>
+  <script src="script/script.js"></script>
+  <script>
+    // Load Navbar and initialize
+    fetch('navbar.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('navbar-container').innerHTML = data;
+        initializeNavbar(); // This function is from script.js
+      });
+
+    // Load Footer
+    fetch('footer.html')
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById('footer-container').innerHTML = data;
+      });
+  </script>
+</body>
+</html> 
