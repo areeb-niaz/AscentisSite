@@ -751,7 +751,7 @@
           'Inquiry answered · 9 seconds',
           'Date check · 12:04 am',
           'Follow-up sent · 10:15 pm',
-          'Package sent · 11:21 pm',
+          'Pricing sent · 11:21 pm',
           'Tour request · 12:38 am',
           'Inquiry answered · 7 seconds',
         ];
@@ -810,11 +810,11 @@
           setTimeout(() => { spot.remove(); ring.remove(); if (tag) tag.remove(); }, 3500);
         }
 
-        // Each burst: several pings at once across the map, one carrying a label
+        // Each burst: several pings at once across the map, two carrying labels
         function burst() {
           const count = 2 + Math.floor(Math.random() * 3); // 2–4 pings
           for (let i = 0; i < count; i++) {
-            setTimeout(() => flare(i === 0), Math.random() * 900);
+            setTimeout(() => flare(i < 2), Math.random() * 900);
           }
         }
 
