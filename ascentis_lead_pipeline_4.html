@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ascentis Lead Pipeline</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14181F; --panel:#1B212B; --panel2:#222A37; --line:#2E3847;
+  --text:#E9E5DB; --dim:#93A dim; --dim:#8D97A6;
+  --brass:#C9A227; --brass-soft:#E2C25B;
+  --ok:#5DBB8A; --warn:#E4C441; --bad:#D06A5A; --info:#7FA6D9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
+.wrap{max-width:880px;margin:0 auto;padding:36px 20px 80px}
+header h1{font-family:'Fraunces',serif;font-weight:650;font-size:30px;letter-spacing:-.01em}
+header h1 em{font-style:normal;color:var(--brass)}
+header p{color:var(--dim);margin-top:4px;font-size:13px}
+
+/* signature: pipeline rail */
+.rail{display:flex;align-items:center;gap:0;margin:26px 0 30px;flex-wrap:wrap}
+.stop{display:flex;align-items:center;gap:8px;padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:12px;color:var(--dim);white-space:nowrap}
+.stop b{font-weight:600;color:var(--text)}
+.stop .n{font-family:ui-monospace,monospace;color:var(--brass);font-weight:600;min-width:0}
+.stop.lit{border-color:var(--brass);color:var(--text)}
+.link{width:22px;height:1px;background:var(--line);flex:none}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:22px}
+.card h2{font-family:'Fraunces',serif;font-weight:650;font-size:19px;margin-bottom:2px}
+.card h2 span{color:var(--brass);font-family:ui-monospace,monospace;font-size:13px;margin-right:8px;vertical-align:2px}
+.card .sub{color:var(--dim);font-size:13px;margin-bottom:16px}
+
+.drop{border:1.5px dashed var(--line);border-radius:10px;padding:18px;text-align:center;color:var(--dim);cursor:pointer;transition:border-color .15s;background:var(--panel2);font-size:13px}
+.drop:hover,.drop.over{border-color:var(--brass)}
+.drop.loaded{border-style:solid;border-color:var(--ok);color:var(--text)}
+.drop input{display:none}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;align-items:flex-end}
+.field{flex:1;min-width:170px}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);margin-bottom:5px}
+input[type=text],select{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:9px 11px;font:inherit}
+input[type=text]:focus,select:focus{outline:2px solid var(--brass);outline-offset:-1px;border-color:var(--brass)}
+button{background:var(--brass);color:#14181F;border:0;border-radius:8px;padding:10px 20px;font:inherit;font-weight:600;cursor:pointer}
+button:hover{background:var(--brass-soft)}
+button:disabled{background:var(--line);color:var(--dim);cursor:not-allowed}
+button.ghost{background:transparent;color:var(--brass);border:1px solid var(--brass)}
+button:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 14px;min-width:104px}
+.stat .v{font-family:ui-monospace,monospace;font-size:20px;font-weight:600}
+.stat .k{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.stat.ok .v{color:var(--ok)} .stat.warn .v{color:var(--warn)} .stat.bad .v{color:var(--bad)} .stat.info .v{color:var(--info)}
+
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12.5px}
+th{color:var(--dim);text-align:left;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:6px 8px;border-bottom:1px solid var(--line)}
+.tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-family:ui-monospace,monospace}
+.tag.keep{background:rgba(93,187,138,.15);color:var(--ok)}
+.tag.rev{background:rgba(228,196,65,.15);color:var(--warn)}
+.tag.rem{background:rgba(208,106,90,.15);color:var(--bad)}
+.hint{color:var(--dim);font-size:12px;margin-top:10px}
+.mvmap{display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+.mvmap.show{display:block}
+#s2go{margin-top:16px}
+.notice{background:rgba(228,196,65,.08);border:1px solid rgba(228,196,65,.35);border-radius:8px;padding:10px 13px;font-size:12.5px;color:var(--warn);margin-top:14px;display:none}
+@media(max-width:600px){.rail{gap:6px}.link{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Ascentis <em>Lead Pipeline</em></h1>
+  <p>Raw Apify scrape to Smartlead-ready master. Runs entirely in your browser, nothing is uploaded anywhere.</p>
+</header>
+
+<div class="rail" id="rail">
+  <div class="stop" data-s="scrape"><b>Scrape</b><span class="n" id="n-scrape">–</span></div><div class="link"></div>
+  <div class="stop" data-s="clean"><b>Clean</b><span class="n" id="n-clean">–</span></div><div class="link"></div>
+  <div class="stop" data-s="verify"><b>Verify</b><span class="n" id="n-verify">–</span></div><div class="link"></div>
+  <div class="stop" data-s="master"><b>Master</b><span class="n" id="n-master">–</span></div><div class="link"></div>
+  <div class="stop"><b>n8n → Smartlead</b></div>
+</div>
+
+<!-- STAGE 1 -->
+<div class="card">
+  <h2><span>01</span>Pre-check</h2>
+  <div class="sub">Tags the county, keeps 6 category columns for context, classifies venues, picks one email per lead. CLEANED is sorted with emails at the top: verify those, hunt the rest.</div>
+  <label class="drop" id="d1">Drop the raw Apify export here (.xlsx or .csv) or click to browse<input type="file" id="f1" accept=".xlsx,.csv"></label>
+  <div class="row">
+    <div class="field"><label for="county">County / scrape tag</label><input type="text" id="county" placeholder="Knoxville"></div>
+    <button id="run1" disabled>Run pre-check</button>
+  </div>
+  <div class="stats" id="stats1"></div>
+  <div id="preview1"></div>
+  <div class="row" id="dl1row" style="display:none"><button class="ghost" id="dl1">Download precheck workbook</button></div>
+  <div class="hint">Next: run the CLEANED bottom block (no email) through Anymailfinder (decision-maker and/or general inbox search). Have Cowork resolve HUMAN_REVIEW rows or leave them and they carry through as human_review. Email verification happens later in Smartlead.</div>
+</div>
+
+<!-- STAGE 2 -->
+<div class="card">
+  <h2><span>02</span>Merge results</h2>
+  <div class="sub">Merges Anymailfinder results (joined on domain, both decision-maker and general inbox schemas). No leads are deleted: every CLEANED row reaches the master. Email verification happens in Smartlead at import.</div>
+  <label class="drop" id="d2a">Precheck workbook (from stage 01)<input type="file" id="f2a" accept=".xlsx"></label>
+  <div style="height:10px"></div>
+  <label class="drop" id="d2c">Anymailfinder results (.xlsx or .csv) — optional<input type="file" id="f2c" accept=".xlsx,.csv"></label>
+  <div class="row" id="s2go"><button id="run2" disabled>Build master sheet</button></div>
+  <div class="stats" id="stats2"></div>
+  <div class="notice" id="ccnote"></div>
+  <div class="row" id="dl2row" style="display:none"><button class="ghost" id="dl2">Download master workbook</button></div>
+  <div class="hint">Nothing is deleted: statuses are has_email, amf_found, amf_found_dm, cold_call, no_contact, human_review. Duplicate emails go to a DUPLICATES sheet (first occurrence kept); rows with .edu/.gov/.org emails or websites, facebook/instagram sites, or placeholder emails (filler@godaddy.com etc) go to a REMOVED sheet. Verify emails in Smartlead at import; work cold_call leads by phone.</div>
+</div>
+</div>
+
+<script>
+/* ================= Rules (ported from ascentis-labs skill) ================= */
+const REMOVE_KW = ["restaurant","bistro","cafe","coffee","diner","steak","bbq","barbecue","pizza","bakery","deli","sandwich","food","catering","caterer","bar","pub","brewery","lounge","night club","nightclub","sports bar","live music","winery","wine","hotel","motel","inn","lodging","bed & breakfast","bed and breakfast","resort","hostel","vacation rental","rv park","campground","photograph","videograph","wedding planner","event planner","dj","disc jockey","florist","flower","bridal","party rental","equipment rental","entertainment agency","grocery","supermarket","jewelry","jeweler","dealership","plant nursery","warehouse","store","shop","boutique","retail","gym","fitness","pilates","yoga","bowling","pickleball","swimming","swimming pool","pool rental","toy store","movie theater","cinema","amusement","haunted","city hall","municipal","government","parks & recreation","parks and recreation","park","non-profit","nonprofit","association","fraternal","hoa","church","religious","congregation","mosque","temple","synagogue","cemetery","funeral","apartment","coworking","office space","real estate","home builder","hvac","medical","dental","law firm","attorney","insurance","bank","golf shop","golf instructor","golf cart","disc golf","student","dormitory","airport"];
+const VENDOR_WEDDING = ["wedding planner","wedding photograph","bridal","wedding florist","wedding dj","wedding rental"];
+const CHAINS = ["marriott","hilton","hyatt","sheraton","westin","courtyard","residence inn","hampton","embassy suites","doubletree","holiday inn","best western","ramada","days inn","super 8","comfort inn","quality inn","fairfield","la quinta","wyndham","four seasons","ihg","intercontinental","crowne plaza","ritz-carlton","waldorf","conrad","kimpton","omni hotel","loews","radisson","sofitel","candlewood","staybridge","springhill","towneplace","margaritaville","aloft","moxy","1 hotel"];
+const HOTEL_CATS = ["hotel","motel","bed & breakfast","bed and breakfast","resort","extended stay","hostel","lodging","holiday apartment"];
+const VENDOR_PRIMARY = ["wedding service","event planner","wedding planner","photograph","videograph","dj","photo booth","entertainment","entertainer","musician","audiovisual","equipment rental","party rental","tent rental","furniture rental","catering","caterer","painting","artist","florist","bridal","rental service"];
+const KEEP_KW = ["banquet","reception hall","ballroom","country club","convention center","conference center","wedding chapel","chapel","function room"];
+const GENERIC_EVENT = ["event venue","event space","event center","live event"];
+const NAME_SIG = ["hall","manor","estate","barn","pavilion","ballroom","banquet","venue","gardens","chateau","villa","lodge","farm","ranch","homestead","plantation"];
+const REVIEW_KW = ["golf course","golf club","driving range","community center","museum","gallery","theater","theatre","auditorium","botanical"];
+const ROLE_PRI = ["events","event","weddings","wedding","sales","booking","bookings","info","contact","hello","inquiries","enquiries","reservations","office","admin","frontdesk"];
+const ROLE_ALL = new Set([...ROLE_PRI,"marketing","press","media","hr","jobs","careers","support","noreply","no-reply","accounting","billing"]);
+const FINAL_COLS = ["placeId","title","domain","categories/0","categories/1","categories/2","categories/3","categories/4","categories/5","County","emails/0","phone","phones/0","website","verification status","icebreaker","shortened name"];
+
+const norm = v => (v==null?"":String(v)).trim().toLowerCase();
+const normDomain = d => norm(d).replace(/^https?:\/\//,"").replace(/^www\./,"").split("/")[0];
+const CAT_COLS = ["categories/0","categories/1","categories/2","categories/3","categories/4","categories/5"];
+
+function classify(r){
+  const cats = CAT_COLS.map(c=>norm(r[c])).filter(Boolean);
+  const cat = cats.join(" | ");
+  const primary = cats[0]||"";
+  const title = norm(r.title), site = norm(r.website);
+  const dom = normDomain(r.domain||r.website);
+  const hasWedding = title.includes("wedding")||cat.includes("wedding");
+  const nameSig = NAME_SIG.find(s=>title.includes(s));
+
+  // hard removals, these override everything including wedding tags
+  if(dom.endsWith(".edu")||site.includes(".edu/")||site.endsWith(".edu")) return ["REMOVE","education domain (.edu)"];
+  if(dom.endsWith(".gov")||site.includes(".gov/")||site.endsWith(".gov")) return ["REMOVE","government domain"];
+  if(/townof|cityof|countyof/.test(dom)||/\b(town|city|county) of\b/.test(title)) return ["REMOVE","municipal entity"];
+  if(dom.includes("facebook.com")||dom.includes("instagram.com")) return ["REMOVE","social media page, no real website"];
+  for(const c of CHAINS) if(title.includes(c)||dom.replace(/[^a-z]/g,"").includes(c.replace(/[^a-z]/g,""))) return ["REMOVE","hotel chain: "+c];
+  if(cats.some(c=>HOTEL_CATS.some(h=>c.includes(h)))) return ["REMOVE","hotel/lodging category (excluded even with wedding venue tag)"];
+  if(/\bpool\b/.test(title)||title.includes("swimply")) return ["REMOVE","pool rental"];
+
+  // primary category (categories/0) dominates: Google's main classification
+  if(primary){
+    if(primary.includes("wedding venue")||KEEP_KW.some(k=>primary.includes(k))){
+      if(dom.endsWith(".org")&&!hasWedding) return ["REVIEW","venue primary but .org domain, confirm not non-profit/municipal"];
+      return ["KEEP","primary category: "+primary];
+    }
+    if(GENERIC_EVENT.some(g=>primary.includes(g))){
+      if(hasWedding) return ["KEEP","primary event venue + wedding signal"];
+      if(nameSig&&!dom.endsWith(".org")) return ["KEEP","primary event venue + venue signal in name: "+nameSig];
+      return ["REVIEW","generic event venue, no wedding context"];
+    }
+    if(VENDOR_PRIMARY.some(v=>primary.includes(v))) return ["REMOVE","primary category is a vendor/service: "+primary];
+    if(REMOVE_KW.some(k=>primary.includes(k))){
+      if(nameSig) return ["REVIEW","excluded primary ("+primary+") but venue signal in name ("+nameSig+")"];
+      return ["REMOVE","excluded primary category: "+primary];
+    }
+  }
+
+  // neutral or missing primary: scan everything
+  for(const k of REMOVE_KW) if(cats.some(c=>c.includes(k))){
+    if(nameSig||hasWedding) return ["REVIEW","excluded category ("+k+") but venue/wedding signal present"];
+    return ["REMOVE","excluded category: "+k];
+  }
+  if(hasWedding) return ["KEEP","wedding signal, no excluded categories"];
+  for(const k of KEEP_KW) if(cat.includes(k)){
+    if(dom.endsWith(".org")) return ["REVIEW","venue category ("+k+") but .org domain"];
+    return ["KEEP","venue category: "+k];
+  }
+  for(const k of REVIEW_KW) if(cat.includes(k)){
+    if(nameSig) return ["KEEP","review category but venue signal in name: "+nameSig];
+    return ["REVIEW","conditional category: "+k];
+  }
+  if(GENERIC_EVENT.some(g=>cat.includes(g))) return ["REVIEW","generic event venue, no wedding context"];
+  if(nameSig){
+    if(dom.endsWith(".org")) return ["REVIEW","venue signal in name but .org domain"];
+    return ["KEEP","venue signal in name: "+nameSig];
+  }
+  return ["REVIEW","no clear signal"];
+}
+function pickEmail(emails){
+  if(!emails.length) return ["",false,"no email"];
+  if(emails.length===1) return [emails[0],false,"single email"];
+  const role=[],named=[];
+  for(const e of emails){
+    const lp=e.split("@")[0].toLowerCase(), lc=lp.replace(/[^a-z]/g,"");
+    (ROLE_ALL.has(lc)||ROLE_ALL.has(lp)?role:named).push(e);
+  }
+  if(role.length){
+    for(const p of ROLE_PRI) for(const e of role)
+      if(e.split("@")[0].toLowerCase().startsWith(p))
+        return named.length?[e,true,"role email picked but named-person emails exist"]:[e,false,"role priority: "+p];
+    if(!named.length) return [role[0],false,"first role email"];
+  }
+  return [named[0]||emails[0],true,"multiple named-person emails, verify correct contact"];
+}
+
+/* ================= UI plumbing ================= */
+function wireDrop(dropId,inputId,onFile){
+  const d=document.getElementById(dropId),f=document.getElementById(inputId);
+  d.addEventListener("dragover",e=>{e.preventDefault();d.classList.add("over")});
+  d.addEventListener("dragleave",()=>d.classList.remove("over"));
+  d.addEventListener("drop",e=>{e.preventDefault();d.classList.remove("over");if(e.dataTransfer.files[0])handle(e.dataTransfer.files[0])});
+  f.addEventListener("change",()=>f.files[0]&&handle(f.files[0]));
+  function handle(file){
+    const rd=new FileReader();
+    rd.onload=ev=>{try{
+      const wb=XLSX.read(new Uint8Array(ev.target.result),{type:"array"});
+      d.classList.add("loaded"); d.firstChild.textContent="✓ "+file.name;
+      onFile(wb,file.name);
+    }catch(err){alert("Could not read "+file.name+": "+err.message)}};
+    rd.readAsArrayBuffer(file);
+  }
+}
+function stat(el,items){el.innerHTML=items.map(([k,v,c])=>`<div class="stat ${c||""}"><div class="v">${v}</div><div class="k">${k}</div></div>`).join("")}
+function light(stop,val){document.querySelector(`[data-s=${stop}]`).classList.add("lit");document.getElementById("n-"+stop).textContent=val}
+function dlWB(wb,name){XLSX.writeFile(wb,name)}
+
+/* ================= Stage 1 ================= */
+let rawWB=null, pre=null, county="";
+wireDrop("d1","f1",(wb)=>{rawWB=wb;check1()});
+document.getElementById("county").addEventListener("input",check1);
+function check1(){document.getElementById("run1").disabled=!(rawWB&&document.getElementById("county").value.trim())}
+
+document.getElementById("run1").onclick=()=>{
+  county=document.getElementById("county").value.trim();
+  const ws=rawWB.Sheets[rawWB.SheetNames[0]];
+  const rows=XLSX.utils.sheet_to_json(ws,{defval:""});
+  light("scrape",rows.length);
+  const emailCols=Object.keys(rows[0]||{}).filter(c=>/^emails\/\d+$/.test(c)).sort((a,b)=>+a.split("/")[1]-+b.split("/")[1]);
+  const keep=[],review=[],removed=[];
+  for(const row of rows){
+    const emails=[]; const seen=new Set();
+    for(const c of emailCols){const v=norm(row[c]); if(v&&v.includes("@")&&!seen.has(v)){seen.add(v);emails.push(v)}}
+    let [verdict,reason]=classify(row);
+    if(emails.length>=20){verdict="REMOVE";reason=`bulk emails (${emails.length}): corp/gov`}
+    let chosen="",needsRev=false,eReason="no email";
+    if(verdict!=="REMOVE")[chosen,needsRev,eReason]=pickEmail(emails);
+    if(chosen&&chosen.split("@")[1]&&chosen.split("@")[1].endsWith(".edu")){verdict="REMOVE";reason="education email (.edu): "+chosen}
+    const base={placeId:row.placeId||"",title:row.title||"",domain:normDomain(row.domain||"")};
+    CAT_COLS.forEach(c=>base[c]=row[c]||"");
+    Object.assign(base,{County:county,"emails/0":chosen,phone:row.phone||"","phones/0":row["phones/0"]||"",website:row.website||""});
+    if(verdict==="REMOVE") removed.push({...base,remove_reason:reason});
+    else if(verdict==="REVIEW"||needsRev) review.push({...base,classify_reason:reason,email_reason:eReason,all_emails:emails.join(", ")});
+    else if(!chosen && !norm(base.website)) removed.push({...base,remove_reason:"no email, no website"});
+    else keep.push({...base,classify_reason:reason,email_reason:eReason});
+  }
+  keep.sort((a,b)=>(b["emails/0"]?1:0)-(a["emails/0"]?1:0)); // emails at top: verify those, hunt the rest
+  // dedupe: same email across different rows, first occurrence wins
+  const seenEmails=new Map();
+  const dedupedKeep=[];
+  for(const r of keep){
+    const e=norm(r["emails/0"]);
+    if(e&&seenEmails.has(e)){removed.push({...r,remove_reason:"duplicate email, kept under: "+seenEmails.get(e)});continue}
+    if(e)seenEmails.set(e,r.title);
+    dedupedKeep.push(r);
+  }
+  keep.length=0; keep.push(...dedupedKeep);
+  const withEmail=keep.filter(r=>r["emails/0"]).length;
+  pre={keep,review,removed};
+
+  stat(document.getElementById("stats1"),[
+    ["Cleaned",keep.length,"ok"],["With email",withEmail,"info"],["No email",keep.length-withEmail,"info"],
+    ["Human review",review.length,"warn"],["Removed",removed.length,"bad"]]);
+  light("clean",keep.length+review.length);
+
+  const pv=document.getElementById("preview1");
+  const revRows=review.slice(0,8).map(r=>`<tr><td>${r.title}</td><td><span class="tag rev">REVIEW</span></td><td>${r.classify_reason}${r.email_reason&&r.email_reason!=="no email"?" · "+r.email_reason:""}</td></tr>`).join("");
+  const remRows=removed.slice(0,6).map(r=>`<tr><td>${r.title}</td><td><span class="tag rem">REMOVE</span></td><td>${r.remove_reason}</td></tr>`).join("");
+  pv.innerHTML=(review.length||removed.length)?`<table><tr><th>Lead</th><th>Verdict</th><th>Reason</th></tr>${revRows}${remRows}</table>`:"";
+  document.getElementById("dl1row").style.display="flex";
+};
+document.getElementById("dl1").onclick=()=>{
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(pre.keep.length?pre.keep:[{}]),"CLEANED");
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(pre.review.length?pre.review:[{}]),"HUMAN_REVIEW");
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(pre.removed.length?pre.removed:[{}]),"REMOVED");
+  dlWB(wb,county+"_precheck.xlsx");
+};
+
+/* ================= Stage 2 ================= */
+let preWB=null,amfWB=null;
+wireDrop("d2a","f2a",wb=>{preWB=wb;check2()});
+wireDrop("d2c","f2c",wb=>{amfWB=wb;check2()});
+function check2(){document.getElementById("run2").disabled=!preWB}
+
+document.getElementById("run2").onclick=()=>{
+  const cleaned=XLSX.utils.sheet_to_json(preWB.Sheets["CLEANED"]||{},{defval:""});
+  const review=preWB.Sheets["HUMAN_REVIEW"]?XLSX.utils.sheet_to_json(preWB.Sheets["HUMAN_REVIEW"],{defval:""}):[];
+  // AMF lookup: scans ALL sheets, handles both schemas.
+  // Decision-maker search: valid_email_only (+person_name). General inbox search: one_valid_email_only.
+  // Decision-maker emails beat general inboxes for the same domain (Owner/CEO > general inbox).
+  const amf={};
+  if(amfWB){
+    const eduOk=e=>{if(!e.includes("@"))return false;const d=e.split("@")[1];return !(d.endsWith(".edu")||d.endsWith(".gov")||d.endsWith(".org"))};
+    for(const sh of amfWB.SheetNames){
+      const rows=XLSX.utils.sheet_to_json(amfWB.Sheets[sh],{defval:""});
+      if(!rows.length)continue;
+      const lower=r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[k.trim().toLowerCase(),v]));
+      const hdr=Object.keys(lower(rows[0]));
+      const isDM=hdr.includes("valid_email_only")&&!hdr.includes("one_valid_email_only");
+      const isGen=hdr.includes("one_valid_email_only");
+      if(!isDM&&!isGen)continue; // not an AMF sheet, skip (e.g. CLEANED tab in same workbook)
+      for(const raw of rows){
+        const r=lower(raw); const d=normDomain(r.domain||""); if(!d)continue;
+        const e=norm(isDM?(r.valid_email_only||""):(r.one_valid_email_only||""));
+        const found=eduOk(e)?e:"";
+        const st=norm(r.amf_status||"");
+        const prev=amf[d];
+        if(isDM){
+          if(found) amf[d]=[found,st,"dm"];          // decision-maker always wins
+          else if(!prev) amf[d]=["",st,"dm"];
+        } else {
+          if(!prev||(!prev[0]&&found)) amf[d]=[found,st,"gen"]; // general fills gaps only
+        }
+      }
+    }
+  }
+  const BASE=FINAL_COLS.slice(0,14);
+  const master=[];
+  for(const row of cleaned){
+    const r={}; BASE.forEach(c=>r[c]=row[c]??""); r.icebreaker="";r["shortened name"]="";r.note="";
+    const email=norm(r["emails/0"]), dom=normDomain(r.domain||r.website), phone=String(r.phone||r["phones/0"]||"").trim();
+    if(email){r["verification status"]="has_email"}
+    else{
+      const [found,st,src]=amf[dom]||["","",""];
+      if(found){r["emails/0"]=found;r["verification status"]=src==="dm"?"amf_found_dm":"amf_found"}
+      else if(phone){r["verification status"]="cold_call"}
+      else{r["verification status"]="no_contact"}
+    }
+    master.push(r);
+  }
+  for(const row of review){
+    const r={}; BASE.forEach(c=>r[c]=row[c]??"");
+    r["verification status"]="human_review"; r.icebreaker="";r["shortened name"]="";r.note="";
+    master.push(r);
+  }
+  // banish rows with .edu/.gov/.org emails OR websites to the REMOVED sheet
+  const badTld=v=>{const x=norm(v);return x.endsWith(".edu")||x.endsWith(".gov")||x.endsWith(".org")};
+  const SOCIAL=["facebook.com","instagram.com","fb.com","fb.me","linktr.ee"];
+  const PLACEHOLDER=["godaddy.com","wixpress.com","sentry.io","example.com","domain.com","mysite.com","website.com","sentry.wixpress.com"];
+  const removed2=[]; const surv=[];
+  for(const r of master){
+    const email=norm(r["emails/0"]);
+    const eDom=email.includes("@")?email.split("@")[1]:"";
+    const eLocal=email.includes("@")?email.split("@")[0]:"";
+    const wDom=normDomain(r.domain||r.website||"");
+    const site=norm(r.website||"");
+    let hit="";
+    if(eDom&&badTld(eDom)) hit="email domain ."+eDom.split(".").pop();
+    else if(eDom&&(PLACEHOLDER.some(p=>eDom===p||eDom.endsWith("."+p))||eLocal==="filler")) hit="placeholder email: "+email;
+    else if(SOCIAL.some(sm=>wDom===sm||wDom.endsWith("."+sm))) hit="social media website: "+wDom;
+    else if((wDom&&badTld(wDom))||/\.(edu|gov|org)(\/|$)/.test(site)) hit="website ."+(badTld(wDom)?wDom.split(".").pop():site.match(/\.(edu|gov|org)(\/|$)/)[1]);
+    if(hit){r.note="removed: "+hit;removed2.push(r)}
+    else surv.push(r);
+  }
+  master.length=0; master.push(...surv);
+  window._removed2=removed2;
+
+  // duplicate emails: first occurrence stays in MASTER, the rest are banished to the DUPLICATES sheet
+  const seenDup=new Map(); const kept=[]; const duplicates=[];
+  for(const r of master){
+    const e=norm(r["emails/0"]);
+    if(e&&seenDup.has(e)){
+      r.note="duplicate email, kept under: "+seenDup.get(e);
+      duplicates.push(r); continue;
+    }
+    if(e)seenDup.set(e,r.title);
+    kept.push(r);
+  }
+  const dupCount=duplicates.length;
+  master.length=0; master.push(...kept);
+  window._master=master; window._duplicates=duplicates;
+  const counts={}; master.forEach(r=>counts[r["verification status"]]=(counts[r["verification status"]]||0)+1);
+  stat(document.getElementById("stats2"),[
+    ["Master",master.length,"ok"],
+    ["Has email",counts.has_email||0,"ok"],
+    ["AMF found",(counts.amf_found||0)+(counts.amf_found_dm||0),"info"],
+    ["Cold call",counts.cold_call||0,"warn"],
+    ["No contact",counts.no_contact||0,"warn"],
+    ["Human review",counts.human_review||0,"warn"],
+    ["Banished dupes",dupCount,"bad"],
+    ["Removed (edu/gov/org/social/filler)",removed2.length,"bad"]]);
+  light("verify",(counts.has_email||0)+(counts.amf_found||0)+(counts.amf_found_dm||0));
+  light("master",master.length);
+  const cc=counts.cold_call||0, nt=document.getElementById("ccnote");
+  if(cc||dupCount){nt.style.display="block";nt.textContent=(cc?cc+" cold call lead"+(cc>1?"s":"")+" (work by phone). ":"")+(dupCount?dupCount+" duplicate-email row"+(dupCount>1?"s":"")+" banished to the DUPLICATES sheet.":"")}
+  document.getElementById("dl2row").style.display="flex";
+};
+document.getElementById("dl2").onclick=()=>{
+  const wb=XLSX.utils.book_new();
+  const cols=[...FINAL_COLS,"note"];
+  const m=window._master.map(r=>{const o={};cols.forEach(c=>o[c]=r[c]??"");return o});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(m.length?m:[{}]),"MASTER");
+  const d=(window._duplicates||[]).map(r=>{const o={};cols.forEach(c=>o[c]=r[c]??"");return o});
+  if(d.length)XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d),"DUPLICATES");
+  const rm=(window._removed2||[]).map(r=>{const o={};cols.forEach(c=>o[c]=r[c]??"");return o});
+  if(rm.length)XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rm),"REMOVED");
+  const c=(m[0]&&m[0].County)||"leads";
+  dlWB(wb,c+"_master.xlsx");
+};
+</script>
+</body>
+</html>
