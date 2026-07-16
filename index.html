@@ -1,19 +1,26 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <meta charset="utf-8" />
+    <title>Ascentis Labs — AI Concierge for Event Venues</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Ascentis Labs builds AI concierge systems for event venues — answering inquiries in seconds, day or night, and turning them into booked tours."
+    />
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Outfit:wght@300;400;500;600&display=swap"
       rel="stylesheet"
-      as="style"
-      onload="this.rel='stylesheet'"
-      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
     />
 
-    <title>Ascentis Labs</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
     <link rel="stylesheet" href="css/style.css" />
     <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
     <style>
       :root {
         --chat--color-primary: #eb7813;
@@ -22,171 +29,801 @@
         --chat--header--color: #ffffff;
         --chat--message--bot--background: var(--chat--color-primary);
         --chat--message--bot--color: #ffffff;
-        --chat--message--user--background: var(#c8ff00);
         --chat--message--border-radius: 1rem;
         --chat--toggle--background: var(--chat--color-primary);
         --chat--toggle--hover--background: #d36b11;
+
+        /* Page tokens */
+        --ink: #171210; /* espresso ground */
+        --ink-2: #201914; /* raised surfaces */
+        --ivory: #f2ece3; /* primary text */
+        --taupe: #a79484; /* secondary text */
+        --copper: #eb7813; /* brand accent */
+        --champagne: #e8c98f; /* soft highlight */
+        --hairline: #35291f;
+        --serif: "Cormorant Garamond", Georgia, serif;
+        --sans: "Outfit", "Inter", sans-serif;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body.al-page {
+        background: var(--ink);
+        color: var(--ivory);
+        font-family: var(--sans);
+        font-weight: 300;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .al-wrap {
+        max-width: 72rem;
+        margin: 0 auto;
+        padding: 0 1.25rem;
+      }
+      @media (min-width: 768px) {
+        .al-wrap {
+          padding: 0 2.5rem;
+        }
+      }
+
+      /* ---------- Type ---------- */
+      .al-eyebrow {
+        font-family: var(--sans);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--taupe);
+      }
+      .al-display {
+        font-family: var(--serif);
+        font-weight: 500;
+        line-height: 1.06;
+        letter-spacing: -0.01em;
+        color: var(--ivory);
+      }
+      .al-display em {
+        font-style: italic;
+        color: var(--champagne);
+      }
+      .al-h2 {
+        font-family: var(--serif);
+        font-weight: 600;
+        font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+        line-height: 1.12;
+        color: var(--ivory);
+      }
+      .al-body {
+        color: var(--taupe);
+        font-size: 1.05rem;
+        line-height: 1.75;
+        max-width: 38rem;
+      }
+
+      /* ---------- Buttons ---------- */
+      .al-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-family: var(--sans);
+        font-weight: 500;
+        font-size: 0.95rem;
+        letter-spacing: 0.02em;
+        padding: 0.85rem 1.7rem;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      }
+      .al-btn:focus-visible {
+        outline: 2px solid var(--champagne);
+        outline-offset: 3px;
+      }
+      .al-btn-primary {
+        background: var(--copper);
+        color: #fff;
+      }
+      .al-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(235, 120, 19, 0.35);
+      }
+      .al-btn-ghost {
+        border: 1px solid var(--hairline);
+        color: var(--ivory);
+        background: transparent;
+      }
+      .al-btn-ghost:hover {
+        border-color: var(--champagne);
+        color: var(--champagne);
+      }
+
+      /* ---------- Hero ---------- */
+      .al-hero {
+        position: relative;
+        padding: 9.5rem 0 5rem;
+        overflow: hidden;
+      }
+      .al-hero::before {
+        /* candlelight glow behind the card */
+        content: "";
+        position: absolute;
+        top: -20%;
+        right: -15%;
+        width: 55rem;
+        height: 55rem;
+        background: radial-gradient(closest-side, rgba(235, 120, 19, 0.13), transparent 70%);
+        pointer-events: none;
+      }
+      /* ---------- Night map of bookings ---------- */
+      .al-map {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        overflow: hidden;
+        /* fade the map out toward the bottom edge of the hero */
+        -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+        mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+      }
+      .al-map svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .al-hero .al-wrap {
+        position: relative;
+        z-index: 1;
+      }
+      .al-map-dot {
+        fill: var(--champagne);
+      }
+      .al-map-flare {
+        fill: var(--copper);
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: al-flare 3.4s ease-out forwards;
+      }
+      .al-map-ripple {
+        fill: none;
+        stroke: var(--copper);
+        stroke-width: 1;
+        transform-box: fill-box;
+        transform-origin: center;
+        animation: al-ripple 3.4s ease-out forwards;
+      }
+      @keyframes al-flare {
+        0% { opacity: 0; transform: scale(0.6); }
+        12% { opacity: 1; transform: scale(1.6); }
+        70% { opacity: 0.9; transform: scale(1.3); }
+        100% { opacity: 0; transform: scale(0.8); }
+      }
+      @keyframes al-ripple {
+        0% { opacity: 0.7; transform: scale(0.4); }
+        60% { opacity: 0.25; transform: scale(3); }
+        100% { opacity: 0; transform: scale(4.2); }
+      }
+      .al-map-label {
+        position: absolute;
+        transform: translate(-50%, -140%);
+        font-family: var(--sans);
+        font-size: 0.62rem;
+        font-weight: 500;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--champagne);
+        background: rgba(23, 18, 16, 0.78);
+        border: 1px solid rgba(232, 201, 143, 0.28);
+        padding: 0.32rem 0.65rem;
+        border-radius: 2px;
+        white-space: nowrap;
+        opacity: 0;
+        animation: al-label 3.4s ease forwards;
+      }
+      @keyframes al-label {
+        0% { opacity: 0; }
+        12% { opacity: 1; }
+        72% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+      @media (max-width: 640px) {
+        .al-map-label {
+          display: none;
+        }
+        .al-card {
+          padding: 1.5rem 1.1rem 1.25rem;
+        }
+      }
+
+      .al-hero-grid {
+        display: grid;
+        gap: 3.5rem;
+        align-items: center;
+      }
+      .al-hero-grid > * {
+        min-width: 0; /* let the card shrink on narrow screens instead of overflowing */
+      }
+      @media (min-width: 960px) {
+        .al-hero-grid {
+          grid-template-columns: 1.05fr 0.95fr;
+          gap: 4.5rem;
+        }
+      }
+      .al-hero .al-display {
+        font-size: clamp(2.6rem, 6vw, 4.3rem);
+        margin: 1.2rem 0 1.5rem;
+      }
+
+      /* ---------- Signature: the 11:47 PM inquiry ---------- */
+      .al-card {
+        position: relative;
+        background: linear-gradient(160deg, #221a14, #1b1410);
+        border: 1px solid var(--hairline);
+        border-radius: 4px; /* stationery, not app */
+        padding: 2rem 1.75rem 1.75rem;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+        max-width: 27rem;
+        margin: 0 auto;
+        width: 100%;
+      }
+      .al-card::before {
+        /* deckled inner keyline, like an invitation */
+        content: "";
+        position: absolute;
+        inset: 9px;
+        border: 1px solid rgba(232, 201, 143, 0.18);
+        border-radius: 2px;
+        pointer-events: none;
+      }
+      .al-card-head {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.2rem 1rem;
+        justify-content: space-between;
+        align-items: baseline;
+        border-bottom: 1px solid var(--hairline);
+        padding-bottom: 0.9rem;
+        margin-bottom: 1.2rem;
+      }
+      .al-card-head .venue {
+        font-family: var(--serif);
+        font-size: 1.15rem;
+        font-style: italic;
+        color: var(--champagne);
+      }
+      .al-stamp {
+        font-size: 0.68rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--taupe);
+      }
+      .al-msg {
+        max-width: 88%;
+        padding: 0.8rem 1rem;
+        border-radius: 14px;
+        font-size: 0.92rem;
+        line-height: 1.55;
+        margin-bottom: 0.9rem;
+        opacity: 0;
+        transform: translateY(10px);
+        animation: al-msg-in 0.5s ease forwards;
+      }
+      .al-msg .al-time {
+        display: block;
+        margin-top: 0.35rem;
+        font-size: 0.66rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        opacity: 0.65;
+      }
+      .al-msg-guest {
+        background: #2b211a;
+        color: var(--ivory);
+        border-bottom-left-radius: 3px;
+      }
+      .al-msg-bot {
+        background: rgba(235, 120, 19, 0.14);
+        border: 1px solid rgba(235, 120, 19, 0.35);
+        color: var(--ivory);
+        margin-left: auto;
+        border-bottom-right-radius: 3px;
+      }
+      .al-msg-1 { animation-delay: 0.6s; }
+      .al-msg-2 { animation-delay: 1.7s; }
+      .al-msg-3 { animation-delay: 3s; }
+      .al-msg-4 { animation-delay: 4.4s; }
+      @keyframes al-msg-in {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .al-card-foot {
+        margin-top: 0.4rem;
+        padding-top: 0.9rem;
+        border-top: 1px solid var(--hairline);
+        text-align: center;
+        font-size: 0.72rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--taupe);
+        opacity: 0;
+        animation: al-msg-in 0.6s ease 5.4s forwards;
+      }
+      .al-card-foot strong {
+        color: var(--champagne);
+        font-weight: 500;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .al-msg,
+        .al-card-foot {
+          animation: none;
+          opacity: 1;
+          transform: none;
+        }
+        .al-btn-primary:hover {
+          transform: none;
+        }
+        html {
+          scroll-behavior: auto;
+        }
+      }
+
+      /* ---------- Sections ---------- */
+      .al-section {
+        padding: 5.5rem 0;
+        border-top: 1px solid var(--hairline);
+      }
+      .al-section-head {
+        margin-bottom: 3rem;
+      }
+      .al-section-head .al-body {
+        margin-top: 1rem;
+      }
+
+      /* Why-speed strip */
+      .al-truths {
+        display: grid;
+        gap: 1px;
+        background: var(--hairline);
+        border: 1px solid var(--hairline);
+      }
+      @media (min-width: 768px) {
+        .al-truths {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .al-truth {
+        background: var(--ink);
+        padding: 2.2rem 1.8rem;
+      }
+      .al-truth h3 {
+        font-family: var(--serif);
+        font-style: italic;
+        font-weight: 500;
+        font-size: 1.6rem;
+        color: var(--champagne);
+        margin-bottom: 0.7rem;
+      }
+      .al-truth p {
+        color: var(--taupe);
+        font-size: 0.95rem;
+        line-height: 1.7;
+      }
+
+      /* Handles grid */
+      .al-handles {
+        display: grid;
+        gap: 2.5rem 3rem;
+      }
+      @media (min-width: 768px) {
+        .al-handles {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      .al-handle {
+        border-left: 1px solid var(--hairline);
+        padding-left: 1.5rem;
+        transition: border-color 0.3s ease;
+      }
+      .al-handle:hover {
+        border-left-color: var(--copper);
+      }
+      .al-handle h3 {
+        font-family: var(--serif);
+        font-weight: 600;
+        font-size: 1.45rem;
+        color: var(--ivory);
+        margin-bottom: 0.5rem;
+      }
+      .al-handle p {
+        color: var(--taupe);
+        font-size: 0.98rem;
+        line-height: 1.7;
+      }
+
+      /* Steps */
+      .al-steps {
+        display: grid;
+        gap: 2.5rem;
+      }
+      @media (min-width: 768px) {
+        .al-steps {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .al-step .al-stamp {
+        color: var(--copper);
+      }
+      .al-step h3 {
+        font-family: var(--serif);
+        font-weight: 600;
+        font-size: 1.4rem;
+        margin: 0.8rem 0 0.5rem;
+      }
+      .al-step p {
+        color: var(--taupe);
+        font-size: 0.98rem;
+        line-height: 1.7;
+      }
+
+      /* CTA */
+      .al-cta {
+        text-align: center;
+        padding: 6.5rem 0;
+        border-top: 1px solid var(--hairline);
+        position: relative;
+        overflow: hidden;
+      }
+      .al-cta::before {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -60%;
+        transform: translateX(-50%);
+        width: 60rem;
+        height: 40rem;
+        background: radial-gradient(closest-side, rgba(235, 120, 19, 0.1), transparent 70%);
+        pointer-events: none;
+      }
+      .al-cta .al-display {
+        font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+        margin: 1rem auto 1.4rem;
+        max-width: 42rem;
+      }
+      .al-cta .al-body {
+        margin: 0 auto 2.4rem;
+      }
+      .al-cta-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        position: relative;
+      }
+
+      /* Scroll-to-top: bottom-left, so the chat toggle (bottom-right) doesn't cover it */
+      #scrollTopBtn {
+        right: auto;
+        left: 30px;
+      }
+
+      /* Scroll-reveal (pairs with script.js) */
+      .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(18px);
+        transition: opacity 0.7s ease, transform 0.7s ease;
+      }
+      .animate-on-scroll.is-visible {
+        opacity: 1;
+        transform: none;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .animate-on-scroll {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
       }
     </style>
   </head>
-  <body class="bg-[#181411]">
+  <body class="al-page">
     <div class="flex flex-col min-h-screen">
       <div id="navbar-container"></div>
+
       <main class="flex-grow">
-        <div class="relative flex size-full flex-col dark group/design-root" style='font-family: Inter, "Noto Sans", sans-serif;'>
-          <div class="layout-container flex h-full grow flex-col">
-            <!-- Full-width Hero Section -->
-            <div class="relative w-full min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style='background-image: linear-gradient(rgba(0, 0, 0, 0.10) 0%, rgba(0, 0, 0, 0.18) 100%), url("assets/background1.webp"); border-radius: 25px;'>
-              <div class="container mx-auto px-8 sm:px-6 lg:px-8 py-16 md:py-0">
-                <div class="flex flex-col md:flex-row items-center justify-between max-w-4xl mx-auto gap-12">
-                  <!-- Left: Text -->
-                  <div class="w-full md:w-1/2 text-center md:text-left mb-8 md:mb-0">
-                    <h1 class="text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em] mb-6">
-                      We build AI automations for lean teams who want to grow without the grunt work.
-                    </h1>
-                    <p class="text-white text-lg md:text-base font-normal leading-relaxed mb-8 max-w-3xl mx-auto md:mx-0">
-                      From admin tasks to client workflows, we automate the repetitive stuff that eats your time so you can scale faster without hiring more people.
-                    </p>
-                    <button class="inline-flex items-center justify-center px-6 py-3 text-base md:px-8 md:py-4 md:text-lg bg-[#eb7813] text-white font-bold leading-normal tracking-[0.015em] rounded-xl shadow-lg transition-all duration-200 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-[#eb7813]/40" onclick="window.location.href='https://forms.ascentislabs.com/contact'">
-                      <span>See It In Action</span>
-                      <svg class="ml-2 w-4 h-4 inline-block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                    </button>
-                  </div>
-                  <!-- Right: Image -->
-                  <div class="hidden md:block w-full md:w-1/2 flex justify-center md:justify-end">
-                    <img src="assets/golden-field.webp" alt="Golden Field" class="max-w-xs md:max-w-md w-full h-auto object-cover" style="border-radius: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.18);" />
-                  </div>
-                </div>
-                <!-- Centered tagline below button and image -->
-                <div class="w-full flex flex-wrap justify-center mt-12 md:mt-16 gap-3">
-                  <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-white/30 backdrop-blur-md text-white font-semibold text-sm gap-2 shadow-md floating-badge">
-                    <svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M20 6L9 17l-5-5'/></svg>
-                    AI Workflows
-                  </span>
-                  <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-white/30 backdrop-blur-md text-white font-semibold text-sm gap-2 shadow-md floating-badge">
-                    <svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M20 6L9 17l-5-5'/></svg>
-                    Faster Operations
-                  </span>
-                  <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-white/30 backdrop-blur-md text-white font-semibold text-sm gap-2 shadow-md floating-badge">
-                    <svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4' fill='none' viewBox='0 0 24 24' stroke='currentColor' stroke-width='2'><path stroke-linecap='round' stroke-linejoin='round' d='M20 6L9 17l-5-5'/></svg>
-                    Less Admin, More Growth
-                  </span>
+        <!-- ============ Hero ============ -->
+        <section class="al-hero">
+          <div class="al-map" id="al-map" aria-hidden="true"></div>
+          <div class="al-wrap">
+            <div class="al-hero-grid">
+              <div>
+                <p class="al-eyebrow">AI concierge for event venues</p>
+                <h1 class="al-display">Inquiries arrive at midnight. <em>Your venue answers.</em></h1>
+                <p class="al-body" style="margin-bottom: 2.2rem">
+                  Couples, planners, and companies message several venues in one sitting — and tour the ones that reply first.
+                  Ascentis Labs builds a concierge for your venue that answers every inquiry in seconds,
+                  shares your real availability and packages, and lines up the tour before your competitors open their inbox — you just confirm.
+                </p>
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem">
+                  <button class="al-btn al-btn-primary" onclick="window.location.href='https://forms.ascentislabs.com/contact'">
+                    Book a demo
+                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  </button>
+                  <a class="al-btn al-btn-ghost" href="venue-demo.html">See it answer a real inquiry</a>
                 </div>
               </div>
-            </div>
 
-            <!-- Content Section -->
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
-              <div class="max-w-4xl mx-auto">
-                <h2 class="text-white text-3xl font-bold leading-tight tracking-[-0.015em] mb-6 animate-on-scroll">What We Offer</h2>
-                <p class="text-white text-lg font-normal leading-relaxed mb-8">
-                  Custom AI Automations for Growing Teams. We design automation systems that handle repetitive admin work, streamline operations, and help your business scale without
-                  adding headcount. Whether you're drowning in candidate data, managing endless onboarding steps, or buried in manual follow-ups, we build workflows that fix it. Save
-                  20+ hours per week. No new tools to learn, we work with your existing stack. Fully managed delivery and ongoing support. Built for speed, scale, and clean results.
-                </p>
-                <div class="flex justify-start mb-12">
-                  <button
-                    class="inline-flex items-center justify-center px-6 py-3 bg-[#eb7813] text-white text-base font-bold leading-normal tracking-[0.015em] rounded-xl transition-all duration-200 ease-in-out hover:scale-105 hover:shadow-lg hover:shadow-[#eb7813]/40"
-                    onclick="window.location.href='https://forms.ascentislabs.com/contact'"
-                  >
-                    <span>Lets Talk</span>
-                    <svg class="ml-2 w-4 h-4 inline-block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-                  </button>
+              <!-- Signature: the 11:47 PM inquiry -->
+              <div class="al-card" aria-label="Example: an inquiry answered instantly at night, with a tour request for the owner to confirm">
+                <div class="al-card-head">
+                  <span class="venue">Willowbrook Manor</span>
+                  <span class="al-stamp">Sat · 11:47 pm</span>
                 </div>
-                <h2 class="text-white text-3xl font-bold leading-tight tracking-[-0.015em] mb-8 animate-on-scroll">What to Expect</h2>
-                <div class="grid grid-cols-1 md:grid-cols-[40px_1fr] gap-x-6 gap-y-6 mb-16">
-                  <div class="flex flex-col items-center gap-1 pt-3">
-                    <div class="text-white" data-icon="ChatCircleDots" data-size="24px" data-weight="regular">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                        <path
-                          d="M140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128ZM84,116a12,12,0,1,0,12,12A12,12,0,0,0,84,116Zm88,0a12,12,0,1,0,12,12A12,12,0,0,0,172,116Zm60,12A104,104,0,0,1,79.12,219.82L45.07,231.17a16,16,0,0,1-20.24-20.24l11.35-34.05A104,104,0,1,1,232,128Zm-16,0A88,88,0,1,0,51.81,172.06a8,8,0,0,1,.66,6.54L40,216,77.4,203.53a7.85,7.85,0,0,1,2.53-.42,8,8,0,0,1,4,1.08A88,88,0,0,0,216,128Z"
-                        ></path>
-                      </svg>
-                    </div>
-                    <div class="w-[1.5px] bg-[#54473b] h-2 grow"></div>
-                  </div>
-                  <div class="flex flex-1 flex-col py-3">
-                    <p class="text-white text-lg font-medium leading-normal mb-2">Tell Us What's Wasting Time</p>
-                    <p class="text-[#b9aa9d] text-base font-normal leading-relaxed">Share the admin tasks, workflows, or bottlenecks slowing your team down.</p>
-                  </div>
-                  <div class="flex flex-col items-center gap-1">
-                    <div class="w-[1.5px] bg-[#54473b] h-2"></div>
-                    <div class="text-white" data-icon="Gear" data-size="24px" data-weight="regular">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                        <path
-                          d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06Zm-16.1-6.5a73.93,73.93,0,0,1,0,8.68,8,8,0,0,0,1.74,5.48l14.19,17.73a91.57,91.57,0,0,1-6.23,15L187,173.11a8,8,0,0,0-5.1,2.64,74.11,74.11,0,0,1-6.14,6.14,8,8,0,0,0-2.64,5.1l-2.51,22.58a91.32,91.32,0,0,1-15,6.23l-17.74-14.19a8,8,0,0,0-5-1.75h-.48a73.93,73.93,0,0,1-8.68,0,8,8,0,0,0-5.48,1.74L100.45,215.8a91.57,91.57,0,0,1-15-6.23L82.89,187a8,8,0,0,0-2.64-5.1,74.11,74.11,0,0,1-6.14-6.14,8,8,0,0,0-5.1-2.64L46.43,170.6a91.32,91.32,0,0,1-6.23-15l14.19-17.74a8,8,0,0,0,1.74-5.48,73.93,73.93,0,0,1,0-8.68,8,8,0,0,0-1.74-5.48L40.2,100.45a91.57,91.57,0,0,1,6.23-15L69,82.89a8,8,0,0,0,5.1-2.64,74.11,74.11,0,0,1,6.14-6.14A8,8,0,0,0,82.89,69L85.4,46.43a91.32,91.32,0,0,1,15-6.23l17.74,14.19a8,8,0,0,0,5.48,1.74,73.93,73.93,0,0,1,8.68,0,8,8,0,0,0,5.48-1.74L155.55,40.2a91.57,91.57,0,0,1,15,6.23L173.11,69a8,8,0,0,0,2.64,5.1,74.11,74.11,0,0,1,6.14,6.14,8,8,0,0,0,5.1,2.64l22.58,2.51a91.32,91.32,0,0,1,6.23,15l-14.19,17.74A8,8,0,0,0,199.87,123.66Z"
-                        ></path>
-                      </svg>
-                    </div>
-                    <div class="w-[1.5px] bg-[#54473b] h-2 grow"></div>
-                  </div>
-                  <div class="flex flex-1 flex-col py-3">
-                    <p class="text-white text-lg font-medium leading-normal mb-2">We Design the Automation</p>
-                    <p class="text-[#b9aa9d] text-base font-normal leading-relaxed">
-                      You get a custom AI-powered workflow built around your exact needs, using tools you already rely on.
-                    </p>
-                  </div>
-                  <div class="flex flex-col items-center gap-1 pb-3">
-                    <div class="w-[1.5px] bg-[#54473b] h-2"></div>
-                    <div class="text-white" data-icon="RocketLaunch" data-size="24px" data-weight="regular">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                        <path
-                          d="M103.77,185.94C103.38,187.49,93.63,224,40,224a8,8,0,0,1-8-8c0-53.63,36.51-63.38,38.06-63.77a8,8,0,0,1,3.88,15.53c-.9.25-22.42,6.54-25.56,39.86C81.7,204.48,88,183,88.26,182a8,8,0,0,1,15.51,4Zm93-67.4L192,123.31v58.33A15.91,15.91,0,0,1,187.32,193L153,227.3A15.91,15.91,0,0,1,141.7,232a16.11,16.11,0,0,1-5.1-.83,15.94,15.94,0,0,1-10.78-12.92l-5.37-38.49L76.24,135.55l-38.47-5.37A16,16,0,0,1,28.7,103L63,68.68A15.91,15.91,0,0,1,74.36,64h58.33l4.77-4.77c26.68-26.67,58.83-27.82,71.41-27.07a16,16,0,0,1,15,15C224.6,59.71,223.45,91.86,196.78,118.54ZM40,114.34l37.15,5.18L116.69,80H74.36ZM91.32,128,128,164.68l57.45-57.45a76.46,76.46,0,0,0,22.42-59.16,76.65,76.65,0,0,0-59.11,22.47ZM176,139.31l-39.53,39.53L141.67,216,176,181.64Z"
-                        ></path>
-                      </svg>
-                    </div>
-                  </div>
-                  <div class="flex flex-1 flex-col py-3">
-                    <p class="text-white text-lg font-medium leading-normal mb-2">Launch and Scale</p>
-                    <p class="text-[#b9aa9d] text-base font-normal leading-relaxed">
-                      We deploy, test, and maintain your automation so you can focus on growth while the busywork runs in the background.
-                    </p>
-                  </div>
+                <div class="al-msg al-msg-1 al-msg-guest">
+                  Hi! Is October 17th open for an event of around 120 guests?
+                  <span class="al-time">Emma · 11:47 pm</span>
                 </div>
-                <h2 class="text-white text-3xl font-bold leading-tight tracking-[-0.015em] mb-8 animate-on-scroll">Important Numbers</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-                  <div class="flex flex-col gap-4 rounded-xl p-8 border border-[#54473b] bg-[#1a1a1a] transition-all duration-300 ease-in-out hover:-translate-y-2 hover:border-[#eb7813]/80">
-                    <p class="text-white text-lg font-medium leading-normal">Hours of work saved per week</p>
-                    <p class="text-white tracking-light text-4xl font-bold leading-tight">20+</p>
-                    <p class="text-[#b9aa9d] text-base font-medium leading-normal">Less admin, more output.</p>
-                  </div>
-                  <div class="flex flex-col gap-4 rounded-xl p-8 border border-[#54473b] bg-[#1a1a1a] transition-all duration-300 ease-in-out hover:-translate-y-2 hover:border-[#eb7813]/80">
-                    <p class="text-white text-lg font-medium leading-normal">Tools to learn</p>
-                    <p class="text-white tracking-light text-4xl font-bold leading-tight">0</p>
-                    <p class="text-[#b9aa9d] text-base font-medium leading-normal">We integrate directly into your existing systems.</p>
-                  </div>
-                  <div class="flex flex-col gap-4 rounded-xl p-8 border border-[#54473b] bg-[#1a1a1a] transition-all duration-300 ease-in-out hover:-translate-y-2 hover:border-[#eb7813]/80">
-                    <p class="text-white text-lg font-medium leading-normal">Custom-built</p>
-                    <p class="text-white tracking-light text-4xl font-bold leading-tight">100%</p>
-                    <p class="text-[#b9aa9d] text-base font-medium leading-normal">Every workflow is designed for your exact use case.</p>
-                  </div>
+                <div class="al-msg al-msg-2 al-msg-bot">
+                  Hi Emma! October 17th is open. For 120 guests, the Garden Hall fits beautifully — packages start at $8,900 with catering included.
+                  <span class="al-time">Concierge · 11:47 pm</span>
                 </div>
-                <h2 class="text-white text-3xl font-bold leading-tight tracking-[-0.015em] mb-6 animate-on-scroll">Why Automate</h2>
-                <p class="text-white text-lg font-normal leading-relaxed mb-4">
-                  When your team is buried in repetitive admin, you're not just wasting time. You're losing revenue, slowing down, and limiting your ability to grow. Automation solves this.
-                </p>
-                <ul class="list-disc ml-8 space-y-2 text-white text-base font-normal mb-4">
-                  <li>Free up 20+ hours per week.</li>
-                  <li>Cut down errors and delays.</li>
-                  <li>Respond faster to clients and candidates.</li>
-                  <li>Scale operations without hiring more staff.</li>
-                </ul>
-                <p class="text-white text-lg font-normal leading-relaxed">
-                  We build custom AI workflows that pull your business out of the grind and let your team focus on the work that drives growth.
-                </p>
+                <div class="al-msg al-msg-3 al-msg-guest">
+                  That sounds perfect. Could we tour the venue and meet the owner?
+                  <span class="al-time">Emma · 11:48 pm</span>
+                </div>
+                <div class="al-msg al-msg-4 al-msg-bot">
+                  Of course — the owner usually gives tours Tuesday at 5:30 pm or Saturday at 10 am. Which works best? I'll pass it along, and they'll confirm with you in the morning.
+                  <span class="al-time">Concierge · 11:48 pm</span>
+                </div>
+                <div class="al-card-foot">Answered in 9 seconds · <strong>You confirm the tour in the morning</strong></div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
+
+        <!-- ============ Why speed wins ============ -->
+        <section class="al-section">
+          <div class="al-wrap">
+            <div class="al-section-head animate-on-scroll">
+              <p class="al-eyebrow">The problem</p>
+              <h2 class="al-h2" style="margin-top: 1rem">The inquiry you answer Monday morning was decided Friday night.</h2>
+              <p class="al-body">
+                Venue teams are on the floor running events — not at a desk refreshing the inbox.
+                Meanwhile the people filling that inbox are comparing venues in real time.
+              </p>
+            </div>
+            <div class="al-truths animate-on-scroll">
+              <div class="al-truth">
+                <h3>Evenings &amp; weekends</h3>
+                <p>That's when people plan their events — and exactly when your team is busiest on the floor or off the clock.</p>
+              </div>
+              <div class="al-truth">
+                <h3>First reply, first tour</h3>
+                <p>Clients shortlist the venues that respond while the idea is fresh. Slow replies quietly fall off the list.</p>
+              </div>
+              <div class="al-truth">
+                <h3>Every inquiry counts</h3>
+                <p>A single booked event is worth thousands. One missed inquiry a month is real revenue walking to a competitor.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ What the concierge handles ============ -->
+        <section class="al-section">
+          <div class="al-wrap">
+            <div class="al-section-head animate-on-scroll">
+              <p class="al-eyebrow">What it handles</p>
+              <h2 class="al-h2" style="margin-top: 1rem">Everything between “first message” and “tour booked.”</h2>
+            </div>
+            <div class="al-handles animate-on-scroll">
+              <div class="al-handle">
+                <h3>Date &amp; availability questions</h3>
+                <p>The concierge knows your calendar and answers “is June 6th open?” with a real yes or no — plus nearby alternatives when it isn't.</p>
+              </div>
+              <div class="al-handle">
+                <h3>Pricing &amp; packages</h3>
+                <p>It presents your packages the way you would — accurate numbers, the right spaces for the guest count, no guesswork.</p>
+              </div>
+              <div class="al-handle">
+                <h3>Tour requests</h3>
+                <p>Interested clients pick from your tour times, and the request lands with you as a pending hold — you confirm it, so your schedule stays yours.</p>
+              </div>
+              <div class="al-handle">
+                <h3>Follow-ups that don't slip</h3>
+                <p>Clients who go quiet get a warm, well-timed nudge — so no one falls through the cracks between events.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ How it works ============ -->
+        <section class="al-section">
+          <div class="al-wrap">
+            <div class="al-section-head animate-on-scroll">
+              <p class="al-eyebrow">Working with us</p>
+              <h2 class="al-h2" style="margin-top: 1rem">Live on your website in weeks, not months.</h2>
+            </div>
+            <div class="al-steps animate-on-scroll">
+              <div class="al-step">
+                <span class="al-stamp">Step one</span>
+                <h3>We learn your venue</h3>
+                <p>Your spaces, packages, pricing, tour times, and the way you like to talk to clients — gathered in one working session.</p>
+              </div>
+              <div class="al-step">
+                <span class="al-stamp">Step two</span>
+                <h3>We build your concierge</h3>
+                <p>A concierge trained on your venue, connected to your calendar and inquiry channels. You review every answer before launch.</p>
+              </div>
+              <div class="al-step">
+                <span class="al-stamp">Step three</span>
+                <h3>It works every night</h3>
+                <p>Inquiries answered in seconds, tour requests waiting for your one-tap confirmation each morning. We monitor, refine, and report what it brought in.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ CTA ============ -->
+        <section class="al-cta">
+          <div class="al-wrap">
+            <p class="al-eyebrow animate-on-scroll">Ascentis Labs</p>
+            <h2 class="al-display animate-on-scroll">Stop losing bookings to <em>faster inboxes.</em></h2>
+            <p class="al-body animate-on-scroll">
+              Book a 20-minute demo and watch the concierge answer a real inquiry for a venue like yours.
+            </p>
+            <div class="al-cta-actions animate-on-scroll">
+              <button class="al-btn al-btn-primary" onclick="window.location.href='https://forms.ascentislabs.com/contact'">
+                Book a demo
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+              </button>
+              <a class="al-btn al-btn-ghost" href="venue-demo.html">Try the live demo venue</a>
+            </div>
+          </div>
+        </section>
       </main>
+
       <div id="footer-container"></div>
     </div>
+
     <button id="scrollTopBtn" title="Go to top">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
       </svg>
     </button>
+
     <script src="script/script.js"></script>
+    <script>
+      // Night city of bookings: a faint street grid (one venue's city) where
+      // intersections flare as illustrative "bookings" with small labels.
+      (function () {
+        const host = document.getElementById('al-map');
+        if (!host) return;
+
+        const W = 1000, H = 520;
+        const svgNS = 'http://www.w3.org/2000/svg';
+        const svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+
+        // Irregular street spacing, like real blocks
+        const xs = [], ys = [];
+        for (let x = 25; x < W; x += 45 + Math.random() * 35) xs.push(x);
+        for (let y = 20; y < H; y += 45 + Math.random() * 32) ys.push(y);
+
+        const line = (x1, y1, x2, y2, op) => {
+          const l = document.createElementNS(svgNS, 'line');
+          l.setAttribute('x1', x1); l.setAttribute('y1', y1);
+          l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+          l.setAttribute('stroke', '#e8c98f');
+          l.setAttribute('stroke-width', '0.7');
+          l.setAttribute('opacity', op.toFixed(3));
+          svg.appendChild(l);
+        };
+
+        // Streets across the full hero
+        xs.forEach((x) => line(x, 0, x, H, 0.025 + Math.random() * 0.03));
+        ys.forEach((y) => line(0, y, W, y, 0.022 + Math.random() * 0.028));
+        // Diagonal avenues cutting across the grid
+        line(-40, H * 0.85, W * 0.65, -30, 0.04);
+        line(-30, H * 0.25, W * 0.6, H + 30, 0.032);
+        line(W * 0.45, -30, W + 40, H * 0.9, 0.03);
+
+        // Intersections; skip some so blocks feel organic
+        const dots = [];
+        xs.forEach((x) => {
+          ys.forEach((y) => {
+            if (Math.random() < 0.3) return;
+            const c = document.createElementNS(svgNS, 'circle');
+            c.setAttribute('cx', x); c.setAttribute('cy', y);
+            c.setAttribute('r', '1.4');
+            c.setAttribute('class', 'al-map-dot');
+            c.setAttribute('opacity', (0.06 + Math.random() * 0.09).toFixed(2));
+            svg.appendChild(c);
+            dots.push({ x, y, el: c });
+          });
+        });
+        host.appendChild(svg);
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const labels = [
+          'Tour request · 11:52 pm',
+          'Inquiry answered · 9 seconds',
+          'Date check · 12:04 am',
+          'Follow-up sent · 10:15 pm',
+          'Package sent · 11:21 pm',
+          'Tour request · 12:38 am',
+          'Inquiry answered · 7 seconds',
+        ];
+        let labelIndex = Math.floor(Math.random() * labels.length);
+
+        // Pings can land anywhere on the grid except behind the demo card;
+        // measured live so it holds on mobile where the card stacks below.
+        const card = document.querySelector('.al-card');
+        const clearOfCard = (el) => {
+          if (!card) return true;
+          const r = el.getBoundingClientRect();
+          const c = card.getBoundingClientRect();
+          const pad = 28;
+          return r.right < c.left - pad || r.left > c.right + pad || r.bottom < c.top - pad || r.top > c.bottom + pad;
+        };
+
+        function flare(withLabel) {
+          if (!dots.length) return;
+          let pick = null;
+          for (let tries = 0; tries < 12 && !pick; tries++) {
+            const d = dots[Math.floor(Math.random() * dots.length)];
+            if (clearOfCard(d.el)) pick = d;
+          }
+          if (!pick) return;
+          const { x, y } = pick;
+
+          const spot = document.createElementNS(svgNS, 'circle');
+          spot.setAttribute('cx', x); spot.setAttribute('cy', y);
+          spot.setAttribute('r', '2.4');
+          spot.setAttribute('class', 'al-map-flare');
+          const ring = document.createElementNS(svgNS, 'circle');
+          ring.setAttribute('cx', x); ring.setAttribute('cy', y);
+          ring.setAttribute('r', '5');
+          ring.setAttribute('class', 'al-map-ripple');
+          svg.appendChild(ring);
+          svg.appendChild(spot);
+
+          let tag = null;
+          if (withLabel) {
+            // place the label from the dot's real on-screen position, clamped
+            // so it never bleeds off the hero or over the demo card
+            const hostRect = host.getBoundingClientRect();
+            const dotRect = pick.el.getBoundingClientRect();
+            const lx = ((dotRect.left + dotRect.width / 2 - hostRect.left) / hostRect.width) * 100;
+            const ly = ((dotRect.top + dotRect.height / 2 - hostRect.top) / hostRect.height) * 100;
+            tag = document.createElement('div');
+            tag.className = 'al-map-label';
+            tag.textContent = labels[labelIndex];
+            labelIndex = (labelIndex + 1) % labels.length;
+            tag.style.left = Math.min(80, Math.max(12, lx)) + '%';
+            tag.style.top = Math.min(88, Math.max(7, ly)) + '%';
+            host.appendChild(tag);
+            if (!clearOfCard(tag)) { tag.remove(); tag = null; }
+          }
+
+          setTimeout(() => { spot.remove(); ring.remove(); if (tag) tag.remove(); }, 3500);
+        }
+
+        // Each burst: several pings at once across the map, one carrying a label
+        function burst() {
+          const count = 2 + Math.floor(Math.random() * 3); // 2–4 pings
+          for (let i = 0; i < count; i++) {
+            setTimeout(() => flare(i === 0), Math.random() * 900);
+          }
+        }
+
+        setTimeout(burst, 1200);
+        setInterval(burst, 4200);
+      })();
+    </script>
     <script>
       // Load Navbar and initialize
       fetch('navbar.html')
@@ -204,12 +841,12 @@
         });
     </script>
     <script type="module">
-        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+      import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
-        createChat({
-            webhookUrl: 'https://primary-production-89ce1.up.railway.app/webhook/a889d2ae-2159-402f-b326-5f61e90f602e/chat',
-            initialMessages: ['Hello, Case here with Ascentis Labs, how can I help you today?']
-        });
+      createChat({
+        webhookUrl: 'https://primary-production-89ce1.up.railway.app/webhook/a889d2ae-2159-402f-b326-5f61e90f602e/chat',
+        initialMessages: ['Hello, Case here with Ascentis Labs, how can I help you today?']
+      });
     </script>
   </body>
-</html> 
+</html>
