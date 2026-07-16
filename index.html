@@ -18,20 +18,64 @@
     />
 
     <link rel="stylesheet" href="css/style.css" />
-    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat@1.29.1/dist/style.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
     <style>
       :root {
-        --chat--color-primary: #eb7813;
-        --chat--color-light: #181411;
-        --chat--header--background: var(--chat--color-primary);
-        --chat--header--color: #ffffff;
-        --chat--message--bot--background: var(--chat--color-primary);
-        --chat--message--bot--color: #ffffff;
+        /* n8n chat widget — brand + shades */
+        --chat--color--primary: #eb7813;
+        --chat--color--primary--shade-50: #d36b11;
+        --chat--color--primary--shade-100: #bb5f0f;
+        --chat--color--secondary: #eb7813;
+        --chat--color-secondary-shade-50: #d36b11;
+        --chat--font-family: "Outfit", "Inter", sans-serif;
+        --chat--border-radius: 0.75rem;
+        --chat--transition-duration: 0.2s;
+
+        /* Window */
+        --chat--window--width: 400px;
+        --chat--window--height: 600px;
+        --chat--window--border: 1px solid #35291f;
+        --chat--window--border-radius: 1rem;
+
+        /* Surfaces (dark espresso) */
+        --chat--body--background: #171210;
+        --chat--header--background: #201914;
+        --chat--header--color: #f2ece3;
+        --chat--header--border-bottom: 1px solid #35291f;
+        --chat--footer--background: #201914;
+        --chat--footer--color: #a79484;
+        --chat--footer--border-top: 1px solid #35291f;
+
+        /* Messages */
+        --chat--message--font-size: 0.9375rem;
         --chat--message--border-radius: 1rem;
-        --chat--toggle--background: var(--chat--color-primary);
+        --chat--message--bot--background: #201914;
+        --chat--message--bot--color: #f2ece3;
+        --chat--message--bot--border: 1px solid #35291f;
+        --chat--message--user--background: #eb7813;
+        --chat--message--user--color: #ffffff;
+        --chat--message--user--border: none;
+        --chat--color-typing: #a79484;
+
+        /* Input */
+        --chat--input--container--background: #201914;
+        --chat--input--container--border: 1px solid #35291f;
+        --chat--input--background: #201914;
+        --chat--input--text-color: #f2ece3;
+        --chat--input--border: 1px solid #35291f;
+        --chat--input--border-active: 1px solid #eb7813;
+        --chat--input--send--button--background: transparent;
+        --chat--input--send--button--color: #eb7813;
+        --chat--input--send--button--color-hover: #e8c98f;
+
+        /* Toggle bubble */
+        --chat--toggle--background: #eb7813;
         --chat--toggle--hover--background: #d36b11;
+        --chat--toggle--active--background: #bb5f0f;
+        --chat--toggle--color: #ffffff;
+        --chat--toggle--size: 56px;
 
         /* Page tokens */
         --ink: #171210; /* espresso ground */
@@ -525,6 +569,33 @@
           transition: none;
         }
       }
+
+      /* ---------- n8n chat: overrides beyond the widget's variables ---------- */
+      .chat-heading h1 {
+        font-family: var(--serif);
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+      .chat-header p {
+        color: var(--taupe);
+        font-size: 0.8125rem;
+      }
+      .chat-inputs textarea::placeholder {
+        color: var(--taupe);
+      }
+      .chat-window {
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+      }
+      .chat-window-toggle {
+        box-shadow: 0 8px 28px rgba(235, 120, 19, 0.35);
+      }
+      .chat-powered-by,
+      .chat-footer {
+        border-top: 1px solid var(--hairline);
+      }
+      .chat-powered-by a {
+        color: var(--taupe);
+      }
     </style>
   </head>
   <body class="al-page">
@@ -839,11 +910,24 @@
         });
     </script>
     <script type="module">
-      import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+      import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat@1.29.1/dist/chat.bundle.es.js';
 
       createChat({
         webhookUrl: 'https://primary-production-4bb5.up.railway.app/webhook/a889d2ae-2159-402f-b326-5f61e90f602e/chat',
-        initialMessages: ['Hello, Case here with Ascentis Labs, how can I help you today?']
+        initialMessages: ['Hello, Case here with Ascentis Labs, how can I help you today?'],
+        metadata: {
+          page: window.location.pathname,
+          referrer: document.referrer
+        },
+        i18n: {
+          en: {
+            title: 'Ascentis Labs',
+            subtitle: 'Ask us anything — we reply in seconds.',
+            footer: '',
+            getStarted: 'New Conversation',
+            inputPlaceholder: 'Type your question…'
+          }
+        }
       });
     </script>
   </body>
