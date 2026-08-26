@@ -640,8 +640,20 @@
       #n8n-chat .chat-header { border-bottom: 1px solid rgba(242,237,227,0.12); }
       #n8n-chat .chat-footer,
       #n8n-chat .chat-input { background: #12211a !important; border-top: 1px solid rgba(242,237,227,0.12); }
+      /* The widget paints the input row and the send button with
+         --chat--color-white, i.e. it treats that token as a surface rather
+         than a text colour, so both need repainting by hand. */
+      #n8n-chat .chat-inputs { background: #12211a !important; }
       #n8n-chat .chat-input textarea { color: #f2ede3 !important; }
       #n8n-chat .chat-input textarea::placeholder { color: #7e9486 !important; }
+      #n8n-chat .chat-input-send-button {
+        background: transparent !important;
+        border-radius: 50% !important;
+        transition: background-color 0.2s;
+      }
+      #n8n-chat .chat-input-send-button svg path { fill: #d9b481 !important; }
+      #n8n-chat .chat-input-send-button:disabled svg path { fill: #5c7566 !important; }
+      #n8n-chat .chat-input-send-button:not(:disabled):hover { background: rgba(217,180,129,0.14) !important; }
       #n8n-chat .chat-get-started button,
       #n8n-chat .chat-message-action { color: #d9b481 !important; }
     </style>
