@@ -2,750 +2,1321 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-    <link
-      rel="stylesheet"
-      as="style"
-      onload="this.rel='stylesheet'"
-      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter:wght@400;500;600;700;900&amp;family=Playfair+Display:wght@400;500;600;700;900"
-    />
-
-    <title>Ascentis Weddings — Intimate Loft &amp; Terrace Weddings in Dallas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Maple Grove at Smith Mill Creek — Intimate Garden Weddings in Asheville</title>
     <meta
       name="description"
-      content="Ascentis Weddings is an intimate wedding and event venue minutes from downtown Dallas. Four distinct settings, skyline views, up to 120 guests, all-inclusive packages."
+      content="A one-acre garden venue two miles from downtown Asheville. Four ceremony sites, fifty guests, all-inclusive packages from $7,000."
     />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
-    <link rel="stylesheet" href="css/style.css" />
-    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Karla:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat@1.29.1/dist/style.css" rel="stylesheet" />
+
     <style>
+      /* ============================================================
+         The Maple Grove — design tokens
+         Ground is the shaded garden itself, not paper. Accent is the
+         amber of the garden's paper lanterns at dusk.
+         ============================================================ */
       :root {
-        --chat--color-primary: #eb7813;
-        --chat--color-light: #ffffff;
-        --chat--header--background: var(--chat--color-primary);
-        --chat--header--color: #ffffff;
-        --chat--message--bot--background: var(--chat--color-primary);
-        --chat--message--bot--color: #ffffff;
-        --chat--message--user--background: var(#c8ff00);
-        --chat--message--border-radius: 1rem;
-        --chat--toggle--background: var(--chat--color-primary);
-        --chat--toggle--hover--background: #d36b11;
+        --ink:      #12211a;  /* deep forest, the page ground        */
+        --moss:     #1b3025;  /* raised surfaces                     */
+        --moss-lit: #24402f;  /* hover / borders                     */
+        --fern:     #8fb79b;  /* secondary text on dark              */
+        --lantern:  #e8a54b;  /* accent — lantern glow               */
+        --maple:    #c25b3a;  /* autumn maple, used twice on purpose */
+        --paper:    #f2ede3;  /* text on dark / light section ground */
+        --paper-dim:#ddd5c6;
+
+        --display: 'Fraunces', Georgia, serif;
+        --body:    'Karla', system-ui, sans-serif;
+        --mono:    'DM Mono', ui-monospace, monospace;
+
+        --gut: clamp(1.25rem, 4vw, 3rem);
+        --max: 1200px;
+        --ease: cubic-bezier(0.22, 1, 0.36, 1);
       }
-      body { font-family: 'Inter', sans-serif; }
-      .font-serif { font-family: 'Playfair Display', serif; }
-      .eyebrow { letter-spacing: 0.18em; }
-      #galleryTrack::-webkit-scrollbar { display: none; }
-      details[open] .faq-plus { transform: rotate(45deg); }
-      .faq-plus { transition: transform 0.2s ease; }
-      details > summary { list-style: none; }
-      details > summary::-webkit-details-marker { display: none; }
+
+      *, *::before, *::after { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+
+      body {
+        margin: 0;
+        background: var(--ink);
+        color: var(--paper);
+        font-family: var(--body);
+        font-size: 1.0625rem;
+        line-height: 1.65;
+        font-weight: 300;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      h1, h2, h3 {
+        font-family: var(--display);
+        font-weight: 400;
+        font-variation-settings: 'SOFT' 30, 'WONK' 1;
+        line-height: 1.08;
+        letter-spacing: -0.015em;
+        margin: 0;
+      }
+
+      p { margin: 0 0 1.1em; }
+      a { color: inherit; }
+
+      /* ---------- shared utilities ---------- */
+      .wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--gut); }
+
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--lantern);
+        margin: 0 0 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .eyebrow::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(to right, rgba(232,165,75,0.5), transparent);
+      }
+
+      .lede { font-size: clamp(1.0625rem, 1.6vw, 1.25rem); color: var(--paper-dim); max-width: 58ch; }
+
+      .band { padding-block: clamp(4.5rem, 10vw, 8rem); }
+      .band--light { background: var(--paper); color: var(--ink); }
+      .band--light .eyebrow { color: var(--maple); }
+      .band--light .eyebrow::after { background: linear-gradient(to right, rgba(194,91,58,0.4), transparent); }
+      .band--light .lede { color: #46524a; }
+
+      /* ---------- buttons ---------- */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-family: var(--body);
+        font-size: 0.9375rem;
+        font-weight: 500;
+        letter-spacing: 0.01em;
+        padding: 0.9rem 1.6rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        background: none;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.25s var(--ease), background-color 0.25s, border-color 0.25s, color 0.25s;
+      }
+      .btn:hover { transform: translateY(-2px); }
+      .btn--solid { background: var(--lantern); color: #22160a; }
+      .btn--solid:hover { background: #f2b25e; }
+      .btn--ghost { border-color: rgba(242,237,227,0.35); color: var(--paper); }
+      .btn--ghost:hover { border-color: var(--lantern); color: var(--lantern); }
+      .band--light .btn--ghost { border-color: rgba(18,33,26,0.28); color: var(--ink); }
+      .band--light .btn--ghost:hover { border-color: var(--maple); color: var(--maple); }
+
+      :focus-visible { outline: 2px solid var(--lantern); outline-offset: 3px; border-radius: 2px; }
+
+      /* ---------- image frames (degrade gracefully before assets exist) ---------- */
+      .frame {
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(ellipse at 30% 20%, rgba(143,183,155,0.30), transparent 60%),
+          linear-gradient(150deg, #24402f, #12211a 70%);
+      }
+      .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .frame::after {
+        content: attr(data-label);
+        position: absolute;
+        left: 0.9rem;
+        bottom: 0.75rem;
+        font-family: var(--mono);
+        font-size: 0.625rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: rgba(242,237,227,0.5);
+        pointer-events: none;
+      }
+      .frame.is-loaded::after { display: none; }
+
+      /* ============================================================
+         Nav
+         ============================================================ */
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 60;
+        backdrop-filter: blur(14px);
+        background: rgba(18,33,26,0.72);
+        border-bottom: 1px solid rgba(242,237,227,0.09);
+      }
+      .nav__inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        height: 4.5rem;
+      }
+      .brand { display: flex; flex-direction: column; line-height: 1.05; text-decoration: none; }
+      .brand__name { font-family: var(--display); font-size: 1.0625rem; letter-spacing: 0.01em; }
+      .brand__sub {
+        font-family: var(--mono);
+        font-size: 0.5625rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--fern);
+        margin-top: 0.2rem;
+      }
+      .nav__links { display: flex; align-items: center; gap: 2rem; }
+      .nav__links a {
+        font-size: 0.875rem;
+        text-decoration: none;
+        color: var(--paper-dim);
+        transition: color 0.2s;
+      }
+      .nav__links a:hover { color: var(--lantern); }
+      .nav__cta { padding: 0.6rem 1.2rem; font-size: 0.875rem; }
+      @media (max-width: 860px) {
+        .nav__links a:not(.nav__cta) { display: none; }
+      }
+
+      /* ============================================================
+         Hero
+         ============================================================ */
+      .hero { position: relative; min-height: min(86vh, 780px); display: flex; align-items: flex-end; }
+      .hero__bg { position: absolute; inset: 0; z-index: 0; }
+      .hero__bg::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, var(--ink) 4%, rgba(18,33,26,0.82) 38%, rgba(18,33,26,0.42) 100%);
+      }
+      .hero__inner { position: relative; z-index: 1; width: 100%; padding-block: clamp(3rem, 8vw, 6rem); }
+      .hero__title {
+        font-size: clamp(2.75rem, 7.5vw, 5.75rem);
+        max-width: 15ch;
+        margin-bottom: 1.5rem;
+      }
+      .hero__title em {
+        font-style: italic;
+        font-variation-settings: 'SOFT' 60, 'WONK' 1;
+        color: var(--lantern);
+      }
+      .hero__sub { font-size: clamp(1.0625rem, 1.8vw, 1.3125rem); color: var(--paper-dim); max-width: 46ch; }
+      .hero__actions { display: flex; flex-wrap: wrap; gap: 0.9rem; margin-top: 2.25rem; }
+
+      /* the house rule strip — capacity as a stated policy, not a stat card */
+      .rule-strip {
+        border-top: 1px solid rgba(242,237,227,0.12);
+        border-bottom: 1px solid rgba(242,237,227,0.12);
+        background: rgba(27,48,37,0.5);
+      }
+      .rule-strip__inner {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 2.5rem;
+        padding-block: 1.15rem;
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--fern);
+      }
+      .rule-strip b { color: var(--paper); font-weight: 500; }
+
+      /* ============================================================
+         Thesis
+         ============================================================ */
+      .thesis__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+        gap: clamp(2rem, 6vw, 5rem);
+        align-items: start;
+      }
+      .pull {
+        font-family: var(--display);
+        font-size: clamp(1.5rem, 3.1vw, 2.25rem);
+        font-style: italic;
+        font-variation-settings: 'SOFT' 60, 'WONK' 1;
+        line-height: 1.28;
+        color: var(--paper);
+        margin: 0 0 1.5rem;
+        text-wrap: balance;
+      }
+      .pull span { color: var(--lantern); }
+      @media (max-width: 820px) { .thesis__grid { grid-template-columns: 1fr; } }
+
+      /* ============================================================
+         SIGNATURE — the property map
+         ============================================================ */
+      .plot__head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 1.5rem; margin-bottom: 2.5rem; }
+      .plot__grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+        gap: clamp(1.75rem, 4vw, 3.25rem);
+        align-items: start;
+      }
+      .plot__map {
+        background: linear-gradient(165deg, #1b3025, #101d16);
+        border: 1px solid rgba(242,237,227,0.12);
+        border-radius: 4px;
+        padding: 0.5rem;
+      }
+      .plot__map svg { width: 100%; height: auto; display: block; }
+
+      .marker { cursor: pointer; }
+      .marker__hit { fill: transparent; }
+      .marker__dot { fill: var(--paper); transition: fill 0.25s, r 0.25s var(--ease); }
+      .marker__ring { fill: none; stroke: var(--lantern); stroke-width: 1.25; opacity: 0; transition: opacity 0.3s, r 0.45s var(--ease); }
+      .marker__label {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        fill: var(--fern);
+        transition: fill 0.25s;
+        pointer-events: none;
+      }
+      .marker:hover .marker__dot,
+      .marker.is-active .marker__dot { fill: var(--lantern); }
+      .marker:hover .marker__label,
+      .marker.is-active .marker__label { fill: var(--paper); }
+      .marker.is-active .marker__ring { opacity: 1; }
+      /* SVG groups take a UA focus box on mouse click; keyboard users get the
+         dashed ring instead, which reads better against the plan. */
+      .marker:focus { outline: none; }
+      .marker:focus-visible .marker__ring { opacity: 1; stroke-dasharray: 3 3; }
+
+      /* detail panel */
+      .site-card { border-left: 2px solid var(--lantern); padding-left: clamp(1.1rem, 2.5vw, 1.75rem); }
+      .site-card__cap {
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--lantern);
+        margin-bottom: 0.85rem;
+      }
+      .site-card__name { font-size: clamp(1.75rem, 3.4vw, 2.5rem); margin-bottom: 0.9rem; }
+      .site-card__body { color: var(--paper-dim); }
+      .site-card__note {
+        font-size: 0.9375rem;
+        color: var(--fern);
+        border-top: 1px solid rgba(242,237,227,0.14);
+        padding-top: 1rem;
+        margin-top: 1.25rem;
+        margin-bottom: 0;
+      }
+      .site-card__photo { margin-top: 1.5rem; aspect-ratio: 4 / 3; border-radius: 3px; }
+
+      /* the card also runs on the cream band — repaint it for that ground */
+      .band--light .site-card { border-left-color: var(--maple); }
+      .band--light .site-card__cap { color: var(--maple); }
+      .band--light .site-card__body { color: #46524a; }
+      .band--light .site-card__note { color: #67736b; border-top-color: rgba(18,33,26,0.16); }
+      .band--light .site-tabs button { border-color: rgba(18,33,26,0.24); color: #46524a; }
+      .band--light .site-tabs button[aria-pressed='true'] { border-color: var(--maple); color: var(--maple); }
+      .is-swapping { animation: swap 0.4s var(--ease); }
+      @keyframes swap { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+      .site-tabs { display: none; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+      .site-tabs button {
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid rgba(242,237,227,0.22);
+        background: none;
+        color: var(--paper-dim);
+        cursor: pointer;
+      }
+      .site-tabs button[aria-pressed='true'] { border-color: var(--lantern); color: var(--lantern); }
+
+      .plot__hint {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #7d8a80;
+        margin: 0;
+      }
+
+      /* Below 900px the plan is dropped for the tab pills — the plan-specific
+         hint would be pointing at something that isn't there. */
+      @media (max-width: 900px) {
+        .plot__grid { grid-template-columns: 1fr; }
+        .plot__map { display: none; }
+        .plot__hint { display: none; }
+        .site-tabs { display: flex; }
+      }
+
+      /* ============================================================
+         Packages
+         ============================================================ */
+      .pkgs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+      .pkg {
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border: 1px solid rgba(18,33,26,0.12);
+        border-radius: 4px;
+        padding: clamp(1.5rem, 2.6vw, 2.15rem);
+      }
+      .pkg--feature { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+      .pkg__tag {
+        font-family: var(--mono);
+        font-size: 0.625rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--maple);
+        margin-bottom: 1rem;
+      }
+      .pkg--feature .pkg__tag { color: var(--lantern); }
+      .pkg__name { font-size: 1.625rem; margin-bottom: 0.5rem; }
+      .pkg__price { font-family: var(--mono); font-size: 2rem; letter-spacing: -0.02em; margin-bottom: 0.2rem; }
+      .pkg__unit { font-size: 0.875rem; color: #67736b; margin-bottom: 1.5rem; }
+      .pkg--feature .pkg__unit { color: var(--fern); }
+      .pkg__list { list-style: none; margin: 0 0 1.75rem; padding: 0; font-size: 0.9375rem; }
+      .pkg__list li { position: relative; padding-left: 1.4rem; margin-bottom: 0.5rem; }
+      .pkg__list li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.62em;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--maple);
+      }
+      .pkg--feature .pkg__list li::before { background: var(--lantern); }
+      .pkg__foot { margin-top: auto; }
+      .pkg__byo {
+        font-size: 0.8125rem;
+        color: #67736b;
+        border-top: 1px solid rgba(18,33,26,0.12);
+        padding-top: 0.9rem;
+        margin: 0 0 1.25rem;
+      }
+      .pkg--feature .pkg__byo { color: var(--fern); border-top-color: rgba(242,237,227,0.18); }
+      @media (max-width: 900px) { .pkgs { grid-template-columns: 1fr; } }
+
+      /* ---------- elopements + private events ---------- */
+      .duo { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+      .elope {
+        border: 1px solid rgba(242,237,227,0.16);
+        border-radius: 4px;
+        padding: clamp(1.5rem, 2.6vw, 2.15rem);
+        background: rgba(27,48,37,0.45);
+      }
+      .elope__name { font-size: 1.5rem; margin-bottom: 0.4rem; }
+      .elope__meta {
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--lantern);
+        margin-bottom: 1.25rem;
+      }
+      .elope ul { list-style: none; margin: 0; padding: 0; font-size: 0.9375rem; color: var(--paper-dim); }
+      .elope li { padding: 0.42rem 0; border-bottom: 1px solid rgba(242,237,227,0.09); }
+      .elope li:last-child { border-bottom: 0; }
+
+      .events { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; margin-top: 2.5rem; }
+      .event h3 { font-size: 1.1875rem; margin-bottom: 0.5rem; }
+      .event p { font-size: 0.9375rem; color: var(--paper-dim); margin: 0; }
+      .event__rule { width: 28px; height: 2px; background: var(--lantern); margin-bottom: 1rem; }
+      @media (max-width: 900px) { .duo { grid-template-columns: 1fr; } .events { grid-template-columns: repeat(2, 1fr); } }
+      @media (max-width: 560px) { .events { grid-template-columns: 1fr; } }
+
+      /* ============================================================
+         Testimonials
+         ============================================================ */
+      .quotes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.5rem, 3vw, 2.75rem); }
+      .quote p {
+        font-family: var(--display);
+        font-size: 1.1875rem;
+        font-style: italic;
+        font-variation-settings: 'SOFT' 50, 'WONK' 1;
+        line-height: 1.45;
+        margin-bottom: 1rem;
+      }
+      .quote cite {
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-style: normal;
+        color: #7d8a80;
+      }
+      @media (max-width: 820px) { .quotes { grid-template-columns: 1fr; } }
+
+      /* ============================================================
+         FAQ
+         ============================================================ */
+      .faq { max-width: 760px; }
+      .faq details { border-bottom: 1px solid rgba(242,237,227,0.14); }
+      .faq summary {
+        list-style: none;
+        cursor: pointer;
+        padding: 1.25rem 2.5rem 1.25rem 0;
+        position: relative;
+        font-size: 1.0625rem;
+        font-weight: 400;
+      }
+      .faq summary::-webkit-details-marker { display: none; }
+      .faq summary::after {
+        content: '+';
+        position: absolute;
+        right: 0.25rem;
+        top: 1.05rem;
+        font-family: var(--mono);
+        font-size: 1.25rem;
+        color: var(--lantern);
+        transition: transform 0.3s var(--ease);
+      }
+      .faq details[open] summary::after { transform: rotate(45deg); }
+      .faq details p { color: var(--paper-dim); font-size: 0.9688rem; padding-right: 2.5rem; }
+
+      /* ============================================================
+         Visit / inquiry
+         ============================================================ */
+      .visit__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); }
+      .facts { list-style: none; margin: 2rem 0 0; padding: 0; }
+      .facts li { display: flex; gap: 1.25rem; padding: 0.95rem 0; border-top: 1px solid rgba(18,33,26,0.14); }
+      .facts dt, .facts .k {
+        font-family: var(--mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #7d8a80;
+        min-width: 88px;
+        flex-shrink: 0;
+        padding-top: 0.22rem;
+      }
+      .facts .v { font-size: 1.0625rem; }
+      .facts .v a { text-decoration: none; border-bottom: 1px solid rgba(194,91,58,0.5); }
+      .facts .v a:hover { color: var(--maple); }
+
+      .form { background: #fff; border: 1px solid rgba(18,33,26,0.12); border-radius: 4px; padding: clamp(1.5rem, 3vw, 2.25rem); }
+      .field { margin-bottom: 1.1rem; }
+      .field label {
+        display: block;
+        font-family: var(--mono);
+        font-size: 0.625rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #67736b;
+        margin-bottom: 0.45rem;
+      }
+      .field input, .field select, .field textarea {
+        width: 100%;
+        font-family: var(--body);
+        font-size: 1rem;
+        color: var(--ink);
+        background: #fbfaf7;
+        border: 1px solid rgba(18,33,26,0.18);
+        border-radius: 3px;
+        padding: 0.7rem 0.85rem;
+      }
+      .field textarea { resize: vertical; min-height: 92px; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+      .form__note { font-size: 0.8125rem; color: #7d8a80; margin: 1rem 0 0; }
+      @media (max-width: 820px) { .visit__grid { grid-template-columns: 1fr; } .row { grid-template-columns: 1fr; } }
+
+      /* ============================================================
+         Footer
+         ============================================================ */
+      .foot { border-top: 1px solid rgba(242,237,227,0.12); padding-block: 2.5rem; }
+      .foot__inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1.25rem; align-items: center; }
+      .foot p { margin: 0; font-size: 0.8125rem; color: var(--fern); }
+
+      /* ============================================================
+         Motion
+         ============================================================ */
+      .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.75s var(--ease), transform 0.75s var(--ease); }
+      .reveal.in { opacity: 1; transform: none; }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+        .reveal { opacity: 1; transform: none; }
+      }
+
+      /* ---------- n8n concierge widget, themed to the garden ---------- */
+      :root {
+        --chat--color-primary: #e8a54b;
+        --chat--color-secondary: #8fb79b;
+        --chat--header--background: #12211a;
+        --chat--header--color: #f2ede3;
+        --chat--heading--font-size: 1.05rem;
+        --chat--subtitle--font-size: 0.85rem;
+        --chat--message--bot--background: #1b3025;
+        --chat--message--bot--color: #f2ede3;
+        --chat--message--user--background: #e8a54b;
+        --chat--message--user--color: #22160a;
+        --chat--message--border-radius: 0.9rem;
+        --chat--message--font-size: 0.95rem;
+        --chat--toggle--background: #e8a54b;
+        --chat--toggle--hover--background: #f2b25e;
+        --chat--toggle--color: #22160a;
+        --chat--window--width: 384px;
+        --chat--window--height: 580px;
+        --chat--border-radius: 0.5rem;
+      }
+      .n8n-chat, .n8n-chat * { font-family: var(--body) !important; }
     </style>
   </head>
-  <body class="bg-white text-[#1a1a1a]">
-    <div class="min-h-screen flex flex-col">
-      <!-- ======================= HEADER ======================= -->
-      <header class="sticky top-0 z-40 border-b border-[#ece4da] bg-white/95 backdrop-blur">
-        <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <a href="venue-demo.html" class="flex items-center gap-3">
-            <img src="icons/ascentis-labs-icon.png" alt="Ascentis Weddings" class="h-8 w-auto md:h-10" />
-            <span class="font-serif text-lg font-bold tracking-tight md:text-xl">Ascentis Weddings</span>
-          </a>
 
-          <nav class="hidden items-center gap-7 lg:flex">
-            <a href="#venue" class="text-sm font-semibold hover:text-[#eb7813]">The Venue</a>
-            <a href="#spaces" class="text-sm font-semibold hover:text-[#eb7813]">Spaces</a>
-            <a href="#packages" class="text-sm font-semibold hover:text-[#eb7813]">Packages</a>
-            <a href="#gallery" class="text-sm font-semibold hover:text-[#eb7813]">Gallery</a>
-            <a href="#reviews" class="text-sm font-semibold hover:text-[#eb7813]">Reviews</a>
-            <a href="#contact" class="rounded-lg bg-[#eb7813] px-4 py-2 text-sm font-bold text-white hover:bg-[#d36b11]">Check Your Date</a>
-          </nav>
-
-          <button id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"
-            class="grid h-10 w-10 place-items-center rounded-lg border border-[#e5dbcf] lg:hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          </button>
+  <body>
+    <!-- ==================== NAV ==================== -->
+    <nav class="nav">
+      <div class="wrap nav__inner">
+        <a class="brand" href="#top">
+          <span class="brand__name">The Maple Grove</span>
+          <span class="brand__sub">at Smith Mill Creek</span>
+        </a>
+        <div class="nav__links">
+          <a href="#gardens">The gardens</a>
+          <a href="#packages">Packages</a>
+          <a href="#elopements">Elopements</a>
+          <a href="#questions">Questions</a>
+          <a class="btn btn--solid nav__cta" href="#visit">Check a date</a>
         </div>
+      </div>
+    </nav>
 
-        <div id="mobileMenu" class="hidden border-t border-[#ece4da] bg-white lg:hidden">
-          <nav class="mx-auto flex w-full max-w-6xl flex-col gap-1 px-6 py-4">
-            <a href="#venue" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">The Venue</a>
-            <a href="#spaces" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">Spaces</a>
-            <a href="#packages" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">Packages</a>
-            <a href="#gallery" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">Gallery</a>
-            <a href="#reviews" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">Reviews</a>
-            <a href="#faq" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">FAQ</a>
-            <a href="#contact" class="mt-2 rounded-lg bg-[#eb7813] px-4 py-3 text-center text-sm font-bold text-white">Check Your Date</a>
-          </nav>
+    <!-- ==================== HERO ==================== -->
+    <header class="hero" id="top">
+      <div class="hero__bg frame" data-label="assets/maple-grove/hero-garden.webp">
+        <img
+          src="assets/maple-grove/hero-garden.webp"
+          alt="The gardens at The Maple Grove at dusk, lanterns lit beneath the maples"
+          onload="this.parentElement.classList.add('is-loaded')"
+          onerror="this.style.display='none'"
+        />
+      </div>
+      <div class="wrap hero__inner">
+        <p class="eyebrow" style="max-width: 320px">West Asheville, North Carolina</p>
+        <h1 class="hero__title">A one-acre garden that holds <em>fifty people</em> and nothing more.</h1>
+        <p class="hero__sub">
+          Four ceremony sites along Smith Mill Creek, two miles from downtown. Built by a wedding
+          photographer, for the light.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--solid" href="#visit">Check a date</a>
+          <button class="btn btn--ghost" type="button" data-open-chat>Ask the concierge</button>
         </div>
-      </header>
+      </div>
+    </header>
 
-      <main class="flex-grow">
-        <!-- ======================= HERO ======================= -->
-        <section class="relative">
-          <img
-            src="assets/Loft%20Assets/event%20space%20intimate%20best%20pic.jpg"
-            alt="An intimate ceremony set up at Ascentis Weddings"
-            class="absolute inset-0 h-full w-full object-cover"
-          />
-          <div class="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/70"></div>
-
-          <div class="relative mx-auto w-full max-w-4xl px-6 py-24 text-center text-white md:py-36">
-            <p class="eyebrow text-xs font-semibold uppercase text-[#ffcf9a] md:text-sm">Dallas, Texas</p>
-            <h1 class="mt-4 font-serif text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl">
-              Intimate weddings, minutes from downtown Dallas.
-            </h1>
-            <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
-              A private loft-and-terrace venue built for celebrations under 120 guests — four
-              distinct settings, downtown skyline views, and a team that runs the whole day so you don't have to.
-            </p>
-            <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <a href="#contact" class="w-full rounded-lg bg-[#eb7813] px-7 py-3.5 text-sm font-bold text-white hover:bg-[#d36b11] sm:w-auto">Check Your Date</a>
-              <a href="#spaces" class="w-full rounded-lg border border-white/70 px-7 py-3.5 text-sm font-bold text-white backdrop-blur hover:bg-white hover:text-[#1a1a1a] sm:w-auto">See the Spaces</a>
-            </div>
-          </div>
-
-          <!-- Stat strip -->
-          <div class="relative border-t border-white/15 bg-black/40 backdrop-blur">
-            <div class="mx-auto grid w-full max-w-5xl grid-cols-1 divide-y divide-white/15 px-6 text-center text-white sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-              <div class="py-5">
-                <p class="font-serif text-2xl font-bold">Up to 120</p>
-                <p class="mt-1 text-xs uppercase tracking-widest text-white/70">Guests, seated</p>
-              </div>
-              <div class="py-5">
-                <p class="font-serif text-2xl font-bold">4 Settings</p>
-                <p class="mt-1 text-xs uppercase tracking-widest text-white/70">One property</p>
-              </div>
-              <div class="py-5">
-                <p class="font-serif text-2xl font-bold">All-Inclusive</p>
-                <p class="mt-1 text-xs uppercase tracking-widest text-white/70">Or bring your own</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================= WELCOME / THE VENUE ======================= -->
-        <section id="venue" class="scroll-mt-20 py-16 md:py-24">
-          <div class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-6 lg:grid-cols-2 lg:items-center">
-            <div class="grid grid-cols-2 gap-3">
-              <img src="assets/Loft%20Assets/outdoor%20view%20with%20dallas%20in%20bg.jpg" alt="Terrace with the Dallas skyline behind it" class="h-44 w-full rounded-2xl object-cover md:h-60" />
-              <img src="assets/Loft%20Assets/Event%20space.jpg" alt="The loft set for a reception" class="mt-6 h-44 w-full rounded-2xl object-cover md:h-60" />
-              <img src="assets/Loft%20Assets/outdoor%20wedding.jpg" alt="An outdoor ceremony on the terrace" class="h-44 w-full rounded-2xl object-cover md:h-60" />
-              <img src="assets/Loft%20Assets/event%20space%20night.jpg" alt="The loft after dark" class="mt-6 h-44 w-full rounded-2xl object-cover md:h-60" />
-            </div>
-
-            <div>
-              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Dallas's best-kept secret</p>
-              <h2 class="mt-4 font-serif text-3xl font-bold leading-tight md:text-[2.75rem]">
-                A warm brick loft and a string-lit terrace, ten minutes from downtown.
-              </h2>
-              <p class="mt-6 text-base leading-relaxed text-[#5a4b3f]">
-                Most couples who want something with character in Dallas end up driving forty minutes
-                out of the city for it. Ascentis Weddings sits inside it — a restored brick-and-timber
-                loft, a string-lit courtyard and an open terrace on the same property, with the downtown
-                skyline standing behind every photo.
-              </p>
-              <p class="mt-4 text-base leading-relaxed text-[#5a4b3f]">
-                We cap our events at 120 guests on purpose. Smaller lists mean the whole property is
-                yours for the day, your guests are never queued or crowded, and we can pay attention to
-                the details that get lost at a 300-person venue.
-              </p>
-
-              <ul class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <li class="flex items-start gap-2.5 text-sm font-medium text-[#3d332b]"><span class="mt-0.5 text-[#eb7813]">✦</span> Ceremony and reception on one property</li>
-                <li class="flex items-start gap-2.5 text-sm font-medium text-[#3d332b]"><span class="mt-0.5 text-[#eb7813]">✦</span> Indoor rain plan, always included</li>
-                <li class="flex items-start gap-2.5 text-sm font-medium text-[#3d332b]"><span class="mt-0.5 text-[#eb7813]">✦</span> Free on-site parking for 60 cars</li>
-                <li class="flex items-start gap-2.5 text-sm font-medium text-[#3d332b]"><span class="mt-0.5 text-[#eb7813]">✦</span> One event a day — never a double booking</li>
-              </ul>
-
-              <div class="mt-9 flex flex-wrap gap-3">
-                <a href="#packages" class="rounded-lg bg-[#eb7813] px-6 py-3 text-sm font-bold text-white hover:bg-[#d36b11]">See Packages &amp; Pricing</a>
-                <a href="#contact" class="rounded-lg border border-[#1a1a1a] px-6 py-3 text-sm font-bold hover:bg-[#fff5eb]">Schedule a Tour</a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================= THE SPACES ======================= -->
-        <section id="spaces" class="scroll-mt-20 border-y border-[#efe4d8] bg-[#fff9f2] py-16 md:py-24">
-          <div class="mx-auto w-full max-w-6xl px-6">
-            <div class="mx-auto max-w-2xl text-center">
-              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Four settings, one property</p>
-              <h2 class="mt-4 font-serif text-3xl font-bold md:text-[2.75rem]">Pick the room your day should look like.</h2>
-              <p class="mt-4 text-[#6b5c50]">
-                Every space photographs differently, and all four come with your booking — say your vows
-                on the terrace, drink under the lights in the courtyard, eat and dance in the loft.
-              </p>
-            </div>
-
-            <div class="mt-14 space-y-14 md:space-y-20">
-              <!-- Space 1 -->
-              <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
-                <img src="assets/Loft%20Assets/outdoor%20view%20with%20dallas%20in%20bg.jpg" alt="The Skyline Terrace" class="h-64 w-full rounded-2xl object-cover shadow-sm md:h-80" />
-                <div>
-                  <p class="eyebrow text-xs font-semibold uppercase text-[#b08356]">01 — Outdoor ceremony</p>
-                  <h3 class="mt-3 font-serif text-2xl font-bold md:text-3xl">The Skyline Terrace</h3>
-                  <p class="mt-4 leading-relaxed text-[#5a4b3f]">
-                    An open-air deck facing the downtown skyline. Sunset lands behind the buildings around
-                    7:40 in the spring, which is why most of our couples put their ceremony there.
-                    Seats 120, or holds 150 standing for cocktail hour.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Space 2 -->
-              <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
-                <img src="assets/Loft%20Assets/event%20space%20outdoor%20intimate.jpg" alt="The String-Lit Courtyard" class="h-64 w-full rounded-2xl object-cover shadow-sm md:order-2 md:h-80" />
-                <div class="md:order-1">
-                  <p class="eyebrow text-xs font-semibold uppercase text-[#b08356]">02 — Cocktail hour</p>
-                  <h3 class="mt-3 font-serif text-2xl font-bold md:text-3xl">The String-Lit Courtyard</h3>
-                  <p class="mt-4 leading-relaxed text-[#5a4b3f]">
-                    Private, walled and strung end to end with café lights, under a canopy of trees. It's the
-                    quiet corner of the property — where cocktail hour lands, and where the first look and
-                    the family portraits usually happen even when the ceremony is somewhere else.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Space 3 -->
-              <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
-                <img src="assets/Loft%20Assets/Event%20space.jpg" alt="The Loft" class="h-64 w-full rounded-2xl object-cover shadow-sm md:h-80" />
-                <div>
-                  <p class="eyebrow text-xs font-semibold uppercase text-[#b08356]">03 — Dinner &amp; reception</p>
-                  <h3 class="mt-3 font-serif text-2xl font-bold md:text-3xl">The Loft</h3>
-                  <p class="mt-4 leading-relaxed text-[#5a4b3f]">
-                    Exposed brick, timber beams and tall windows. Climate-controlled, so it doubles as
-                    the rain plan for any outdoor ceremony at no extra charge. Seats 120 at rounds with
-                    room left for a head table and a band.
-                  </p>
-                </div>
-              </div>
-
-              <!-- Space 4 -->
-              <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
-                <img src="assets/Loft%20Assets/dance%20floor.jpg" alt="The Dance Hall" class="h-64 w-full rounded-2xl object-cover shadow-sm md:order-2 md:h-80" />
-                <div class="md:order-1">
-                  <p class="eyebrow text-xs font-semibold uppercase text-[#b08356]">04 — After dark</p>
-                  <h3 class="mt-3 font-serif text-2xl font-bold md:text-3xl">The Dance Hall</h3>
-                  <p class="mt-4 leading-relaxed text-[#5a4b3f]">
-                    A separate room with its own bar, sound system and lighting rig, so the party can get
-                    loud without pushing your grandparents out the door. Dinner stays civilized on one
-                    side of the wall; the dance floor runs until midnight on the other.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================= BUILT FOR PHOTOS ======================= -->
-        <section class="relative">
-          <img src="assets/Loft%20Assets/outdoor%20wedding.jpg" alt="A wedding portrait on the property" class="absolute inset-0 h-full w-full object-cover" />
-          <div class="absolute inset-0 bg-[#1a1a1a]/70"></div>
-          <div class="relative mx-auto w-full max-w-3xl px-6 py-20 text-center text-white md:py-28">
-            <p class="eyebrow text-xs font-semibold uppercase text-[#ffcf9a]">Designed by photographers</p>
-            <h2 class="mt-4 font-serif text-3xl font-bold leading-tight md:text-[2.75rem]">
-              Every angle here was built to be shot.
-            </h2>
-            <p class="mt-6 text-base leading-relaxed text-white/85 md:text-lg">
-              The property was laid out by working wedding photographers, so the light, the backdrops and
-              the sightlines were decided before the landscaping was. No parking lot in the background of
-              your first kiss, no fluorescent glare over dinner — just places that look the way you'll
-              want to remember them.
-            </p>
-            <a href="#gallery" class="mt-9 inline-block rounded-lg bg-white px-7 py-3.5 text-sm font-bold text-[#1a1a1a] hover:bg-[#fff5eb]">Browse the Gallery</a>
-          </div>
-        </section>
-
-        <!-- ======================= PACKAGES ======================= -->
-        <section id="packages" class="scroll-mt-20 py-16 md:py-24">
-          <div class="mx-auto w-full max-w-6xl px-6">
-            <div class="mx-auto max-w-2xl text-center">
-              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Packages &amp; pricing</p>
-              <h2 class="mt-4 font-serif text-3xl font-bold md:text-[2.75rem]">Published prices. No surprise line items.</h2>
-              <p class="mt-4 text-[#6b5c50]">
-                Everything below includes the full property, our day-of coordinator, tables, chairs,
-                linens and setup and teardown.
-              </p>
-            </div>
-
-            <div class="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-3">
-              <!-- Weekday -->
-              <div class="flex flex-col rounded-2xl border border-[#e5dbcf] bg-white p-8 shadow-sm">
-                <h3 class="font-serif text-xl font-bold">The Weekday Half Day</h3>
-                <p class="mt-2 text-sm text-[#6b5c50]">Monday – Thursday · 5 hours</p>
-                <p class="mt-6 font-serif text-4xl font-bold">$3,750</p>
-                <p class="mt-1 text-xs uppercase tracking-widest text-[#8a7c70]">Venue rental</p>
-                <ul class="mt-7 space-y-3 text-sm text-[#5a4b3f]">
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> All four spaces, exclusive use</li>
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Tables, chairs and linens</li>
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Day-of coordinator</li>
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Bring your own caterer and bar</li>
-                </ul>
-                <a href="#contact" class="mt-8 rounded-lg border border-[#1a1a1a] px-6 py-3 text-center text-sm font-bold hover:bg-[#fff5eb]">Check Availability</a>
-              </div>
-
-              <!-- All inclusive - featured -->
-              <div class="relative flex flex-col rounded-2xl border-2 border-[#eb7813] bg-[#fff9f2] p-8 shadow-lg lg:-mt-4 lg:mb-[-1rem]">
-                <span class="absolute -top-3 left-8 rounded-full bg-[#eb7813] px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-white">Most booked</span>
-                <h3 class="font-serif text-xl font-bold">The All-Inclusive Wedding Day</h3>
-                <p class="mt-2 text-sm text-[#6b5c50]">Up to 100 guests · 12 hours</p>
-                <p class="mt-6 font-serif text-4xl font-bold">$11,800</p>
-                <p class="mt-1 text-xs uppercase tracking-widest text-[#8a7c70]">Everything, one number</p>
-                <ul class="mt-7 space-y-3 text-sm text-[#5a4b3f]">
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Full-day access to the whole property</li>
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Plated or buffet catering and staff</li>
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Florals, centerpieces and ceremony decor</li>
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Hair and makeup for the couple</li>
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Bar service and bartenders</li>
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Coordinator from booking to send-off</li>
-                </ul>
-                <a href="#contact" class="mt-8 rounded-lg bg-[#eb7813] px-6 py-3 text-center text-sm font-bold text-white hover:bg-[#d36b11]">Check Your Date</a>
-              </div>
-
-              <!-- Celebrations -->
-              <div class="flex flex-col rounded-2xl border border-[#e5dbcf] bg-white p-8 shadow-sm">
-                <h3 class="font-serif text-xl font-bold">The Celebration Rental</h3>
-                <p class="mt-2 text-sm text-[#6b5c50]">Parties, corporate, shoots · 4 hour minimum</p>
-                <p class="mt-6 font-serif text-4xl font-bold">$450<span class="text-lg font-medium text-[#6b5c50]">/hr</span></p>
-                <p class="mt-1 text-xs uppercase tracking-widest text-[#8a7c70]">Non-wedding events</p>
-                <ul class="mt-7 space-y-3 text-sm text-[#5a4b3f]">
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Choose the loft, terrace or courtyard</li>
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> A/V, projector and sound included</li>
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> On-site event attendant</li>
-                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Photo and film rates on request</li>
-                </ul>
-                <a href="#contact" class="mt-8 rounded-lg border border-[#1a1a1a] px-6 py-3 text-center text-sm font-bold hover:bg-[#fff5eb]">Request a Quote</a>
-              </div>
-            </div>
-
-            <p class="mt-10 text-center text-sm text-[#6b5c50]">
-              Saturdays in October and April book roughly a year out. We're currently taking dates from
-              <span class="font-semibold text-[#1a1a1a]">September 2026</span> forward.
-            </p>
-          </div>
-        </section>
-
-        <!-- ======================= EVENT TYPES ======================= -->
-        <section id="events" class="scroll-mt-20 border-y border-[#efe4d8] bg-[#fff9f2] py-16 md:py-24">
-          <div class="mx-auto w-full max-w-6xl px-6">
-            <div class="mx-auto max-w-2xl text-center">
-              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Not only weddings</p>
-              <h2 class="mt-4 font-serif text-3xl font-bold md:text-[2.75rem]">What are you celebrating?</h2>
-              <p class="mt-4 text-[#6b5c50]">The same property, dressed for whatever the occasion is.</p>
-            </div>
-
-            <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                <div class="aspect-[4/3] overflow-hidden">
-                  <img src="assets/Loft%20Assets/wedding%20event.jpg" alt="Weddings and receptions" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                </div>
-                <div class="p-5">
-                  <div class="flex items-center justify-between">
-                    <h3 class="font-serif text-xl font-semibold">Weddings &amp; Receptions</h3>
-                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
-                  </div>
-                  <p class="mt-2 text-sm text-[#6b5c50]">Ceremony, dinner and dancing without leaving the property.</p>
-                </div>
-              </a>
-
-              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                <div class="aspect-[4/3] overflow-hidden">
-                  <img src="assets/Loft%20Assets/birthday%20party.jpg" alt="Birthday parties" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                </div>
-                <div class="p-5">
-                  <div class="flex items-center justify-between">
-                    <h3 class="font-serif text-xl font-semibold">Birthdays &amp; Quinces</h3>
-                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
-                  </div>
-                  <p class="mt-2 text-sm text-[#6b5c50]">Milestone parties with a real dance floor and a real bar.</p>
-                </div>
-              </a>
-
-              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                <div class="aspect-[4/3] overflow-hidden">
-                  <img src="assets/Loft%20Assets/private%20party.jpg" alt="Private parties" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                </div>
-                <div class="p-5">
-                  <div class="flex items-center justify-between">
-                    <h3 class="font-serif text-xl font-semibold">Private Parties</h3>
-                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
-                  </div>
-                  <p class="mt-2 text-sm text-[#6b5c50]">Showers, rehearsal dinners, anniversaries and reunions.</p>
-                </div>
-              </a>
-
-              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                <div class="aspect-[4/3] overflow-hidden">
-                  <img src="assets/Loft%20Assets/corpo%20party.jpg" alt="Corporate events" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                </div>
-                <div class="p-5">
-                  <div class="flex items-center justify-between">
-                    <h3 class="font-serif text-xl font-semibold">Corporate Events</h3>
-                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
-                  </div>
-                  <p class="mt-2 text-sm text-[#6b5c50]">Offsites, holiday parties and launches with A/V included.</p>
-                </div>
-              </a>
-
-              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                <div class="aspect-[4/3] overflow-hidden">
-                  <img src="assets/Loft%20Assets/fashionshow.jpg" alt="Fashion shows" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                </div>
-                <div class="p-5">
-                  <div class="flex items-center justify-between">
-                    <h3 class="font-serif text-xl font-semibold">Fashion Shows</h3>
-                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
-                  </div>
-                  <p class="mt-2 text-sm text-[#6b5c50]">A long runway line, riggable lighting and a green room.</p>
-                </div>
-              </a>
-
-              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                <div class="aspect-[4/3] overflow-hidden">
-                  <img src="assets/Loft%20Assets/photoshoot.jpg" alt="Photo and film shoots" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                </div>
-                <div class="p-5">
-                  <div class="flex items-center justify-between">
-                    <h3 class="font-serif text-xl font-semibold">Photo &amp; Film Shoots</h3>
-                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
-                  </div>
-                  <p class="mt-2 text-sm text-[#6b5c50]">Four backdrops on one lot, with hourly weekday rates.</p>
-                </div>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================= REVIEWS ======================= -->
-        <section id="reviews" class="scroll-mt-20 py-16 md:py-24">
-          <div class="mx-auto w-full max-w-6xl px-6">
-            <div class="mx-auto max-w-2xl text-center">
-              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">What couples say</p>
-              <h2 class="mt-4 font-serif text-3xl font-bold md:text-[2.75rem]">"Dallas's hidden gem."</h2>
-            </div>
-
-            <div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
-              <figure class="rounded-2xl border border-[#e5dbcf] bg-[#fff9f2] p-7">
-                <div class="text-[#eb7813]">★★★★★</div>
-                <blockquote class="mt-4 leading-relaxed text-[#3d332b]">
-                  "Truly Dallas's hidden gem. The property is gorgeous — a terrace for the ceremony, a
-                  courtyard under string lights for cocktails, a separate room for dancing, and about six
-                  spots we didn't expect where the photos came out perfect."
-                </blockquote>
-                <figcaption class="mt-6 text-sm font-semibold text-[#6b5c50]">Marisa &amp; Dev · October 2025</figcaption>
-              </figure>
-
-              <figure class="rounded-2xl border border-[#e5dbcf] bg-[#fff9f2] p-7">
-                <div class="text-[#eb7813]">★★★★★</div>
-                <blockquote class="mt-4 leading-relaxed text-[#3d332b]">
-                  "My daughter had her wedding here and every part of it was beautiful. The owners went
-                  out of their way to make sure she got the day she'd been picturing. I'm still grateful
-                  months later."
-                </blockquote>
-                <figcaption class="mt-6 text-sm font-semibold text-[#6b5c50]">Angela R. · Mother of the bride</figcaption>
-              </figure>
-
-              <figure class="rounded-2xl border border-[#e5dbcf] bg-[#fff9f2] p-7">
-                <div class="text-[#eb7813]">★★★★★</div>
-                <blockquote class="mt-4 leading-relaxed text-[#3d332b]">
-                  "We wanted 70 people and a short, warm night — not a ballroom. This was the only place
-                  in the city that priced that honestly and then actually delivered it. Rain moved us
-                  inside and nobody even noticed."
-                </blockquote>
-                <figcaption class="mt-6 text-sm font-semibold text-[#6b5c50]">Chris &amp; Tomás · April 2026</figcaption>
-              </figure>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================= GALLERY ======================= -->
-        <section id="gallery" class="scroll-mt-20 border-y border-[#efe4d8] bg-[#fff9f2] py-16 md:py-24">
-          <div class="mx-auto w-full max-w-6xl px-6">
-            <div class="flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Real days here</p>
-                <h2 class="mt-3 font-serif text-3xl font-bold md:text-[2.75rem]">Gallery</h2>
-              </div>
-              <a href="#contact" class="text-sm font-bold text-[#eb7813] hover:underline">Book a Tour →</a>
-            </div>
-
-            <div class="relative mt-10">
-              <button id="galleryPrev" type="button" aria-label="Previous"
-                class="absolute left-2 top-1/2 z-10 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/95 text-[#1a1a1a] shadow-md ring-1 ring-[#e5dbcf] transition hover:bg-white hover:text-[#eb7813] md:left-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-              </button>
-              <button id="galleryNext" type="button" aria-label="Next"
-                class="absolute right-2 top-1/2 z-10 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/95 text-[#1a1a1a] shadow-md ring-1 ring-[#e5dbcf] transition hover:bg-white hover:text-[#eb7813] md:right-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              </button>
-
-              <div id="galleryTrack"
-                class="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2"
-                style="scrollbar-width: none; -ms-overflow-style: none;">
-                <img src="assets/Loft%20Assets/event%20space%20intimate%20best%20pic.jpg" alt="Intimate ceremony setup" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/Event%20space.jpg" alt="The loft set for dinner" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/event%20space%20night.jpg" alt="The loft at night" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/event%20space%20outdoor%20intimate.jpg" alt="Outdoor intimate seating" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/outdoor%20view%20with%20dallas%20in%20bg.jpg" alt="Terrace with skyline view" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/wedding%20event.jpg" alt="Wedding reception" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/wedding%20event%202.jpg" alt="Wedding reception detail" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/outdoor%20wedding.jpg" alt="Outdoor ceremony" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/birthday%20party.jpg" alt="Birthday party" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/birthday%20party%202.jpg" alt="Birthday party" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/birthday%20party%203.jpg" alt="Birthday party" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/private%20party.jpg" alt="Private party" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/corpo%20party.jpg" alt="Corporate event" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/corpo%20party%202.jpg" alt="Corporate event" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/dance%20floor.jpg" alt="Dance floor" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/dance%20floor%202.jpg" alt="Dance floor" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/fashionshow.jpg" alt="Fashion show" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-                <img src="assets/Loft%20Assets/photoshoot.jpg" alt="Photo shoot" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================= FAQ ======================= -->
-        <section id="faq" class="scroll-mt-20 py-16 md:py-24">
-          <div class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-6 lg:grid-cols-[0.8fr_1.2fr]">
-            <div>
-              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Good to know</p>
-              <h2 class="mt-4 font-serif text-3xl font-bold md:text-4xl">Questions we get every week.</h2>
-              <p class="mt-5 leading-relaxed text-[#5a4b3f]">
-                Still not covered? Ask our concierge in the corner of this page — it answers day and
-                night, and it can check dates for you.
-              </p>
-            </div>
-
-            <div class="divide-y divide-[#e5dbcf] border-y border-[#e5dbcf]">
-              <details class="group py-5">
-                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
-                  How many guests can you hold?
-                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
-                </summary>
-                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
-                  120 seated for dinner, 150 standing for a cocktail-style event. We don't book above
-                  that — the property is built for intimate days, not ballroom crowds.
-                </p>
-              </details>
-
-              <details class="group py-5">
-                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
-                  What happens if it rains?
-                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
-                </summary>
-                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
-                  The Loft is your rain plan and it's included at no extra cost. We make the call with
-                  you the morning of, and our team can flip an outdoor ceremony indoors in about an hour.
-                </p>
-              </details>
-
-              <details class="group py-5">
-                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
-                  Can we bring our own caterer and bar?
-                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
-                </summary>
-                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
-                  Yes on the rental packages — any licensed and insured caterer is welcome, and we have a
-                  preferred list if you'd rather not shop. Alcohol has to be served by licensed
-                  bartenders, ours or yours.
-                </p>
-              </details>
-
-              <details class="group py-5">
-                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
-                  Is there parking?
-                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
-                </summary>
-                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
-                  Free on-site parking for about 60 cars, plus a covered drop-off at the front gate.
-                  Rideshare pickup is right at the entrance, which matters at midnight.
-                </p>
-              </details>
-
-              <details class="group py-5">
-                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
-                  How far out should we book?
-                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
-                </summary>
-                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
-                  Fall and spring Saturdays go roughly a year ahead. Weekdays and winter dates are often
-                  open a few months out, and they're the best value we offer.
-                </p>
-              </details>
-
-              <details class="group py-5">
-                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
-                  What holds a date?
-                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
-                </summary>
-                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
-                  A signed agreement and 25% down. The balance is split into two payments, with the last
-                  one due 30 days before the event.
-                </p>
-              </details>
-            </div>
-          </div>
-        </section>
-
-        <!-- ======================= CONTACT ======================= -->
-        <section id="contact" class="scroll-mt-20 border-t border-[#efe4d8] bg-[#fff5eb] py-16 md:py-24">
-          <div class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-6 lg:grid-cols-2">
-            <div>
-              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">For information or a showing</p>
-              <h2 class="mt-4 font-serif text-3xl font-bold leading-tight md:text-[2.75rem]">
-                Come see it in person.
-              </h2>
-              <p class="mt-5 leading-relaxed text-[#5a4b3f]">
-                Tours run Tuesday through Saturday and take about thirty minutes. Tell us your date and
-                headcount and we'll come back with real availability and a real number — usually the
-                same day.
-              </p>
-
-              <dl class="mt-9 space-y-5 text-sm">
-                <div>
-                  <dt class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Email</dt>
-                  <dd class="mt-1"><a href="mailto:info@ascentisweddings.com" class="text-base font-semibold text-[#eb7813] hover:underline">info@ascentisweddings.com</a></dd>
-                </div>
-                <div>
-                  <dt class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Phone</dt>
-                  <dd class="mt-1"><a href="tel:2145550123" class="text-base font-semibold hover:text-[#eb7813]">214.555.0123</a></dd>
-                </div>
-                <div>
-                  <dt class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Address</dt>
-                  <dd class="mt-1 text-base font-semibold">1412 Carlton Place, Dallas, TX 75207</dd>
-                </div>
-                <div>
-                  <dt class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Tour hours</dt>
-                  <dd class="mt-1 text-base font-semibold">Tue – Sat, 10am – 6pm</dd>
-                </div>
-              </dl>
-            </div>
-
-            <form
-              class="rounded-2xl border border-[#e5dbcf] bg-white p-7 shadow-sm md:p-8"
-              action="mailto:info@ascentisweddings.com"
-              method="post"
-              enctype="text/plain"
-            >
-              <h3 class="font-serif text-xl font-bold">Check your date</h3>
-              <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <label class="block">
-                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Name</span>
-                  <input type="text" name="name" required class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]" />
-                </label>
-                <label class="block">
-                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Email</span>
-                  <input type="email" name="email" required class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]" />
-                </label>
-                <label class="block">
-                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Event date</span>
-                  <input type="date" name="date" class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]" />
-                </label>
-                <label class="block">
-                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Guest count</span>
-                  <input type="number" name="guests" min="1" max="150" class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]" />
-                </label>
-                <label class="block sm:col-span-2">
-                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Event type</span>
-                  <select name="type" class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]">
-                    <option>Wedding</option>
-                    <option>Birthday or quinceañera</option>
-                    <option>Private party</option>
-                    <option>Corporate event</option>
-                    <option>Photo or film shoot</option>
-                    <option>Something else</option>
-                  </select>
-                </label>
-                <label class="block sm:col-span-2">
-                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Anything we should know?</span>
-                  <textarea name="message" rows="4" class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]"></textarea>
-                </label>
-              </div>
-              <button type="submit" class="mt-6 w-full rounded-lg bg-[#eb7813] px-6 py-3.5 text-sm font-bold text-white hover:bg-[#d36b11]">Send Inquiry</button>
-              <p class="mt-3 text-center text-xs text-[#8a7c70]">Or ask our concierge in the corner — it replies instantly.</p>
-            </form>
-          </div>
-        </section>
-      </main>
-
-      <!-- ======================= FOOTER ======================= -->
-      <footer class="border-t border-[#e5dbcf] bg-white py-10">
-        <div class="mx-auto w-full max-w-6xl px-6">
-          <div class="flex flex-col items-center justify-between gap-6 text-sm text-[#5a4b3f] md:flex-row">
-            <div class="text-center md:text-left">
-              <p class="font-serif text-base font-semibold text-[#1a1a1a]">Ascentis Weddings</p>
-              <p class="mt-1">1412 Carlton Place · Dallas, TX 75207</p>
-            </div>
-            <nav class="flex flex-wrap items-center justify-center gap-5">
-              <a href="#venue" class="font-semibold hover:text-[#eb7813]">The Venue</a>
-              <a href="#packages" class="font-semibold hover:text-[#eb7813]">Packages</a>
-              <a href="#gallery" class="font-semibold hover:text-[#eb7813]">Gallery</a>
-              <a href="#faq" class="font-semibold hover:text-[#eb7813]">FAQ</a>
-              <a href="#contact" class="font-semibold hover:text-[#eb7813]">Contact</a>
-            </nav>
-            <div class="flex items-center gap-3">
-              <a href="#" aria-label="Instagram" class="rounded-full border border-[#d4c6b8] px-2.5 py-1.5 hover:bg-[#fff5eb]">IG</a>
-              <a href="#" aria-label="Facebook" class="rounded-full border border-[#d4c6b8] px-2.5 py-1.5 hover:bg-[#fff5eb]">FB</a>
-              <a href="#" aria-label="TikTok" class="rounded-full border border-[#d4c6b8] px-2.5 py-1.5 hover:bg-[#fff5eb]">TT</a>
-            </div>
-          </div>
-          <p class="mt-8 text-center text-xs text-[#8a7c70]">© 2026 Ascentis Weddings. All rights reserved.</p>
-        </div>
-      </footer>
+    <div class="rule-strip">
+      <div class="wrap rule-strip__inner">
+        <span><b>50</b> guests, capped</span>
+        <span><b>4</b> ceremony sites</span>
+        <span><b>1</b> acre on the creek</span>
+        <span><b>2 mi</b> from downtown</span>
+        <span>From <b>$7,000</b></span>
+      </div>
     </div>
 
-    <button id="scrollTopBtn" title="Go to top">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
-      </svg>
-    </button>
+    <!-- ==================== THESIS ==================== -->
+    <section class="band">
+      <div class="wrap thesis__grid reveal">
+        <div>
+          <p class="eyebrow">The short version</p>
+          <p class="pull">
+            Couples who want their wedding to look like every Pinterest board
+            <span>don't usually find us.</span> The ones who do tend to fall hard.
+          </p>
+        </div>
+        <div>
+          <p class="lede">
+            The Maple Grove is a private garden beside Smith Mill Creek, planted and shaped over years
+            into four distinct places to stand and say vows. The property was designed by a wedding
+            photographer, which is why every angle already works before a single flower arrives.
+          </p>
+          <p class="lede">
+            We cap every wedding at fifty guests. Not because the lawn runs out, but because past fifty
+            a wedding stops being a gathering and starts being a production. At fifty you get to talk to
+            everyone who came.
+          </p>
+          <p class="lede">
+            Forest and woodsy, Hindu, fantasy, deliberately off-kilter — the gardens have hosted all of
+            it. Bring the wedding you actually want.
+          </p>
+        </div>
+      </div>
+    </section>
 
-    <script src="script/script.js"></script>
+    <!-- ==================== SIGNATURE: PROPERTY MAP ==================== -->
+    <section class="band band--light" id="gardens" style="padding-top: 0">
+      <div style="height: 1px; background: rgba(18,33,26,0.12)"></div>
+      <div class="wrap" style="padding-top: clamp(4.5rem, 10vw, 8rem)">
+        <div class="plot__head reveal">
+          <div>
+            <p class="eyebrow">The grounds</p>
+            <h2 style="font-size: clamp(2rem, 4.6vw, 3.25rem); max-width: 18ch">
+              Four ceremony sites, one walk apart
+            </h2>
+          </div>
+          <p class="plot__hint">Select a site on the plan</p>
+        </div>
+
+        <div class="plot__grid">
+          <!-- ---- the plan ---- -->
+          <div class="plot__map reveal" aria-hidden="true">
+            <svg viewBox="0 0 820 600" role="img">
+              <defs>
+                <pattern id="grass" width="16" height="16" patternUnits="userSpaceOnUse">
+                  <circle cx="3" cy="3" r="0.8" fill="rgba(143,183,155,0.16)" />
+                  <circle cx="11" cy="9" r="0.8" fill="rgba(143,183,155,0.10)" />
+                </pattern>
+                <radialGradient id="canopy">
+                  <stop offset="0%" stop-color="#2f5540" />
+                  <stop offset="100%" stop-color="#1d3527" />
+                </radialGradient>
+              </defs>
+
+              <!-- property boundary -->
+              <path
+                d="M60 62 L742 44 L780 470 L560 556 L120 536 Z"
+                fill="url(#grass)"
+                stroke="rgba(242,237,227,0.28)"
+                stroke-width="1.5"
+              />
+
+              <!-- the creek -->
+              <path
+                d="M40 486 C 190 452, 250 546, 400 512 C 545 480, 640 566, 800 520"
+                fill="none"
+                stroke="#4a7f96"
+                stroke-width="15"
+                stroke-linecap="round"
+                opacity="0.55"
+              />
+              <text x="66" y="466" font-family="DM Mono, monospace" font-size="10" letter-spacing="1.6" fill="#6f9fb2">SMITH MILL CREEK</text>
+
+              <!-- tree canopies -->
+              <g opacity="0.85">
+                <circle cx="150" cy="150" r="52" fill="url(#canopy)" />
+                <circle cx="255" cy="105" r="34" fill="url(#canopy)" />
+                <circle cx="676" cy="150" r="46" fill="url(#canopy)" />
+                <circle cx="612" cy="96" r="30" fill="url(#canopy)" />
+                <circle cx="330" cy="452" r="42" fill="url(#canopy)" />
+                <circle cx="238" cy="418" r="30" fill="url(#canopy)" />
+                <circle cx="712" cy="352" r="38" fill="url(#canopy)" />
+              </g>
+
+              <!-- paths -->
+              <path
+                d="M400 556 L400 400 M400 400 C 400 330, 250 320, 205 226 M400 400 C 400 330, 560 330, 636 236 M400 400 L268 452 M400 400 C 470 392, 560 400, 640 386"
+                fill="none"
+                stroke="rgba(242,237,227,0.24)"
+                stroke-width="2.5"
+                stroke-dasharray="5 6"
+                stroke-linecap="round"
+              />
+
+              <!-- pavilion + reception tent -->
+              <g>
+                <rect x="352" y="368" width="96" height="62" rx="3" fill="#24402f" stroke="rgba(242,237,227,0.34)" stroke-width="1.25" />
+                <path d="M352 368 L400 336 L448 368 Z" fill="#2f5540" stroke="rgba(242,237,227,0.34)" stroke-width="1.25" />
+                <text x="400" y="452" text-anchor="middle" font-family="DM Mono, monospace" font-size="10" letter-spacing="1.4" fill="#8fb79b">
+                  PAVILION &amp; TENT
+                </text>
+              </g>
+
+              <!-- arrival -->
+              <g opacity="0.75">
+                <rect x="596" y="486" width="112" height="40" rx="3" fill="none" stroke="rgba(242,237,227,0.24)" stroke-width="1.25" stroke-dasharray="4 4" />
+                <text x="652" y="511" text-anchor="middle" font-family="DM Mono, monospace" font-size="9" letter-spacing="1.4" fill="#7d8a80">ARRIVAL</text>
+              </g>
+
+              <!-- markers -->
+              <g class="marker is-active" data-site="japanese" tabindex="0" role="button" aria-label="The Japanese Garden">
+                <circle class="marker__hit" cx="182" cy="214" r="42" />
+                <circle class="marker__ring" cx="182" cy="214" r="22" />
+                <circle class="marker__dot" cx="182" cy="214" r="6.5" />
+                <text class="marker__label" x="182" y="256" text-anchor="middle">Japanese Garden</text>
+              </g>
+              <g class="marker" data-site="gazebo" tabindex="0" role="button" aria-label="The Gazebo">
+                <circle class="marker__hit" cx="248" cy="470" r="42" />
+                <circle class="marker__ring" cx="248" cy="470" r="22" />
+                <circle class="marker__dot" cx="248" cy="470" r="6.5" />
+                <text class="marker__label" x="248" y="512" text-anchor="middle">Gazebo</text>
+              </g>
+              <g class="marker" data-site="pergola" tabindex="0" role="button" aria-label="The Pergola">
+                <circle class="marker__hit" cx="654" cy="382" r="42" />
+                <circle class="marker__ring" cx="654" cy="382" r="22" />
+                <circle class="marker__dot" cx="654" cy="382" r="6.5" />
+                <text class="marker__label" x="654" y="424" text-anchor="middle">Pergola</text>
+              </g>
+              <g class="marker" data-site="burton" tabindex="0" role="button" aria-label="The Tim Burton Spot">
+                <circle class="marker__hit" cx="652" cy="196" r="42" />
+                <circle class="marker__ring" cx="652" cy="196" r="22" />
+                <circle class="marker__dot" cx="652" cy="196" r="6.5" />
+                <text class="marker__label" x="652" y="238" text-anchor="middle">The Tim Burton Spot</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- ---- detail ---- -->
+          <div class="reveal">
+            <div class="site-tabs" role="group" aria-label="Choose a ceremony site">
+              <button type="button" data-tab="japanese" aria-pressed="true">Japanese Garden</button>
+              <button type="button" data-tab="gazebo" aria-pressed="false">Gazebo</button>
+              <button type="button" data-tab="pergola" aria-pressed="false">Pergola</button>
+              <button type="button" data-tab="burton" aria-pressed="false">Tim Burton Spot</button>
+            </div>
+
+            <div class="site-card" id="siteCard" aria-live="polite">
+              <p class="site-card__cap" id="siteCap">Seats up to 50</p>
+              <h3 class="site-card__name" id="siteName">The Japanese Garden</h3>
+              <div class="site-card__body" id="siteBody"></div>
+              <p class="site-card__note" id="siteNote"></p>
+              <div class="frame site-card__photo" id="sitePhoto" data-label=""></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PACKAGES ==================== -->
+    <section class="band band--light" id="packages" style="background: #e9e3d6">
+      <div class="wrap">
+        <div class="reveal" style="margin-bottom: 3rem">
+          <p class="eyebrow">Weddings</p>
+          <h2 style="font-size: clamp(2rem, 4.6vw, 3.25rem); max-width: 20ch">Three ways to book the day</h2>
+          <p class="lede" style="margin-top: 1rem">
+            Every package includes the whole property for the full day — all four ceremony sites, the
+            pavilion, the bridal suite, and staff who have done this a few hundred times.
+          </p>
+        </div>
+
+        <div class="pkgs reveal">
+          <!-- basic -->
+          <article class="pkg">
+            <p class="pkg__tag">Bring your own vendors</p>
+            <h3 class="pkg__name">Full-Day Rental</h3>
+            <p class="pkg__price">$7,000</p>
+            <p class="pkg__unit">Up to 50 guests</p>
+            <ul class="pkg__list">
+              <li>Full-day access to the venue</li>
+              <li>All four outdoor ceremony sites</li>
+              <li>On-site coordination and staff</li>
+              <li>Bridal suite</li>
+              <li>Pavilion for the after party</li>
+              <li>Shuttle, parking, and security</li>
+            </ul>
+            <div class="pkg__foot">
+              <p class="pkg__byo">
+                You arrange: officiant, photographer, bartender, caterer, rentals, tent, florals,
+                décor, and vendor coordination.
+              </p>
+              <a class="btn btn--ghost" href="#visit">Check a date</a>
+            </div>
+          </article>
+
+          <!-- complete -->
+          <article class="pkg pkg--feature">
+            <p class="pkg__tag">Most booked</p>
+            <h3 class="pkg__name">The Complete Wedding</h3>
+            <p class="pkg__price">$12,500</p>
+            <p class="pkg__unit">Up to 50 guests · $250 a head</p>
+            <ul class="pkg__list">
+              <li>Everything in the Full-Day Rental</li>
+              <li>Officiant</li>
+              <li>Professional photographer, 6 hours</li>
+              <li>Bartender</li>
+              <li>Tables, chairs, linens, glassware, place settings</li>
+              <li>Tent over the reception dinner</li>
+              <li>Vendor consultation and timeline planning</li>
+            </ul>
+            <div class="pkg__foot">
+              <p class="pkg__byo">
+                You arrange: catering and beverages, florals, décor, hair and makeup.
+              </p>
+              <a class="btn btn--solid" href="#visit">Check a date</a>
+            </div>
+          </article>
+
+          <!-- weekday -->
+          <article class="pkg">
+            <p class="pkg__tag">Monday – Thursday</p>
+            <h3 class="pkg__name">Brunch or Matinee</h3>
+            <p class="pkg__price">$8,500</p>
+            <p class="pkg__unit">Up to 30 guests</p>
+            <ul class="pkg__list">
+              <li>Brunch seating, 8:00 am – 2:30 pm</li>
+              <li>Matinee seating, 3:00 pm – 9:30 pm</li>
+              <li>Professional photographer, 2 hours</li>
+              <li>Officiant</li>
+              <li>Bartender</li>
+              <li>On-site coordinator and staff</li>
+              <li>Vendor and timeline consultation</li>
+            </ul>
+            <div class="pkg__foot">
+              <p class="pkg__byo">
+                You arrange: catering and beverages, florals, décor, hair and makeup.
+              </p>
+              <a class="btn btn--ghost" href="#visit">Check a date</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ELOPEMENTS ==================== -->
+    <section class="band" id="elopements">
+      <div class="wrap">
+        <div class="reveal" style="margin-bottom: 2.75rem">
+          <p class="eyebrow">Elopements</p>
+          <h2 style="font-size: clamp(2rem, 4.6vw, 3.25rem); max-width: 22ch">
+            Two of you, ten chairs, no hiking boots
+          </h2>
+          <p class="lede" style="margin-top: 1rem">
+            Most Asheville elopements involve a trailhead, a permit, and a mile of uphill in your good
+            shoes. Ours is two miles from downtown, and someone else handles the rest.
+          </p>
+        </div>
+
+        <div class="duo reveal">
+          <article class="elope">
+            <h3 class="elope__name">Luxury Elopement</h3>
+            <p class="elope__meta">2–3 hours · up to 10 guests</p>
+            <ul>
+              <li>Officiant</li>
+              <li>Professional photographer</li>
+              <li>Hair and makeup in the bridal suite</li>
+              <li>Your choice of ceremony site</li>
+              <li>60-minute photo session</li>
+              <li>Charcuterie and a bottle of wine</li>
+              <li>Chilled champagne</li>
+              <li>4″ amaretto cheesecake</li>
+            </ul>
+          </article>
+
+          <article class="elope">
+            <h3 class="elope__name">Pampered Elopement</h3>
+            <p class="elope__meta">3–4 hours · up to 10 guests</p>
+            <ul>
+              <li>Everything in the Luxury Elopement</li>
+              <li>90-minute photo session</li>
+              <li>Gourmet dinner for two by a personal chef</li>
+              <li>Commemorative champagne flutes</li>
+              <li>Up to 12 may attend; extra dinner guests billed separately</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PRIVATE EVENTS ==================== -->
+    <section class="band" style="padding-top: 0">
+      <div class="wrap">
+        <div class="reveal">
+          <p class="eyebrow">Private events</p>
+          <h2 style="font-size: clamp(1.75rem, 3.6vw, 2.5rem); max-width: 24ch">
+            The gardens do more than weddings
+          </h2>
+          <div class="events">
+            <div class="event">
+              <div class="event__rule"></div>
+              <h3>Birthdays</h3>
+              <p>A scenic, private garden for the milestone ones. Available year-round.</p>
+            </div>
+            <div class="event">
+              <div class="event__rule"></div>
+              <h3>Corporate</h3>
+              <p>Offsites and team days in a setting that gets people talking to each other.</p>
+            </div>
+            <div class="event">
+              <div class="event__rule"></div>
+              <h3>Anniversaries</h3>
+              <p>The same gardens, the same fifty people, a few decades later.</p>
+            </div>
+            <div class="event">
+              <div class="event__rule"></div>
+              <h3>Family reunions</h3>
+              <p>Open-air and sheltered space both, so the weather doesn't decide anything.</p>
+            </div>
+          </div>
+          <p style="margin-top: 2rem">
+            <button class="btn btn--ghost" type="button" data-open-chat>Ask about private event pricing</button>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TESTIMONIALS ==================== -->
+    <section class="band band--light">
+      <div class="wrap">
+        <p class="eyebrow reveal">In their words</p>
+        <div class="quotes reveal" style="margin-top: 2rem">
+          <figure class="quote" style="margin: 0">
+            <p>"Everything was more than I could have imagined. They made everything so easy and stress free."</p>
+            <cite>Samantha E. — bride</cite>
+          </figure>
+          <figure class="quote" style="margin: 0">
+            <p>"The grounds are absolutely beautiful. Asheville's hidden gem."</p>
+            <cite>Holly T. — mother of the groom</cite>
+          </figure>
+          <figure class="quote" style="margin: 0">
+            <p>"They went out of their way to ensure my daughter had the wedding of her dreams."</p>
+            <cite>Sherri R. — mother of the bride</cite>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== FAQ ==================== -->
+    <section class="band" id="questions">
+      <div class="wrap">
+        <div class="reveal" style="margin-bottom: 2rem">
+          <p class="eyebrow">Before you ask</p>
+          <h2 style="font-size: clamp(2rem, 4.6vw, 3.25rem); max-width: 16ch">The usual questions</h2>
+        </div>
+        <div class="faq reveal">
+          <details open>
+            <summary>Can we go over fifty guests?</summary>
+            <p>
+              No. Fifty is a hard cap on every package, and the Pergola site seats thirty. It's the
+              constraint the whole property is built around — the parking, the tent, the staffing
+              ratio, and the reason the day feels the way it does.
+            </p>
+          </details>
+          <details>
+            <summary>What happens if it rains?</summary>
+            <p>
+              Asheville sits in a temperate rainforest, so we plan for it rather than hope. The
+              reception dinner is tented in the Complete Wedding package, the pavilion covers the after
+              party, and your coordinator will hold a weather call with you the week of.
+            </p>
+          </details>
+          <details>
+            <summary>Do we have to use your vendors?</summary>
+            <p>
+              No. The Full-Day Rental is deliberately bare so you can bring your own team. We keep a
+              preferred vendor list for caterers, florists, bakers, and hair and makeup, and we'll send
+              it on request.
+            </p>
+          </details>
+          <details>
+            <summary>We're planning from out of state. Does that work?</summary>
+            <p>
+              Most of our couples are. The whole booking can happen remotely — video walkthrough of the
+              gardens, vendor selection over email, and a timeline consultation before you fly in.
+            </p>
+          </details>
+          <details>
+            <summary>What does a marriage license take in North Carolina?</summary>
+            <p>
+              You apply in person at the Buncombe County Register of Deeds, it costs $60, and it's valid
+              for 60 days. Both of you need to be there with photo ID. There's no waiting period, so
+              couples often handle it the day before.
+            </p>
+          </details>
+          <details>
+            <summary>Can we hold a themed or non-traditional ceremony?</summary>
+            <p>
+              Gladly. The gardens have hosted forest and woodsy weddings, Hindu ceremonies, fantasy
+              themes, and a number of deliberately strange ones. The Tim Burton Spot exists for a reason.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VISIT ==================== -->
+    <section class="band band--light" id="visit">
+      <div class="wrap visit__grid">
+        <div class="reveal">
+          <p class="eyebrow">Visit</p>
+          <h2 style="font-size: clamp(2rem, 4.6vw, 3.25rem); max-width: 14ch">Come see the gardens</h2>
+          <p class="lede" style="margin-top: 1rem">
+            Tours run by appointment, most days. Tell us roughly when you're thinking and we'll come
+            back with the dates still open that season.
+          </p>
+          <ul class="facts">
+            <li><span class="k">Address</span><span class="v">47 Carlton Place<br />Asheville, NC 28806</span></li>
+            <li><span class="k">Phone</span><span class="v"><a href="tel:+18282301700">(828) 230-1700</a></span></li>
+            <li><span class="k">Email</span><span class="v"><a href="mailto:info@maplegrovevenue.com">info@maplegrovevenue.com</a></span></li>
+            <li><span class="k">Getting here</span><span class="v">Two miles from downtown Asheville, 20 minutes from AVL airport</span></li>
+          </ul>
+        </div>
+
+        <div class="reveal">
+          <form class="form" id="inquiry" novalidate>
+            <div class="row">
+              <div class="field">
+                <label for="f-name">Your name</label>
+                <input id="f-name" name="name" type="text" autocomplete="name" />
+              </div>
+              <div class="field">
+                <label for="f-partner">Partner's name</label>
+                <input id="f-partner" name="partner" type="text" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="f-email">Email</label>
+                <input id="f-email" name="email" type="email" autocomplete="email" />
+              </div>
+              <div class="field">
+                <label for="f-phone">Phone</label>
+                <input id="f-phone" name="phone" type="tel" autocomplete="tel" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="f-date">Date you have in mind</label>
+                <input id="f-date" name="date" type="date" />
+              </div>
+              <div class="field">
+                <label for="f-guests">Guest count</label>
+                <select id="f-guests" name="guests">
+                  <option>Just the two of us</option>
+                  <option>Up to 10 — elopement</option>
+                  <option>10 to 30</option>
+                  <option selected>30 to 50</option>
+                  <option>More than 50</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="f-pkg">Package you're leaning toward</label>
+              <select id="f-pkg" name="package">
+                <option>The Complete Wedding — $12,500</option>
+                <option>Full-Day Rental — $7,000</option>
+                <option>Brunch or Matinee — $8,500</option>
+                <option>Luxury Elopement</option>
+                <option>Pampered Elopement</option>
+                <option>Private event</option>
+                <option>Not sure yet</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="f-msg">Anything else we should know</label>
+              <textarea id="f-msg" name="message" placeholder="Themes you're considering, questions about the sites, travel plans…"></textarea>
+            </div>
+            <button class="btn btn--solid" type="submit" style="width: 100%; justify-content: center">
+              Send the inquiry
+            </button>
+            <p class="form__note" id="formNote">
+              We reply within one business day. Prefer to just ask something quickly?
+              <button
+                type="button"
+                data-open-chat
+                style="background: none; border: 0; padding: 0; font: inherit; color: var(--maple); text-decoration: underline; cursor: pointer"
+              >
+                Ask the concierge.
+              </button>
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="foot">
+      <div class="wrap foot__inner">
+        <div class="brand">
+          <span class="brand__name">The Maple Grove</span>
+          <span class="brand__sub">at Smith Mill Creek · Asheville, NC</span>
+        </div>
+        <p>47 Carlton Place, Asheville, NC 28806 · (828) 230-1700</p>
+      </div>
+    </footer>
+
+    <!-- ==================== SCRIPTS ==================== -->
     <script>
-      // Mobile menu
       (function () {
-        var btn = document.getElementById('menuBtn');
-        var menu = document.getElementById('mobileMenu');
-        if (!btn || !menu) return;
-        btn.addEventListener('click', function () {
-          var open = menu.classList.toggle('hidden') === false;
-          btn.setAttribute('aria-expanded', String(open));
-        });
-        menu.addEventListener('click', function (e) {
-          if (e.target.tagName === 'A') {
-            menu.classList.add('hidden');
-            btn.setAttribute('aria-expanded', 'false');
-          }
-        });
-      })();
+        'use strict';
 
-      // Gallery carousel
-      (function () {
-        var track = document.getElementById('galleryTrack');
-        var prev = document.getElementById('galleryPrev');
-        var next = document.getElementById('galleryNext');
-        if (!track || !prev || !next) return;
-        function step() {
-          var first = track.querySelector('img');
-          if (!first) return track.clientWidth * 0.8;
-          var styles = window.getComputedStyle(track);
-          var gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
-          return first.getBoundingClientRect().width + gap;
+        /* ---------- ceremony site data ---------- */
+        var SITES = {
+          japanese: {
+            name: 'The Japanese Garden',
+            cap: 'Seats up to 50',
+            photo: 'assets/maple-grove/japanese-garden.webp',
+            body:
+              '<p>A world apart from the rest of the acre — moss-draped stone, Japanese maples, ' +
+              'crushed stone walkways and still water that reflects whatever the sky is doing. A ' +
+              'vine-covered moon gate stands at the head of the aisle.</p>' +
+              '<p>Paper and stone lanterns come on at dusk and turn the whole garden amber. Vows here ' +
+              'happen under a canopy of trees, with birdsong and not much else for accompaniment.</p>',
+            note:
+              'Spring blossoms, summer shade, amber and crimson through autumn, bare branches and ' +
+              'candlelight in winter. The garden is the décor — most couples add very little.'
+          },
+          gazebo: {
+            name: 'The Gazebo',
+            cap: 'Seats up to 50',
+            photo: 'assets/maple-grove/gazebo.webp',
+            body:
+              '<p>An ornate wrought iron gazebo beside the creek, standing in a grove of maple and ' +
+              'weeping cherry. Open, airy, and deliberately undecided — it has posts and rafters and ' +
+              'no opinion about what you hang from them.</p>' +
+              '<p>This is the site couples pick when they arrive with a clear vision. Floral ' +
+              'installations, lanterns, chandeliers, draped fabric, greenery, vines — it takes all of it.</p>',
+            note:
+              'The most photographed spot on the property, and the one that changes most between any ' +
+              'two weddings.'
+          },
+          pergola: {
+            name: 'The Pergola',
+            cap: 'Seats up to 30',
+            photo: 'assets/maple-grove/pergola.webp',
+            body:
+              '<p>A hand-built lattice pergola set into the forest edge, with moss underfoot and ' +
+              'cinnamon ferns swaying at shoulder height on every side. The overhead beams take ' +
+              'garland, draped cloth, lanterns and string lights.</p>' +
+              '<p>There are no distant vistas here. There is the garden, and the people you love ' +
+              'standing inside it.</p>',
+            note:
+              'Thirty guests, not fifty — and that is the point. At thirty the fairy garden wraps ' +
+              'around everyone and every face is close.'
+          },
+          burton: {
+            name: 'The Tim Burton Spot',
+            cap: 'Seats up to 50',
+            photo: 'assets/maple-grove/burton-spot.webp',
+            body:
+              '<p>Twisted trunks, hanging vines, and light that arrives at strange angles. It got its ' +
+              'name from a couple, it stuck, and we stopped fighting it.</p>' +
+              '<p>This is the corner of the property for weddings that were never going to be ' +
+              'traditional — the gothic, the theatrical, the deliberately off-kilter.</p>',
+            note:
+              'Best in late afternoon, when the light comes through sideways. Ask to see it before you ' +
+              'rule it out.'
+          }
+        };
+
+        var markers = document.querySelectorAll('.marker');
+        var tabs = document.querySelectorAll('[data-tab]');
+        var card = document.getElementById('siteCard');
+        var elName = document.getElementById('siteName');
+        var elCap = document.getElementById('siteCap');
+        var elBody = document.getElementById('siteBody');
+        var elNote = document.getElementById('siteNote');
+        var elPhoto = document.getElementById('sitePhoto');
+
+        function render(key) {
+          var s = SITES[key];
+          if (!s) return;
+
+          elName.textContent = s.name;
+          elCap.textContent = s.cap;
+          elBody.innerHTML = s.body;
+          elNote.textContent = s.note;
+
+          elPhoto.innerHTML = '';
+          elPhoto.classList.remove('is-loaded');
+          elPhoto.setAttribute('data-label', s.photo);
+          var img = new Image();
+          img.alt = s.name + ' at The Maple Grove';
+          img.onload = function () { elPhoto.classList.add('is-loaded'); };
+          img.onerror = function () { img.style.display = 'none'; };
+          img.src = s.photo;
+          elPhoto.appendChild(img);
+
+          markers.forEach(function (m) {
+            m.classList.toggle('is-active', m.getAttribute('data-site') === key);
+          });
+          tabs.forEach(function (t) {
+            t.setAttribute('aria-pressed', String(t.getAttribute('data-tab') === key));
+          });
+
+          card.classList.remove('is-swapping');
+          void card.offsetWidth; /* restart the animation */
+          card.classList.add('is-swapping');
         }
-        prev.addEventListener('click', function () { track.scrollBy({ left: -step(), behavior: 'smooth' }); });
-        next.addEventListener('click', function () { track.scrollBy({ left: step(), behavior: 'smooth' }); });
+
+        markers.forEach(function (m) {
+          var key = m.getAttribute('data-site');
+          m.addEventListener('click', function () { render(key); });
+          m.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); render(key); }
+          });
+        });
+        tabs.forEach(function (t) {
+          t.addEventListener('click', function () { render(t.getAttribute('data-tab')); });
+        });
+
+        render('japanese');
+
+        /* ---------- scroll reveals ---------- */
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var reveals = document.querySelectorAll('.reveal');
+
+        if (reduced || !('IntersectionObserver' in window)) {
+          reveals.forEach(function (el) { el.classList.add('in'); });
+        } else {
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add('in');
+                  io.unobserve(entry.target);
+                }
+              });
+            },
+            { rootMargin: '0px 0px -12% 0px', threshold: 0.06 }
+          );
+          reveals.forEach(function (el) { io.observe(el); });
+        }
+
+        /* ---------- inquiry form (demo — nothing is sent) ---------- */
+        var form = document.getElementById('inquiry');
+        var note = document.getElementById('formNote');
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var name = document.getElementById('f-name').value.trim();
+          note.textContent = name
+            ? 'Thanks, ' + name + '. This is a demo form — nothing was sent. Wire it to the venue inbox to go live.'
+            : 'This is a demo form — nothing was sent. Wire it to the venue inbox to go live.';
+          note.style.color = 'var(--maple)';
+        });
+
+        /* ---------- concierge open buttons ---------- */
+        document.querySelectorAll('[data-open-chat]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var toggle = document.querySelector('.chat-window-toggle, .chat-window-wrapper button');
+            if (toggle) toggle.click();
+          });
+        });
       })();
     </script>
 
     <script type="module">
-      import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+      import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat@1.29.1/dist/chat.bundle.es.js';
 
       createChat({
-        webhookUrl: 'https://primary-production-4bb5.up.railway.app/webhook/a889d2ae-2159-402f-b326-5f61e90f602e/chat',
-        initialMessages: ['Hello! Welcome to Ascentis Weddings, how can I help you today?']
+        webhookUrl:
+          'https://primary-production-4bb5.up.railway.app/webhook/a889d2ae-2159-402f-b326-5f61e90f602e/chat',
+        initialMessages: [
+          'Welcome to The Maple Grove.',
+          'Ask me about dates, packages, or which of the four gardens suits what you have in mind.'
+        ],
+        i18n: {
+          en: {
+            title: 'The Maple Grove',
+            subtitle: 'Ask about dates, pricing, or the gardens',
+            inputPlaceholder: 'Ask a question…',
+            getStarted: 'New conversation'
+          }
+        }
       });
     </script>
   </body>
