@@ -141,11 +141,14 @@
           linear-gradient(150deg, #24402f, #12211a 70%);
       }
       .frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
-      .frame::after {
+      /* The filename hint uses ::before because the full-bleed frames spend
+         their ::after on a gradient overlay, which would bury it. */
+      .frame::before {
         content: attr(data-label);
         position: absolute;
         left: 0.9rem;
-        bottom: 0.75rem;
+        top: 0.8rem;
+        z-index: 2;
         font-family: var(--label);
         font-size: 0.625rem;
         letter-spacing: 0.16em;
@@ -153,7 +156,7 @@
         color: rgba(242,237,227,0.5);
         pointer-events: none;
       }
-      .frame.is-loaded::after { display: none; }
+      .frame.is-loaded::before { display: none; }
 
       /* ============================================================
          Nav
@@ -264,6 +267,92 @@
       }
       .pull span { color: var(--lantern); }
       @media (max-width: 820px) { .thesis__grid { grid-template-columns: 1fr; } }
+
+      /* ============================================================
+         Photography
+         Every slot is a .frame, so it shows a garden-green panel
+         stamped with the filename it wants until that file exists.
+         ============================================================ */
+
+      /* an offset editorial pair — one upright, one wide, deliberately
+         out of alignment so it reads as a spread rather than a grid */
+      .pair {
+        display: grid;
+        grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+        gap: clamp(1rem, 2.5vw, 2rem);
+        align-items: start;
+        margin-top: clamp(3rem, 7vw, 5.5rem);
+      }
+      .pair .frame { border-radius: 3px; }
+      .pair__tall { aspect-ratio: 3 / 4; }
+      .pair__wide { aspect-ratio: 4 / 3; margin-top: clamp(2rem, 6vw, 5rem); }
+      .pair__cap {
+        font-family: var(--display);
+        font-style: italic;
+        font-variation-settings: 'SOFT' 60, 'WONK' 1;
+        font-size: 0.9375rem;
+        color: var(--fern);
+        margin: 0.85rem 0 0;
+      }
+      @media (max-width: 720px) {
+        .pair { grid-template-columns: 1fr; }
+        .pair__wide { margin-top: 0; }
+      }
+
+      /* full-bleed photograph carrying a single line of praise */
+      .plate { position: relative; min-height: min(66vh, 620px); display: flex; align-items: center; }
+      .plate__bg { position: absolute; inset: 0; }
+      .plate__bg::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to right, rgba(18,33,26,0.88), rgba(18,33,26,0.55) 60%, rgba(18,33,26,0.35));
+      }
+      .plate__inner { position: relative; z-index: 1; width: 100%; padding-block: clamp(3rem, 8vw, 5rem); }
+      .plate blockquote {
+        margin: 0;
+        max-width: 20ch;
+        font-family: var(--display);
+        font-style: italic;
+        font-variation-settings: 'SOFT' 60, 'WONK' 1;
+        font-size: clamp(1.75rem, 4.2vw, 3rem);
+        line-height: 1.22;
+        color: var(--paper);
+        text-wrap: balance;
+      }
+      .plate cite {
+        display: block;
+        margin-top: 1.5rem;
+        font-family: var(--body);
+        font-style: normal;
+        font-size: 0.875rem;
+        letter-spacing: 0.06em;
+        color: var(--lantern);
+      }
+
+      /* the gallery — varied shapes, because a uniform grid of wedding
+         photographs looks like a contact sheet */
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-auto-rows: clamp(110px, 15vw, 190px);
+        gap: clamp(0.6rem, 1.4vw, 1rem);
+      }
+      .gallery .frame { border-radius: 3px; }
+      .gallery .frame img { transition: transform 0.9s var(--ease); }
+      .gallery .frame:hover img { transform: scale(1.045); }
+      .g-tall  { grid-row: span 2; }
+      .g-wide  { grid-column: span 2; }
+      .g-big   { grid-column: span 2; grid-row: span 2; }
+      @media (max-width: 780px) {
+        .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .g-big { grid-column: span 2; }
+      }
+
+      /* single supporting images */
+      .shot { border-radius: 3px; }
+      .shot--wide { aspect-ratio: 16 / 7; margin-top: clamp(2rem, 4vw, 3rem); }
+      .shot--visit { aspect-ratio: 4 / 3; margin-top: 2.5rem; }
 
       /* ============================================================
          SIGNATURE — the property map
@@ -672,7 +761,7 @@
           <a href="#packages">Weddings</a>
           <a href="#elopements">Elopements</a>
           <a href="#events">Private Events</a>
-          <a href="#questions">Questions</a>
+          <a href="#gallery">Gallery</a>
           <a href="#visit">Visit</a>
           <a class="btn btn--solid nav__cta" href="#visit">Check a date</a>
         </div>
@@ -737,6 +826,25 @@
             Forest and woodsy, Hindu, fantasy, deliberately off-kilter — the gardens have hosted all of
             it. Bring the wedding you actually want.
           </p>
+        </div>
+      </div>
+
+      <div class="wrap pair reveal">
+        <div>
+          <div
+            class="frame pair__tall"
+            data-src="assets/maple-grove/vows-moon-gate.webp"
+            data-alt="A couple exchanging vows beneath the moon gate arch"
+          ></div>
+          <p class="pair__cap">Vows beneath the moon gate, Japanese Garden</p>
+        </div>
+        <div>
+          <div
+            class="frame pair__wide"
+            data-src="assets/maple-grove/reception-tent.webp"
+            data-alt="Guests at a tented reception dinner in the gardens"
+          ></div>
+          <p class="pair__cap">Fifty at dinner, under the tent</p>
         </div>
       </div>
     </section>
@@ -959,6 +1067,21 @@
       </div>
     </section>
 
+    <!-- ==================== PHOTOGRAPH + PRAISE ==================== -->
+    <section class="plate">
+      <div
+        class="plate__bg frame"
+        data-src="assets/maple-grove/gardens-dusk-wide.webp"
+        data-alt="The gardens at dusk, lanterns lit along the paths"
+      ></div>
+      <div class="wrap plate__inner">
+        <blockquote>
+          The grounds are absolutely beautiful. Asheville's hidden gem.
+          <cite>Holly T., mother of the groom</cite>
+        </blockquote>
+      </div>
+    </section>
+
     <!-- ==================== ELOPEMENTS ==================== -->
     <section class="band" id="elopements">
       <div class="wrap">
@@ -1001,6 +1124,12 @@
             </ul>
           </article>
         </div>
+
+        <div
+          class="frame shot shot--wide reveal"
+          data-src="assets/maple-grove/elopement-toast.webp"
+          data-alt="A couple toasting with champagne in the garden after an elopement ceremony"
+        ></div>
       </div>
     </section>
 
@@ -1041,6 +1170,56 @@
       </div>
     </section>
 
+    <!-- ==================== GALLERY ==================== -->
+    <section class="band" id="gallery" style="padding-top: 0">
+      <div class="wrap">
+        <div class="reveal" style="margin-bottom: 2.5rem">
+          <p class="eyebrow">The gallery</p>
+          <h2 style="font-size: clamp(2rem, 4.6vw, 3.25rem); max-width: 20ch">
+            Days that have already happened here
+          </h2>
+        </div>
+
+        <div class="gallery reveal">
+          <div
+            class="frame g-big"
+            data-src="assets/maple-grove/gallery-1.webp"
+            data-alt="A ceremony under way in the gardens"
+          ></div>
+          <div
+            class="frame g-tall"
+            data-src="assets/maple-grove/gallery-2.webp"
+            data-alt="Bride in the bridal suite before the ceremony"
+          ></div>
+          <div
+            class="frame"
+            data-src="assets/maple-grove/gallery-3.webp"
+            data-alt="Table setting detail with candles and greenery"
+          ></div>
+          <div
+            class="frame"
+            data-src="assets/maple-grove/gallery-4.webp"
+            data-alt="Guests gathered on the lawn at golden hour"
+          ></div>
+          <div
+            class="frame g-wide"
+            data-src="assets/maple-grove/gallery-5.webp"
+            data-alt="First dance under string lights at the pavilion"
+          ></div>
+          <div
+            class="frame"
+            data-src="assets/maple-grove/gallery-6.webp"
+            data-alt="The creek and maples in autumn colour"
+          ></div>
+          <div
+            class="frame"
+            data-src="assets/maple-grove/gallery-7.webp"
+            data-alt="Couple walking the crushed stone path between gardens"
+          ></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ==================== TESTIMONIALS ==================== -->
     <section class="band band--light">
       <div class="wrap">
@@ -1051,8 +1230,8 @@
             <cite>Samantha E. — bride</cite>
           </figure>
           <figure class="quote" style="margin: 0">
-            <p>"The grounds are absolutely beautiful. Asheville's hidden gem."</p>
-            <cite>Holly T. — mother of the groom</cite>
+            <p>"It was so magical and beautiful. The venue is incredible."</p>
+            <cite>Carmen — bride</cite>
           </figure>
           <figure class="quote" style="margin: 0">
             <p>"They went out of their way to ensure my daughter had the wedding of her dreams."</p>
@@ -1136,6 +1315,12 @@
             <li><span class="k">Email</span><span class="v"><a href="mailto:info@maplegrovevenue.com">info@maplegrovevenue.com</a></span></li>
             <li><span class="k">Getting here</span><span class="v">Two miles from downtown Asheville, 20 minutes from AVL airport</span></li>
           </ul>
+
+          <div
+            class="frame shot shot--visit"
+            data-src="assets/maple-grove/arrival-gate.webp"
+            data-alt="The garden entrance at 47 Carlton Place"
+          ></div>
         </div>
 
         <div class="reveal">
@@ -1337,6 +1522,23 @@
         });
 
         render('japanese');
+
+        /* ---------- photo slots ----------
+           Any .frame[data-src] gets its image loaded here. Until the file
+           exists the frame keeps its garden-green panel and shows the
+           filename it is waiting for, so nothing renders as broken. */
+        document.querySelectorAll('.frame[data-src]').forEach(function (frame) {
+          var src = frame.getAttribute('data-src');
+          frame.setAttribute('data-label', src);
+          var img = new Image();
+          img.alt = frame.getAttribute('data-alt') || '';
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.onload = function () { frame.classList.add('is-loaded'); };
+          img.onerror = function () { img.remove(); };
+          img.src = src;
+          frame.appendChild(img);
+        });
 
         /* ---------- scroll reveals ---------- */
         var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
