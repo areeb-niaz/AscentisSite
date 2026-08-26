@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter:wght@400;500;600;700;900&amp;family=Playfair+Display:wght@400;500;600;700;900"
+    />
+
+    <title>Ascentis Weddings — Intimate Loft &amp; Terrace Weddings in Dallas</title>
+    <meta
+      name="description"
+      content="Ascentis Weddings is an intimate wedding and event venue minutes from downtown Dallas. Four distinct settings, skyline views, up to 120 guests, all-inclusive packages."
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+      :root {
+        --chat--color-primary: #eb7813;
+        --chat--color-light: #ffffff;
+        --chat--header--background: var(--chat--color-primary);
+        --chat--header--color: #ffffff;
+        --chat--message--bot--background: var(--chat--color-primary);
+        --chat--message--bot--color: #ffffff;
+        --chat--message--user--background: var(#c8ff00);
+        --chat--message--border-radius: 1rem;
+        --chat--toggle--background: var(--chat--color-primary);
+        --chat--toggle--hover--background: #d36b11;
+      }
+      body { font-family: 'Inter', sans-serif; }
+      .font-serif { font-family: 'Playfair Display', serif; }
+      .eyebrow { letter-spacing: 0.18em; }
+      #galleryTrack::-webkit-scrollbar { display: none; }
+      details[open] .faq-plus { transform: rotate(45deg); }
+      .faq-plus { transition: transform 0.2s ease; }
+      details > summary { list-style: none; }
+      details > summary::-webkit-details-marker { display: none; }
+    </style>
+  </head>
+  <body class="bg-white text-[#1a1a1a]">
+    <div class="min-h-screen flex flex-col">
+      <!-- ======================= HEADER ======================= -->
+      <header class="sticky top-0 z-40 border-b border-[#ece4da] bg-white/95 backdrop-blur">
+        <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
+          <a href="venue-demo.html" class="flex items-center gap-3">
+            <img src="icons/ascentis-labs-icon.png" alt="Ascentis Weddings" class="h-8 w-auto md:h-10" />
+            <span class="font-serif text-lg font-bold tracking-tight md:text-xl">Ascentis Weddings</span>
+          </a>
+
+          <nav class="hidden items-center gap-7 lg:flex">
+            <a href="#venue" class="text-sm font-semibold hover:text-[#eb7813]">The Venue</a>
+            <a href="#spaces" class="text-sm font-semibold hover:text-[#eb7813]">Spaces</a>
+            <a href="#packages" class="text-sm font-semibold hover:text-[#eb7813]">Packages</a>
+            <a href="#gallery" class="text-sm font-semibold hover:text-[#eb7813]">Gallery</a>
+            <a href="#reviews" class="text-sm font-semibold hover:text-[#eb7813]">Reviews</a>
+            <a href="#contact" class="rounded-lg bg-[#eb7813] px-4 py-2 text-sm font-bold text-white hover:bg-[#d36b11]">Check Your Date</a>
+          </nav>
+
+          <button id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"
+            class="grid h-10 w-10 place-items-center rounded-lg border border-[#e5dbcf] lg:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+        </div>
+
+        <div id="mobileMenu" class="hidden border-t border-[#ece4da] bg-white lg:hidden">
+          <nav class="mx-auto flex w-full max-w-6xl flex-col gap-1 px-6 py-4">
+            <a href="#venue" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">The Venue</a>
+            <a href="#spaces" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">Spaces</a>
+            <a href="#packages" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">Packages</a>
+            <a href="#gallery" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">Gallery</a>
+            <a href="#reviews" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">Reviews</a>
+            <a href="#faq" class="rounded-lg px-2 py-2.5 text-sm font-semibold hover:bg-[#fff5eb]">FAQ</a>
+            <a href="#contact" class="mt-2 rounded-lg bg-[#eb7813] px-4 py-3 text-center text-sm font-bold text-white">Check Your Date</a>
+          </nav>
+        </div>
+      </header>
+
+      <main class="flex-grow">
+        <!-- ======================= HERO ======================= -->
+        <section class="relative">
+          <img
+            src="assets/Loft%20Assets/event%20space%20intimate%20best%20pic.jpg"
+            alt="An intimate ceremony set up at Ascentis Weddings"
+            class="absolute inset-0 h-full w-full object-cover"
+          />
+          <div class="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/70"></div>
+
+          <div class="relative mx-auto w-full max-w-4xl px-6 py-24 text-center text-white md:py-36">
+            <p class="eyebrow text-xs font-semibold uppercase text-[#ffcf9a] md:text-sm">Dallas, Texas</p>
+            <h1 class="mt-4 font-serif text-4xl font-bold leading-[1.1] tracking-tight md:text-6xl">
+              Intimate weddings, minutes from downtown Dallas.
+            </h1>
+            <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-white/85 md:text-lg">
+              A private loft-and-terrace venue built for celebrations under 120 guests — four
+              distinct settings, downtown skyline views, and a team that runs the whole day so you don't have to.
+            </p>
+            <div class="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <a href="#contact" class="w-full rounded-lg bg-[#eb7813] px-7 py-3.5 text-sm font-bold text-white hover:bg-[#d36b11] sm:w-auto">Check Your Date</a>
+              <a href="#spaces" class="w-full rounded-lg border border-white/70 px-7 py-3.5 text-sm font-bold text-white backdrop-blur hover:bg-white hover:text-[#1a1a1a] sm:w-auto">See the Spaces</a>
+            </div>
+          </div>
+
+          <!-- Stat strip -->
+          <div class="relative border-t border-white/15 bg-black/40 backdrop-blur">
+            <div class="mx-auto grid w-full max-w-5xl grid-cols-1 divide-y divide-white/15 px-6 text-center text-white sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+              <div class="py-5">
+                <p class="font-serif text-2xl font-bold">Up to 120</p>
+                <p class="mt-1 text-xs uppercase tracking-widest text-white/70">Guests, seated</p>
+              </div>
+              <div class="py-5">
+                <p class="font-serif text-2xl font-bold">4 Settings</p>
+                <p class="mt-1 text-xs uppercase tracking-widest text-white/70">One property</p>
+              </div>
+              <div class="py-5">
+                <p class="font-serif text-2xl font-bold">All-Inclusive</p>
+                <p class="mt-1 text-xs uppercase tracking-widest text-white/70">Or bring your own</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======================= WELCOME / THE VENUE ======================= -->
+        <section id="venue" class="scroll-mt-20 py-16 md:py-24">
+          <div class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-6 lg:grid-cols-2 lg:items-center">
+            <div class="grid grid-cols-2 gap-3">
+              <img src="assets/Loft%20Assets/outdoor%20view%20with%20dallas%20in%20bg.jpg" alt="Terrace with the Dallas skyline behind it" class="h-44 w-full rounded-2xl object-cover md:h-60" />
+              <img src="assets/Loft%20Assets/Event%20space.jpg" alt="The loft set for a reception" class="mt-6 h-44 w-full rounded-2xl object-cover md:h-60" />
+              <img src="assets/Loft%20Assets/outdoor%20wedding.jpg" alt="An outdoor ceremony on the terrace" class="h-44 w-full rounded-2xl object-cover md:h-60" />
+              <img src="assets/Loft%20Assets/event%20space%20night.jpg" alt="The loft after dark" class="mt-6 h-44 w-full rounded-2xl object-cover md:h-60" />
+            </div>
+
+            <div>
+              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Dallas's best-kept secret</p>
+              <h2 class="mt-4 font-serif text-3xl font-bold leading-tight md:text-[2.75rem]">
+                A warm brick loft and a string-lit terrace, ten minutes from downtown.
+              </h2>
+              <p class="mt-6 text-base leading-relaxed text-[#5a4b3f]">
+                Most couples who want something with character in Dallas end up driving forty minutes
+                out of the city for it. Ascentis Weddings sits inside it — a restored brick-and-timber
+                loft, a string-lit courtyard and an open terrace on the same property, with the downtown
+                skyline standing behind every photo.
+              </p>
+              <p class="mt-4 text-base leading-relaxed text-[#5a4b3f]">
+                We cap our events at 120 guests on purpose. Smaller lists mean the whole property is
+                yours for the day, your guests are never queued or crowded, and we can pay attention to
+                the details that get lost at a 300-person venue.
+              </p>
+
+              <ul class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <li class="flex items-start gap-2.5 text-sm font-medium text-[#3d332b]"><span class="mt-0.5 text-[#eb7813]">✦</span> Ceremony and reception on one property</li>
+                <li class="flex items-start gap-2.5 text-sm font-medium text-[#3d332b]"><span class="mt-0.5 text-[#eb7813]">✦</span> Indoor rain plan, always included</li>
+                <li class="flex items-start gap-2.5 text-sm font-medium text-[#3d332b]"><span class="mt-0.5 text-[#eb7813]">✦</span> Free on-site parking for 60 cars</li>
+                <li class="flex items-start gap-2.5 text-sm font-medium text-[#3d332b]"><span class="mt-0.5 text-[#eb7813]">✦</span> One event a day — never a double booking</li>
+              </ul>
+
+              <div class="mt-9 flex flex-wrap gap-3">
+                <a href="#packages" class="rounded-lg bg-[#eb7813] px-6 py-3 text-sm font-bold text-white hover:bg-[#d36b11]">See Packages &amp; Pricing</a>
+                <a href="#contact" class="rounded-lg border border-[#1a1a1a] px-6 py-3 text-sm font-bold hover:bg-[#fff5eb]">Schedule a Tour</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======================= THE SPACES ======================= -->
+        <section id="spaces" class="scroll-mt-20 border-y border-[#efe4d8] bg-[#fff9f2] py-16 md:py-24">
+          <div class="mx-auto w-full max-w-6xl px-6">
+            <div class="mx-auto max-w-2xl text-center">
+              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Four settings, one property</p>
+              <h2 class="mt-4 font-serif text-3xl font-bold md:text-[2.75rem]">Pick the room your day should look like.</h2>
+              <p class="mt-4 text-[#6b5c50]">
+                Every space photographs differently, and all four come with your booking — say your vows
+                on the terrace, drink under the lights in the courtyard, eat and dance in the loft.
+              </p>
+            </div>
+
+            <div class="mt-14 space-y-14 md:space-y-20">
+              <!-- Space 1 -->
+              <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
+                <img src="assets/Loft%20Assets/outdoor%20view%20with%20dallas%20in%20bg.jpg" alt="The Skyline Terrace" class="h-64 w-full rounded-2xl object-cover shadow-sm md:h-80" />
+                <div>
+                  <p class="eyebrow text-xs font-semibold uppercase text-[#b08356]">01 — Outdoor ceremony</p>
+                  <h3 class="mt-3 font-serif text-2xl font-bold md:text-3xl">The Skyline Terrace</h3>
+                  <p class="mt-4 leading-relaxed text-[#5a4b3f]">
+                    An open-air deck facing the downtown skyline. Sunset lands behind the buildings around
+                    7:40 in the spring, which is why most of our couples put their ceremony there.
+                    Seats 120, or holds 150 standing for cocktail hour.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Space 2 -->
+              <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
+                <img src="assets/Loft%20Assets/event%20space%20outdoor%20intimate.jpg" alt="The String-Lit Courtyard" class="h-64 w-full rounded-2xl object-cover shadow-sm md:order-2 md:h-80" />
+                <div class="md:order-1">
+                  <p class="eyebrow text-xs font-semibold uppercase text-[#b08356]">02 — Cocktail hour</p>
+                  <h3 class="mt-3 font-serif text-2xl font-bold md:text-3xl">The String-Lit Courtyard</h3>
+                  <p class="mt-4 leading-relaxed text-[#5a4b3f]">
+                    Private, walled and strung end to end with café lights, under a canopy of trees. It's the
+                    quiet corner of the property — where cocktail hour lands, and where the first look and
+                    the family portraits usually happen even when the ceremony is somewhere else.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Space 3 -->
+              <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
+                <img src="assets/Loft%20Assets/Event%20space.jpg" alt="The Loft" class="h-64 w-full rounded-2xl object-cover shadow-sm md:h-80" />
+                <div>
+                  <p class="eyebrow text-xs font-semibold uppercase text-[#b08356]">03 — Dinner &amp; reception</p>
+                  <h3 class="mt-3 font-serif text-2xl font-bold md:text-3xl">The Loft</h3>
+                  <p class="mt-4 leading-relaxed text-[#5a4b3f]">
+                    Exposed brick, timber beams and tall windows. Climate-controlled, so it doubles as
+                    the rain plan for any outdoor ceremony at no extra charge. Seats 120 at rounds with
+                    room left for a head table and a band.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Space 4 -->
+              <div class="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
+                <img src="assets/Loft%20Assets/dance%20floor.jpg" alt="The Dance Hall" class="h-64 w-full rounded-2xl object-cover shadow-sm md:order-2 md:h-80" />
+                <div class="md:order-1">
+                  <p class="eyebrow text-xs font-semibold uppercase text-[#b08356]">04 — After dark</p>
+                  <h3 class="mt-3 font-serif text-2xl font-bold md:text-3xl">The Dance Hall</h3>
+                  <p class="mt-4 leading-relaxed text-[#5a4b3f]">
+                    A separate room with its own bar, sound system and lighting rig, so the party can get
+                    loud without pushing your grandparents out the door. Dinner stays civilized on one
+                    side of the wall; the dance floor runs until midnight on the other.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======================= BUILT FOR PHOTOS ======================= -->
+        <section class="relative">
+          <img src="assets/Loft%20Assets/outdoor%20wedding.jpg" alt="A wedding portrait on the property" class="absolute inset-0 h-full w-full object-cover" />
+          <div class="absolute inset-0 bg-[#1a1a1a]/70"></div>
+          <div class="relative mx-auto w-full max-w-3xl px-6 py-20 text-center text-white md:py-28">
+            <p class="eyebrow text-xs font-semibold uppercase text-[#ffcf9a]">Designed by photographers</p>
+            <h2 class="mt-4 font-serif text-3xl font-bold leading-tight md:text-[2.75rem]">
+              Every angle here was built to be shot.
+            </h2>
+            <p class="mt-6 text-base leading-relaxed text-white/85 md:text-lg">
+              The property was laid out by working wedding photographers, so the light, the backdrops and
+              the sightlines were decided before the landscaping was. No parking lot in the background of
+              your first kiss, no fluorescent glare over dinner — just places that look the way you'll
+              want to remember them.
+            </p>
+            <a href="#gallery" class="mt-9 inline-block rounded-lg bg-white px-7 py-3.5 text-sm font-bold text-[#1a1a1a] hover:bg-[#fff5eb]">Browse the Gallery</a>
+          </div>
+        </section>
+
+        <!-- ======================= PACKAGES ======================= -->
+        <section id="packages" class="scroll-mt-20 py-16 md:py-24">
+          <div class="mx-auto w-full max-w-6xl px-6">
+            <div class="mx-auto max-w-2xl text-center">
+              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Packages &amp; pricing</p>
+              <h2 class="mt-4 font-serif text-3xl font-bold md:text-[2.75rem]">Published prices. No surprise line items.</h2>
+              <p class="mt-4 text-[#6b5c50]">
+                Everything below includes the full property, our day-of coordinator, tables, chairs,
+                linens and setup and teardown.
+              </p>
+            </div>
+
+            <div class="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <!-- Weekday -->
+              <div class="flex flex-col rounded-2xl border border-[#e5dbcf] bg-white p-8 shadow-sm">
+                <h3 class="font-serif text-xl font-bold">The Weekday Half Day</h3>
+                <p class="mt-2 text-sm text-[#6b5c50]">Monday – Thursday · 5 hours</p>
+                <p class="mt-6 font-serif text-4xl font-bold">$3,750</p>
+                <p class="mt-1 text-xs uppercase tracking-widest text-[#8a7c70]">Venue rental</p>
+                <ul class="mt-7 space-y-3 text-sm text-[#5a4b3f]">
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> All four spaces, exclusive use</li>
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Tables, chairs and linens</li>
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Day-of coordinator</li>
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Bring your own caterer and bar</li>
+                </ul>
+                <a href="#contact" class="mt-8 rounded-lg border border-[#1a1a1a] px-6 py-3 text-center text-sm font-bold hover:bg-[#fff5eb]">Check Availability</a>
+              </div>
+
+              <!-- All inclusive - featured -->
+              <div class="relative flex flex-col rounded-2xl border-2 border-[#eb7813] bg-[#fff9f2] p-8 shadow-lg lg:-mt-4 lg:mb-[-1rem]">
+                <span class="absolute -top-3 left-8 rounded-full bg-[#eb7813] px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-white">Most booked</span>
+                <h3 class="font-serif text-xl font-bold">The All-Inclusive Wedding Day</h3>
+                <p class="mt-2 text-sm text-[#6b5c50]">Up to 100 guests · 12 hours</p>
+                <p class="mt-6 font-serif text-4xl font-bold">$11,800</p>
+                <p class="mt-1 text-xs uppercase tracking-widest text-[#8a7c70]">Everything, one number</p>
+                <ul class="mt-7 space-y-3 text-sm text-[#5a4b3f]">
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Full-day access to the whole property</li>
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Plated or buffet catering and staff</li>
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Florals, centerpieces and ceremony decor</li>
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Hair and makeup for the couple</li>
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Bar service and bartenders</li>
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Coordinator from booking to send-off</li>
+                </ul>
+                <a href="#contact" class="mt-8 rounded-lg bg-[#eb7813] px-6 py-3 text-center text-sm font-bold text-white hover:bg-[#d36b11]">Check Your Date</a>
+              </div>
+
+              <!-- Celebrations -->
+              <div class="flex flex-col rounded-2xl border border-[#e5dbcf] bg-white p-8 shadow-sm">
+                <h3 class="font-serif text-xl font-bold">The Celebration Rental</h3>
+                <p class="mt-2 text-sm text-[#6b5c50]">Parties, corporate, shoots · 4 hour minimum</p>
+                <p class="mt-6 font-serif text-4xl font-bold">$450<span class="text-lg font-medium text-[#6b5c50]">/hr</span></p>
+                <p class="mt-1 text-xs uppercase tracking-widest text-[#8a7c70]">Non-wedding events</p>
+                <ul class="mt-7 space-y-3 text-sm text-[#5a4b3f]">
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Choose the loft, terrace or courtyard</li>
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> A/V, projector and sound included</li>
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> On-site event attendant</li>
+                  <li class="flex gap-2.5"><span class="text-[#eb7813]">✓</span> Photo and film rates on request</li>
+                </ul>
+                <a href="#contact" class="mt-8 rounded-lg border border-[#1a1a1a] px-6 py-3 text-center text-sm font-bold hover:bg-[#fff5eb]">Request a Quote</a>
+              </div>
+            </div>
+
+            <p class="mt-10 text-center text-sm text-[#6b5c50]">
+              Saturdays in October and April book roughly a year out. We're currently taking dates from
+              <span class="font-semibold text-[#1a1a1a]">September 2026</span> forward.
+            </p>
+          </div>
+        </section>
+
+        <!-- ======================= EVENT TYPES ======================= -->
+        <section id="events" class="scroll-mt-20 border-y border-[#efe4d8] bg-[#fff9f2] py-16 md:py-24">
+          <div class="mx-auto w-full max-w-6xl px-6">
+            <div class="mx-auto max-w-2xl text-center">
+              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Not only weddings</p>
+              <h2 class="mt-4 font-serif text-3xl font-bold md:text-[2.75rem]">What are you celebrating?</h2>
+              <p class="mt-4 text-[#6b5c50]">The same property, dressed for whatever the occasion is.</p>
+            </div>
+
+            <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <div class="aspect-[4/3] overflow-hidden">
+                  <img src="assets/Loft%20Assets/wedding%20event.jpg" alt="Weddings and receptions" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                </div>
+                <div class="p-5">
+                  <div class="flex items-center justify-between">
+                    <h3 class="font-serif text-xl font-semibold">Weddings &amp; Receptions</h3>
+                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
+                  </div>
+                  <p class="mt-2 text-sm text-[#6b5c50]">Ceremony, dinner and dancing without leaving the property.</p>
+                </div>
+              </a>
+
+              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <div class="aspect-[4/3] overflow-hidden">
+                  <img src="assets/Loft%20Assets/birthday%20party.jpg" alt="Birthday parties" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                </div>
+                <div class="p-5">
+                  <div class="flex items-center justify-between">
+                    <h3 class="font-serif text-xl font-semibold">Birthdays &amp; Quinces</h3>
+                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
+                  </div>
+                  <p class="mt-2 text-sm text-[#6b5c50]">Milestone parties with a real dance floor and a real bar.</p>
+                </div>
+              </a>
+
+              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <div class="aspect-[4/3] overflow-hidden">
+                  <img src="assets/Loft%20Assets/private%20party.jpg" alt="Private parties" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                </div>
+                <div class="p-5">
+                  <div class="flex items-center justify-between">
+                    <h3 class="font-serif text-xl font-semibold">Private Parties</h3>
+                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
+                  </div>
+                  <p class="mt-2 text-sm text-[#6b5c50]">Showers, rehearsal dinners, anniversaries and reunions.</p>
+                </div>
+              </a>
+
+              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <div class="aspect-[4/3] overflow-hidden">
+                  <img src="assets/Loft%20Assets/corpo%20party.jpg" alt="Corporate events" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                </div>
+                <div class="p-5">
+                  <div class="flex items-center justify-between">
+                    <h3 class="font-serif text-xl font-semibold">Corporate Events</h3>
+                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
+                  </div>
+                  <p class="mt-2 text-sm text-[#6b5c50]">Offsites, holiday parties and launches with A/V included.</p>
+                </div>
+              </a>
+
+              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <div class="aspect-[4/3] overflow-hidden">
+                  <img src="assets/Loft%20Assets/fashionshow.jpg" alt="Fashion shows" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                </div>
+                <div class="p-5">
+                  <div class="flex items-center justify-between">
+                    <h3 class="font-serif text-xl font-semibold">Fashion Shows</h3>
+                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
+                  </div>
+                  <p class="mt-2 text-sm text-[#6b5c50]">A long runway line, riggable lighting and a green room.</p>
+                </div>
+              </a>
+
+              <a href="#contact" class="group overflow-hidden rounded-2xl border border-[#e5dbcf] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <div class="aspect-[4/3] overflow-hidden">
+                  <img src="assets/Loft%20Assets/photoshoot.jpg" alt="Photo and film shoots" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                </div>
+                <div class="p-5">
+                  <div class="flex items-center justify-between">
+                    <h3 class="font-serif text-xl font-semibold">Photo &amp; Film Shoots</h3>
+                    <span class="text-[#eb7813] transition group-hover:translate-x-1">→</span>
+                  </div>
+                  <p class="mt-2 text-sm text-[#6b5c50]">Four backdrops on one lot, with hourly weekday rates.</p>
+                </div>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======================= REVIEWS ======================= -->
+        <section id="reviews" class="scroll-mt-20 py-16 md:py-24">
+          <div class="mx-auto w-full max-w-6xl px-6">
+            <div class="mx-auto max-w-2xl text-center">
+              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">What couples say</p>
+              <h2 class="mt-4 font-serif text-3xl font-bold md:text-[2.75rem]">"Dallas's hidden gem."</h2>
+            </div>
+
+            <div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
+              <figure class="rounded-2xl border border-[#e5dbcf] bg-[#fff9f2] p-7">
+                <div class="text-[#eb7813]">★★★★★</div>
+                <blockquote class="mt-4 leading-relaxed text-[#3d332b]">
+                  "Truly Dallas's hidden gem. The property is gorgeous — a terrace for the ceremony, a
+                  courtyard under string lights for cocktails, a separate room for dancing, and about six
+                  spots we didn't expect where the photos came out perfect."
+                </blockquote>
+                <figcaption class="mt-6 text-sm font-semibold text-[#6b5c50]">Marisa &amp; Dev · October 2025</figcaption>
+              </figure>
+
+              <figure class="rounded-2xl border border-[#e5dbcf] bg-[#fff9f2] p-7">
+                <div class="text-[#eb7813]">★★★★★</div>
+                <blockquote class="mt-4 leading-relaxed text-[#3d332b]">
+                  "My daughter had her wedding here and every part of it was beautiful. The owners went
+                  out of their way to make sure she got the day she'd been picturing. I'm still grateful
+                  months later."
+                </blockquote>
+                <figcaption class="mt-6 text-sm font-semibold text-[#6b5c50]">Angela R. · Mother of the bride</figcaption>
+              </figure>
+
+              <figure class="rounded-2xl border border-[#e5dbcf] bg-[#fff9f2] p-7">
+                <div class="text-[#eb7813]">★★★★★</div>
+                <blockquote class="mt-4 leading-relaxed text-[#3d332b]">
+                  "We wanted 70 people and a short, warm night — not a ballroom. This was the only place
+                  in the city that priced that honestly and then actually delivered it. Rain moved us
+                  inside and nobody even noticed."
+                </blockquote>
+                <figcaption class="mt-6 text-sm font-semibold text-[#6b5c50]">Chris &amp; Tomás · April 2026</figcaption>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======================= GALLERY ======================= -->
+        <section id="gallery" class="scroll-mt-20 border-y border-[#efe4d8] bg-[#fff9f2] py-16 md:py-24">
+          <div class="mx-auto w-full max-w-6xl px-6">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Real days here</p>
+                <h2 class="mt-3 font-serif text-3xl font-bold md:text-[2.75rem]">Gallery</h2>
+              </div>
+              <a href="#contact" class="text-sm font-bold text-[#eb7813] hover:underline">Book a Tour →</a>
+            </div>
+
+            <div class="relative mt-10">
+              <button id="galleryPrev" type="button" aria-label="Previous"
+                class="absolute left-2 top-1/2 z-10 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/95 text-[#1a1a1a] shadow-md ring-1 ring-[#e5dbcf] transition hover:bg-white hover:text-[#eb7813] md:left-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+              </button>
+              <button id="galleryNext" type="button" aria-label="Next"
+                class="absolute right-2 top-1/2 z-10 -translate-y-1/2 grid h-11 w-11 place-items-center rounded-full bg-white/95 text-[#1a1a1a] shadow-md ring-1 ring-[#e5dbcf] transition hover:bg-white hover:text-[#eb7813] md:right-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+
+              <div id="galleryTrack"
+                class="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2"
+                style="scrollbar-width: none; -ms-overflow-style: none;">
+                <img src="assets/Loft%20Assets/event%20space%20intimate%20best%20pic.jpg" alt="Intimate ceremony setup" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/Event%20space.jpg" alt="The loft set for dinner" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/event%20space%20night.jpg" alt="The loft at night" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/event%20space%20outdoor%20intimate.jpg" alt="Outdoor intimate seating" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/outdoor%20view%20with%20dallas%20in%20bg.jpg" alt="Terrace with skyline view" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/wedding%20event.jpg" alt="Wedding reception" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/wedding%20event%202.jpg" alt="Wedding reception detail" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/outdoor%20wedding.jpg" alt="Outdoor ceremony" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/birthday%20party.jpg" alt="Birthday party" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/birthday%20party%202.jpg" alt="Birthday party" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/birthday%20party%203.jpg" alt="Birthday party" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/private%20party.jpg" alt="Private party" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/corpo%20party.jpg" alt="Corporate event" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/corpo%20party%202.jpg" alt="Corporate event" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/dance%20floor.jpg" alt="Dance floor" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/dance%20floor%202.jpg" alt="Dance floor" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/fashionshow.jpg" alt="Fashion show" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+                <img src="assets/Loft%20Assets/photoshoot.jpg" alt="Photo shoot" class="h-64 w-[78%] flex-shrink-0 snap-start rounded-2xl object-cover md:h-80 md:w-[48%] lg:w-[32%]" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======================= FAQ ======================= -->
+        <section id="faq" class="scroll-mt-20 py-16 md:py-24">
+          <div class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-6 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">Good to know</p>
+              <h2 class="mt-4 font-serif text-3xl font-bold md:text-4xl">Questions we get every week.</h2>
+              <p class="mt-5 leading-relaxed text-[#5a4b3f]">
+                Still not covered? Ask our concierge in the corner of this page — it answers day and
+                night, and it can check dates for you.
+              </p>
+            </div>
+
+            <div class="divide-y divide-[#e5dbcf] border-y border-[#e5dbcf]">
+              <details class="group py-5">
+                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
+                  How many guests can you hold?
+                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
+                </summary>
+                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
+                  120 seated for dinner, 150 standing for a cocktail-style event. We don't book above
+                  that — the property is built for intimate days, not ballroom crowds.
+                </p>
+              </details>
+
+              <details class="group py-5">
+                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
+                  What happens if it rains?
+                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
+                </summary>
+                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
+                  The Loft is your rain plan and it's included at no extra cost. We make the call with
+                  you the morning of, and our team can flip an outdoor ceremony indoors in about an hour.
+                </p>
+              </details>
+
+              <details class="group py-5">
+                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
+                  Can we bring our own caterer and bar?
+                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
+                </summary>
+                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
+                  Yes on the rental packages — any licensed and insured caterer is welcome, and we have a
+                  preferred list if you'd rather not shop. Alcohol has to be served by licensed
+                  bartenders, ours or yours.
+                </p>
+              </details>
+
+              <details class="group py-5">
+                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
+                  Is there parking?
+                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
+                </summary>
+                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
+                  Free on-site parking for about 60 cars, plus a covered drop-off at the front gate.
+                  Rideshare pickup is right at the entrance, which matters at midnight.
+                </p>
+              </details>
+
+              <details class="group py-5">
+                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
+                  How far out should we book?
+                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
+                </summary>
+                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
+                  Fall and spring Saturdays go roughly a year ahead. Weekdays and winter dates are often
+                  open a few months out, and they're the best value we offer.
+                </p>
+              </details>
+
+              <details class="group py-5">
+                <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold">
+                  What holds a date?
+                  <span class="faq-plus text-xl text-[#eb7813]">+</span>
+                </summary>
+                <p class="mt-3 pr-8 leading-relaxed text-[#5a4b3f]">
+                  A signed agreement and 25% down. The balance is split into two payments, with the last
+                  one due 30 days before the event.
+                </p>
+              </details>
+            </div>
+          </div>
+        </section>
+
+        <!-- ======================= CONTACT ======================= -->
+        <section id="contact" class="scroll-mt-20 border-t border-[#efe4d8] bg-[#fff5eb] py-16 md:py-24">
+          <div class="mx-auto grid w-full max-w-6xl grid-cols-1 gap-12 px-6 lg:grid-cols-2">
+            <div>
+              <p class="eyebrow text-xs font-semibold uppercase text-[#eb7813]">For information or a showing</p>
+              <h2 class="mt-4 font-serif text-3xl font-bold leading-tight md:text-[2.75rem]">
+                Come see it in person.
+              </h2>
+              <p class="mt-5 leading-relaxed text-[#5a4b3f]">
+                Tours run Tuesday through Saturday and take about thirty minutes. Tell us your date and
+                headcount and we'll come back with real availability and a real number — usually the
+                same day.
+              </p>
+
+              <dl class="mt-9 space-y-5 text-sm">
+                <div>
+                  <dt class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Email</dt>
+                  <dd class="mt-1"><a href="mailto:info@ascentisweddings.com" class="text-base font-semibold text-[#eb7813] hover:underline">info@ascentisweddings.com</a></dd>
+                </div>
+                <div>
+                  <dt class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Phone</dt>
+                  <dd class="mt-1"><a href="tel:2145550123" class="text-base font-semibold hover:text-[#eb7813]">214.555.0123</a></dd>
+                </div>
+                <div>
+                  <dt class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Address</dt>
+                  <dd class="mt-1 text-base font-semibold">1412 Carlton Place, Dallas, TX 75207</dd>
+                </div>
+                <div>
+                  <dt class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Tour hours</dt>
+                  <dd class="mt-1 text-base font-semibold">Tue – Sat, 10am – 6pm</dd>
+                </div>
+              </dl>
+            </div>
+
+            <form
+              class="rounded-2xl border border-[#e5dbcf] bg-white p-7 shadow-sm md:p-8"
+              action="mailto:info@ascentisweddings.com"
+              method="post"
+              enctype="text/plain"
+            >
+              <h3 class="font-serif text-xl font-bold">Check your date</h3>
+              <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <label class="block">
+                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Name</span>
+                  <input type="text" name="name" required class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]" />
+                </label>
+                <label class="block">
+                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Email</span>
+                  <input type="email" name="email" required class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]" />
+                </label>
+                <label class="block">
+                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Event date</span>
+                  <input type="date" name="date" class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]" />
+                </label>
+                <label class="block">
+                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Guest count</span>
+                  <input type="number" name="guests" min="1" max="150" class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]" />
+                </label>
+                <label class="block sm:col-span-2">
+                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Event type</span>
+                  <select name="type" class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]">
+                    <option>Wedding</option>
+                    <option>Birthday or quinceañera</option>
+                    <option>Private party</option>
+                    <option>Corporate event</option>
+                    <option>Photo or film shoot</option>
+                    <option>Something else</option>
+                  </select>
+                </label>
+                <label class="block sm:col-span-2">
+                  <span class="text-xs font-semibold uppercase tracking-widest text-[#8a7c70]">Anything we should know?</span>
+                  <textarea name="message" rows="4" class="mt-1.5 w-full rounded-lg border-[#e5dbcf] text-sm focus:border-[#eb7813] focus:ring-[#eb7813]"></textarea>
+                </label>
+              </div>
+              <button type="submit" class="mt-6 w-full rounded-lg bg-[#eb7813] px-6 py-3.5 text-sm font-bold text-white hover:bg-[#d36b11]">Send Inquiry</button>
+              <p class="mt-3 text-center text-xs text-[#8a7c70]">Or ask our concierge in the corner — it replies instantly.</p>
+            </form>
+          </div>
+        </section>
+      </main>
+
+      <!-- ======================= FOOTER ======================= -->
+      <footer class="border-t border-[#e5dbcf] bg-white py-10">
+        <div class="mx-auto w-full max-w-6xl px-6">
+          <div class="flex flex-col items-center justify-between gap-6 text-sm text-[#5a4b3f] md:flex-row">
+            <div class="text-center md:text-left">
+              <p class="font-serif text-base font-semibold text-[#1a1a1a]">Ascentis Weddings</p>
+              <p class="mt-1">1412 Carlton Place · Dallas, TX 75207</p>
+            </div>
+            <nav class="flex flex-wrap items-center justify-center gap-5">
+              <a href="#venue" class="font-semibold hover:text-[#eb7813]">The Venue</a>
+              <a href="#packages" class="font-semibold hover:text-[#eb7813]">Packages</a>
+              <a href="#gallery" class="font-semibold hover:text-[#eb7813]">Gallery</a>
+              <a href="#faq" class="font-semibold hover:text-[#eb7813]">FAQ</a>
+              <a href="#contact" class="font-semibold hover:text-[#eb7813]">Contact</a>
+            </nav>
+            <div class="flex items-center gap-3">
+              <a href="#" aria-label="Instagram" class="rounded-full border border-[#d4c6b8] px-2.5 py-1.5 hover:bg-[#fff5eb]">IG</a>
+              <a href="#" aria-label="Facebook" class="rounded-full border border-[#d4c6b8] px-2.5 py-1.5 hover:bg-[#fff5eb]">FB</a>
+              <a href="#" aria-label="TikTok" class="rounded-full border border-[#d4c6b8] px-2.5 py-1.5 hover:bg-[#fff5eb]">TT</a>
+            </div>
+          </div>
+          <p class="mt-8 text-center text-xs text-[#8a7c70]">© 2026 Ascentis Weddings. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+
+    <button id="scrollTopBtn" title="Go to top">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+      </svg>
+    </button>
+
+    <script src="script/script.js"></script>
+    <script>
+      // Mobile menu
+      (function () {
+        var btn = document.getElementById('menuBtn');
+        var menu = document.getElementById('mobileMenu');
+        if (!btn || !menu) return;
+        btn.addEventListener('click', function () {
+          var open = menu.classList.toggle('hidden') === false;
+          btn.setAttribute('aria-expanded', String(open));
+        });
+        menu.addEventListener('click', function (e) {
+          if (e.target.tagName === 'A') {
+            menu.classList.add('hidden');
+            btn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      })();
+
+      // Gallery carousel
+      (function () {
+        var track = document.getElementById('galleryTrack');
+        var prev = document.getElementById('galleryPrev');
+        var next = document.getElementById('galleryNext');
+        if (!track || !prev || !next) return;
+        function step() {
+          var first = track.querySelector('img');
+          if (!first) return track.clientWidth * 0.8;
+          var styles = window.getComputedStyle(track);
+          var gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
+          return first.getBoundingClientRect().width + gap;
+        }
+        prev.addEventListener('click', function () { track.scrollBy({ left: -step(), behavior: 'smooth' }); });
+        next.addEventListener('click', function () { track.scrollBy({ left: step(), behavior: 'smooth' }); });
+      })();
+    </script>
+
+    <script type="module">
+      import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+      createChat({
+        webhookUrl: 'https://primary-production-4bb5.up.railway.app/webhook/a889d2ae-2159-402f-b326-5f61e90f602e/chat',
+        initialMessages: ['Hello! Welcome to Ascentis Weddings, how can I help you today?']
+      });
+    </script>
+  </body>
+</html>
