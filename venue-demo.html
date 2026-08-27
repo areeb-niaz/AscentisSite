@@ -274,29 +274,13 @@
          stamped with the filename it wants until that file exists.
          ============================================================ */
 
-      /* an offset editorial pair — one upright, one wide, deliberately
-         out of alignment so it reads as a spread rather than a grid */
-      .pair {
-        display: grid;
-        grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
-        gap: clamp(1rem, 2.5vw, 2rem);
-        align-items: start;
-        margin-top: clamp(3rem, 7vw, 5.5rem);
-      }
-      .pair .frame { border-radius: 3px; }
-      .pair__tall { aspect-ratio: 3 / 4; }
-      .pair__wide { aspect-ratio: 4 / 3; margin-top: clamp(2rem, 6vw, 5rem); }
-      .pair__cap {
+      .shot__cap {
         font-family: var(--display);
         font-style: italic;
         font-variation-settings: 'SOFT' 60, 'WONK' 1;
         font-size: 0.9375rem;
         color: var(--fern);
         margin: 0.85rem 0 0;
-      }
-      @media (max-width: 720px) {
-        .pair { grid-template-columns: 1fr; }
-        .pair__wide { margin-top: 0; }
       }
 
       /* full-bleed photograph carrying a single line of praise */
@@ -341,8 +325,8 @@
       .gallery .frame { border-radius: 3px; }
       .gallery .frame img { transition: transform 0.9s var(--ease); }
       .gallery .frame:hover img { transform: scale(1.045); }
+      /* four frames fill a 4x2 grid exactly: 2x2 + 1x2 + 1 + 1 */
       .g-tall  { grid-row: span 2; }
-      .g-wide  { grid-column: span 2; }
       .g-big   { grid-column: span 2; grid-row: span 2; }
       @media (max-width: 780px) {
         .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -351,8 +335,7 @@
 
       /* single supporting images */
       .shot { border-radius: 3px; }
-      .shot--wide { aspect-ratio: 16 / 7; margin-top: clamp(2rem, 4vw, 3rem); }
-      .shot--visit { aspect-ratio: 4 / 3; margin-top: 2.5rem; }
+      .shot--pair { aspect-ratio: 16 / 9; }
 
       /* ============================================================
          SIGNATURE — the property map
@@ -829,23 +812,13 @@
         </div>
       </div>
 
-      <div class="wrap pair reveal">
-        <div>
-          <div
-            class="frame pair__tall"
-            data-src="assets/maple-grove/vows-moon-gate.webp"
-            data-alt="A couple exchanging vows beneath the moon gate arch"
-          ></div>
-          <p class="pair__cap">Vows beneath the moon gate, Japanese Garden</p>
-        </div>
-        <div>
-          <div
-            class="frame pair__wide"
-            data-src="assets/maple-grove/reception-tent.webp"
-            data-alt="Guests at a tented reception dinner in the gardens"
-          ></div>
-          <p class="pair__cap">Fifty at dinner, under the tent</p>
-        </div>
+      <div class="wrap reveal" style="margin-top: clamp(3rem, 7vw, 5rem)">
+        <div
+          class="frame shot shot--pair"
+          data-src="assets/maple-grove/reception-tent.webp"
+          data-alt="Guests at a tented reception dinner in the gardens"
+        ></div>
+        <p class="shot__cap">Fifty at dinner, under the tent</p>
       </div>
     </section>
 
@@ -1124,12 +1097,6 @@
             </ul>
           </article>
         </div>
-
-        <div
-          class="frame shot shot--wide reveal"
-          data-src="assets/maple-grove/elopement-toast.webp"
-          data-alt="A couple toasting with champagne in the garden after an elopement ceremony"
-        ></div>
       </div>
     </section>
 
@@ -1199,22 +1166,7 @@
           <div
             class="frame"
             data-src="assets/maple-grove/gallery-4.webp"
-            data-alt="Guests gathered on the lawn at golden hour"
-          ></div>
-          <div
-            class="frame g-wide"
-            data-src="assets/maple-grove/gallery-5.webp"
             data-alt="First dance under string lights at the pavilion"
-          ></div>
-          <div
-            class="frame"
-            data-src="assets/maple-grove/gallery-6.webp"
-            data-alt="The creek and maples in autumn colour"
-          ></div>
-          <div
-            class="frame"
-            data-src="assets/maple-grove/gallery-7.webp"
-            data-alt="Couple walking the crushed stone path between gardens"
           ></div>
         </div>
       </div>
@@ -1315,12 +1267,6 @@
             <li><span class="k">Email</span><span class="v"><a href="mailto:info@maplegrovevenue.com">info@maplegrovevenue.com</a></span></li>
             <li><span class="k">Getting here</span><span class="v">Two miles from downtown Asheville, 20 minutes from AVL airport</span></li>
           </ul>
-
-          <div
-            class="frame shot shot--visit"
-            data-src="assets/maple-grove/arrival-gate.webp"
-            data-alt="The garden entrance at 47 Carlton Place"
-          ></div>
         </div>
 
         <div class="reveal">
