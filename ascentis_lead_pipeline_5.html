@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ascentis Lead Pipeline</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14181F; --panel:#1B212B; --panel2:#222A37; --line:#2E3847;
+  --text:#E9E5DB; --dim:#93A dim; --dim:#8D97A6;
+  --brass:#C9A227; --brass-soft:#E2C25B;
+  --ok:#5DBB8A; --warn:#E4C441; --bad:#D06A5A; --info:#7FA6D9;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
+.wrap{max-width:880px;margin:0 auto;padding:36px 20px 80px}
+header h1{font-family:'Fraunces',serif;font-weight:650;font-size:30px;letter-spacing:-.01em}
+header h1 em{font-style:normal;color:var(--brass)}
+header p{color:var(--dim);margin-top:4px;font-size:13px}
+
+/* signature: pipeline rail */
+.rail{display:flex;align-items:center;gap:0;margin:26px 0 30px;flex-wrap:wrap}
+.stop{display:flex;align-items:center;gap:8px;padding:7px 13px;border:1px solid var(--line);border-radius:999px;background:var(--panel);font-size:12px;color:var(--dim);white-space:nowrap}
+.stop b{font-weight:600;color:var(--text)}
+.stop .n{font-family:ui-monospace,monospace;color:var(--brass);font-weight:600;min-width:0}
+.stop.lit{border-color:var(--brass);color:var(--text)}
+.link{width:22px;height:1px;background:var(--line);flex:none}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:22px}
+.card h2{font-family:'Fraunces',serif;font-weight:650;font-size:19px;margin-bottom:2px}
+.card h2 span{color:var(--brass);font-family:ui-monospace,monospace;font-size:13px;margin-right:8px;vertical-align:2px}
+.card .sub{color:var(--dim);font-size:13px;margin-bottom:16px}
+
+.drop{border:1.5px dashed var(--line);border-radius:10px;padding:18px;text-align:center;color:var(--dim);cursor:pointer;transition:border-color .15s;background:var(--panel2);font-size:13px}
+.drop:hover,.drop.over{border-color:var(--brass)}
+.drop.loaded{border-style:solid;border-color:var(--ok);color:var(--text)}
+.drop input{display:none}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px;align-items:flex-end}
+.field{flex:1;min-width:170px}
+.field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--dim);margin-bottom:5px}
+input[type=text],select{width:100%;background:var(--panel2);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:9px 11px;font:inherit}
+input[type=text]:focus,select:focus{outline:2px solid var(--brass);outline-offset:-1px;border-color:var(--brass)}
+button{background:var(--brass);color:#14181F;border:0;border-radius:8px;padding:10px 20px;font:inherit;font-weight:600;cursor:pointer}
+button:hover{background:var(--brass-soft)}
+button:disabled{background:var(--line);color:var(--dim);cursor:not-allowed}
+button.ghost{background:transparent;color:var(--brass);border:1px solid var(--brass)}
+button:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.stat{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 14px;min-width:104px}
+.stat .v{font-family:ui-monospace,monospace;font-size:20px;font-weight:600}
+.stat .k{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.stat.ok .v{color:var(--ok)} .stat.warn .v{color:var(--warn)} .stat.bad .v{color:var(--bad)} .stat.info .v{color:var(--info)}
+
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12.5px}
+th{color:var(--dim);text-align:left;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:6px 8px;border-bottom:1px solid var(--line)}
+td{padding:6px 8px;border-bottom:1px solid var(--line)}
+.tag{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-family:ui-monospace,monospace}
+.tag.keep{background:rgba(93,187,138,.15);color:var(--ok)}
+.tag.rev{background:rgba(228,196,65,.15);color:var(--warn)}
+.tag.rem{background:rgba(208,106,90,.15);color:var(--bad)}
+.hint{color:var(--dim);font-size:12px;margin-top:10px}
+.mvmap{display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+.mvmap.show{display:block}
+#s2go{margin-top:16px}
+.notice{background:rgba(228,196,65,.08);border:1px solid rgba(228,196,65,.35);border-radius:8px;padding:10px 13px;font-size:12.5px;color:var(--warn);margin-top:14px;display:none}
+@media(max-width:600px){.rail{gap:6px}.link{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Ascentis <em>Lead Pipeline</em></h1>
+  <p>Raw Apify scrape to Smartlead-ready master. Runs entirely in your browser, nothing is uploaded anywhere.</p>
+</header>
+
+<div class="rail" id="rail">
+  <div class="stop" data-s="scrape"><b>Scrape</b><span class="n" id="n-scrape">–</span></div><div class="link"></div>
+  <div class="stop" data-s="clean"><b>Clean</b><span class="n" id="n-clean">–</span></div><div class="link"></div>
+  <div class="stop" data-s="verify"><b>Verify</b><span class="n" id="n-verify">–</span></div><div class="link"></div>
+  <div class="stop" data-s="master"><b>Master</b><span class="n" id="n-master">–</span></div><div class="link"></div>
+  <div class="stop"><b>n8n → Smartlead</b></div>
+</div>
+
+<!-- STAGE 1 -->
+<div class="card">
+  <h2><span>01</span>Pre-check</h2>
+  <div class="sub">Twelve ordered gates. CLEANED only holds leads with a <b>proven</b> event category. Anything event-capable but unproven &mdash; golf, farms, museums, club halls, lodging &mdash; goes to HUMAN_REVIEW for a site check instead of being guessed at.</div>
+  <label class="drop" id="d1">Drop the raw Apify export here (.xlsx or .csv) or click to browse<input type="file" id="f1" accept=".xlsx,.csv"></label>
+  <div class="row">
+    <div class="field"><label for="county">County / scrape tag</label><input type="text" id="county" placeholder="Niagara"></div>
+    <button id="run1" disabled>Run pre-check</button>
+  </div>
+  <div class="row">
+    <div class="field" style="flex:1 1 100%"><label for="govdoms">Gate 2 &mdash; government / agency domains for this region (edit per scrape)</label><input type="text" id="govdoms"></div>
+  </div>
+  <div class="stats" id="stats1"></div>
+  <div id="gates1"></div>
+  <div id="preview1"></div>
+  <div class="row" id="dl1row" style="display:none"><button class="ghost" id="dl1">Download precheck workbook</button></div>
+  <div class="hint"><b>Work HUMAN_REVIEW before stage 02.</b> Open each site and keep it only on an explicit Weddings / Private Events / Banquets / Hall Rentals page. Tournaments, corporate golf outings, member socials and club calendars do not count.<br><br><b>Four things the gates cannot see</b>, so check CLEANED for them by hand: a venue that is really a room inside a hotel (check whether the domain belongs to a hotel); a festival with a venue-sounding name; a city-owned venue whose domain is not in the gate 2 list; and an officiant whose listing is tagged Wedding venue.</div>
+</div>
+
+<!-- STAGE 2 -->
+<div class="card">
+  <h2><span>02</span>Merge results</h2>
+  <div class="sub">Merges Anymailfinder results (joined on domain, both decision-maker and general inbox schemas). No leads are deleted: every CLEANED row reaches the master. Email verification happens in Smartlead at import.</div>
+  <label class="drop" id="d2a">Precheck workbook (from stage 01)<input type="file" id="f2a" accept=".xlsx"></label>
+  <div style="height:10px"></div>
+  <label class="drop" id="d2c">Anymailfinder results (.xlsx or .csv) — optional<input type="file" id="f2c" accept=".xlsx,.csv"></label>
+  <div class="row" id="s2go"><button id="run2" disabled>Build master sheet</button></div>
+  <div class="stats" id="stats2"></div>
+  <div class="notice" id="ccnote"></div>
+  <div class="row" id="dl2row" style="display:none"><button class="ghost" id="dl2">Download master workbook</button></div>
+  <div class="hint">Nothing is deleted: statuses are has_email, amf_found, amf_found_dm, cold_call, no_contact, human_review. Duplicate emails go to a DUPLICATES sheet (first occurrence kept); rows with .edu/.gov/.org emails or websites, facebook/instagram sites, or placeholder emails (filler@godaddy.com etc) go to a REMOVED sheet. Verify emails in Smartlead at import; work cold_call leads by phone.</div>
+</div>
+</div>
+
+<script>
+/* ================= Stage 1 rules — v5 =================
+   Rebuilt from the Niagara audit. Ordered gates, word-boundary matching,
+   and a hard rule: the script never KEEPs on an ambiguous category alone.
+   Anything event-capable but unproven goes to HUMAN_REVIEW for a site check. */
+
+/* word-boundary match — stops "pub" matching "public golf course",
+   "bar" matching "barn", "inn" matching "dinner", "park" matching "parking" */
+const _RE={};
+function hasTerm(hay,term){
+  let r=_RE[term];
+  if(!r) r=_RE[term]=new RegExp("(^|[^a-z0-9])"+term.replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/\s+/g,"[\\s\\-]+")+"($|[^a-z0-9])");
+  return r.test(hay);
+}
+const anyTerm=(hay,list)=>list.find(t=>hasTerm(hay,t));
+
+/* GATE 1 — alcohol. Halal income. Overrides every other signal, wedding tags included. */
+const ALCOHOL=["winery","wineries","vineyard","vineyards","estate winery","distillery","distiller","brewery","brewpub","brew pub","cidery","cider house","cider bar","meadery","wine bar","wine store","wine club","wine tasting","tasting room","liquor store","beer store","beer garden","bottle shop"];
+
+/* GATE 2 — government. Domain is the tell. Seeded for Niagara; edit the field per region. */
+const GOV_SEED="welland.ca, grimsby.ca, niagarafalls.ca, portcolborne.ca, pelham.ca, thorold.ca, forterie.ca, westlincoln.ca, stcatharines.ca, wainfleet.ca, lincoln.ca, notl.org, niagararegion.ca, niagaraparks.com, npca.ca, brocku.ca, dsbn.org, niagaracatholic.ca";
+const GOV_TLD=[".gov",".gc.ca",".on.ca",".mil"];
+const GOV_DOMPAT=["cityof","townof","countyof","municipality","conservationauthority","parkscommission","schoolboard"];
+const GOV_TERMS=["city hall","municipal","municipality","town of","city of","county of","township of","region of","regional municipality","school board","district school","public library","conservation authority","conservation area","parks commission","provincial park","national historic site","university","college","hospital","health system","public health","court house","courthouse","fire station","police"];
+
+/* GATE 3 — hotels and lodging */
+const HOTEL_HARD=["hotel","motel","resort","resort hotel","extended stay","hostel","lodging","holiday apartment","vacation rental"];
+const HOTEL_SOFT=["inn","bed & breakfast","bed and breakfast","guest house","farmstay","cottage","rv park","campground"];
+const CHAINS=["marriott","hilton","hyatt","sheraton","westin","courtyard","residence inn","hampton","embassy suites","doubletree","holiday inn","best western","ramada","days inn","super 8","comfort inn","quality inn","fairfield","la quinta","wyndham","four seasons","intercontinental","crowne plaza","ritz-carlton","waldorf","conrad","kimpton","omni hotel","loews","radisson","sofitel","candlewood","staybridge","springhill","towneplace","margaritaville","aloft","moxy","travelodge","americana"];
+
+/* Vendor and service term list (used by gate 5) */
+const VENDOR_SOFT=["event management","event management company","event planner","meeting planning service","event organiser","event organizer"];
+const VENDOR=["wedding service","wedding planner","party planner","children's party service","photographer","wedding photographer","photography studio","photography service","portrait studio","photo studio","photo booth","videographer","video production service","film production company","movie studio","television studio","recording studio","dj service","disc jockey","entertainment agency","entertainer","musician","talent agency","caterer","catering","catering food and drink supplier","florist","flower delivery","bridal shop","dress store","limousine service","tent rental service","party equipment rental service","furniture rental service","audio visual equipment supplier","invitation printing service","marketing agency","business management consultant","consultant","real estate agency","real estate agent","property management company","apartment rental agency","landscaper","construction company","home builder","interior designer","hair salon","beauty salon","day spa","health spa","spa","massage therapist","dentist","law firm","attorney","insurance agency","bank","travel agency","tour operator","bus tour agency","sightseeing tour agency","ticket seller","event ticket seller","gas station","supermarket","grocery store","garden center","garden centre","plant nursery","golf shop","golf instructor","golf cart dealer","sporting goods store","clothing store","jewelry store","gift shop","book store","shopping mall","service establishment"];
+
+/* Sports and recreation term list (used by gate 6) */
+const SPORTS_SOFT=["archery club","gun club","fishing club","shooting range","rod and gun","sportsmen","hockey club","curling club","skating club","swim club","rowing club","boat club","yacht club","canoe club","conservation club","outdoor activity organiser","softball club","bowling alley"];
+const SPORTS=["arena","stadium","ice rink","skating rink","ice skating rink","ice hockey rink","sports complex","sportsplex","sports activity location","recreation center","recreation centre","racecourse","race track","racetrack","speedway","car racing venue","off-road racing venue","go-karting venue","go kart","karting","rowing club","curling club","skating club","hockey club","hockey association","minor hockey","swim club","swimming facility","swimming pool","pickleball court","padel club","tennis court","gym","fitness center","fitness centre","bowling alley","batting cage","softball club","baseball field","soccer field","basketball court","athletic field","motorsport","archery club","gun club","shooting range","disc golf course"];
+
+/* Organization term list (used by gate 7) */
+const ORG_SOFT=["arts organization","historical society","heritage society","rotary club","kiwanis club","lions club","optimist club","fraternal organization","cultural center","cultural centre","non-profit organization","association"];
+const ORGS=["performing arts group","theater company","theatre company","theatre troupe","drama school","dance school","opera company","operatic society","concert association","arts organization","choir","band","historical society","heritage society","genealogist","charity","charitable organization","volunteer organization","youth club","scout hall","scouts","rotary club","kiwanis club","chamber of commerce","political party","labor union","trade union","social services organization","food bank","religious organization","congregation","church","mosque","temple","synagogue","cemetery","funeral home"];
+
+/* Low-ticket trap term lists (used by gate 4) */
+const ELOPE=["elope","elopement","drive through","drive-thru","drive thru","officiant","celebrant","marriage celebrant","wedding officiant","minister","justice of the peace","counselor","counsellor"];
+const HOURLY=["studio rental","rental studio","by the hour","hourly rental","coworking space","office space rental agency","meeting room rental"];
+
+/* Event-venue trap term lists (used by gate 8) */
+const FOOD=["restaurant","fine dining restaurant","family restaurant","buffet restaurant","takeout restaurant","fast food restaurant","italian restaurant","mexican restaurant","chinese restaurant","french restaurant","greek restaurant","african restaurant","american restaurant","country food restaurant","breakfast restaurant","pancake restaurant","seafood restaurant","steak house","bistro","diner","pizza restaurant","bar","bar & grill","sports bar","cocktail bar","lounge bar","wine bar","live music bar","pub","gastropub","tavern","cafe","coffee shop","coffee store","tea house","bakery","cake shop","cupcake shop","dessert shop","ice cream shop","deli","delicatessen","charcuterie","food court","juice shop"];
+const FUN=["bowling alley","video arcade","arcade","laser tag center","amusement center","children's amusement center","amusement park","indoor playground","playground","escape room center","escape room","trampoline park","miniature golf course","indoor golf course","golf driving range","paint studio","painting studio","board game club","haunted house","water park","petting zoo","zoo","aquarium","children's camp","summer camp"];
+const RETAIL=["toy store","clothing store","record store","music store","game store","hobby store","collectibles store","gift shop","sporting goods store","book store","boutique","cigar shop","shopping mall","furniture store","antique store","thrift store","convenience store","store"];
+
+/* STRONG event categories: a dedicated room is the product. A strong PRIMARY tag
+   shields a lead from the secondary-category demotions (a banquet hall with a bar
+   is still a banquet hall). WEAK ones are the over-applied "Event venue" family. */
+const STRONG_EVENT=["banquet hall","festival hall","reception hall","ballroom","function room facility","function room","convention center","convention centre","conference center","conference centre","wedding venue","wedding chapel","catering hall","fairground","retreat center","retreat centre"];
+const WEAK_EVENT=["event venue","event center","event centre","event space"];
+
+/* Explicit, provable event categories. These are the only auto-KEEPs. */
+const EVENT_CAT=["banquet hall","festival hall","reception hall","event venue","event center","event centre","event space","wedding venue","wedding chapel","conference center","conference centre","convention center","convention centre","function room facility","function room","ballroom","fairground","catering hall","retreat center","retreat centre"];
+
+/* Event-capable but unproven. These go to HUMAN_REVIEW for a site check, never straight to KEEP. */
+const AMBIGUOUS=["tourist attraction","nature preserve","hiking area","golf course","golf club","country club","public golf course","private golf course","farm","ranch","orchard","barn","garden","botanical garden","arboretum","museum","history museum","local history museum","art museum","historical landmark","historical place museum","historic site","art center","art centre","art gallery","cultural center","cultural centre","community center","community centre","senior citizen center","marina","boat club","yacht club","canoe club","conservation club","social club","private club","club","fraternal organization","masonic center","veterans organization","auditorium","concert hall","live music venue","performing arts theater","theater","theatre","amphitheater","agricultural organization","estate","manor","chateau","villa","lodge","pavilion","hall"];
+
+/* Golf that is definitively not a venue */
+const GOLF_NON_VENUE=["driving range","golf driving range","indoor golf course","golf simulator","miniature golf course","mini golf","disc golf course","golf instructor","golf academy","golf shop","golf cart dealer","practice facility"];
+const GOLF=["golf course","golf club","country club","public golf course","private golf course","golf"];
+
+/* Domains that can never be reached or are shared platforms */
+const HARD_AGG=["facebook.com","instagram.com","fb.com","fb.me","linktr.ee","linktree.ee","eventbrite.com","eventbrite.ca","sidedooraccess.com","expedia.com","expedia.ca","booking.com","tripadvisor.com","tripadvisor.ca","yelp.com","decolar.com","despegar.com","square.site","business.site","211centralsouth.ca","211ontario.ca","edan.io","betfuryx.com","eliteplaypalace.com"];
+const UMBRELLA=["legion.ca","mooseintl.org","e-clubhouse.org","kofc.org","familysearch.org","kaneffgolf.com"];
+
+const CAT_COLS=["categories/0","categories/1","categories/2","categories/3","categories/4","categories/5"];
+const norm=v=>(v==null?"":String(v)).trim().toLowerCase();
+const normDomain=d=>norm(d).replace(/^https?:\/\//,"").replace(/^www\./,"").split("/")[0];
+
+let GOV_DOMS=[];
+function setGovDomains(str){
+  GOV_DOMS=(str||"").split(/[,\s]+/).map(s=>normDomain(s)).filter(Boolean);
+}
+
+function classify(r){
+  const cats=CAT_COLS.map(c=>norm(r[c])).filter(Boolean);
+  const catStr=cats.join(" | ");
+  const primary=cats[0]||"";
+  const title=norm(r.title);
+  const site=norm(r.website);
+  const dom=normDomain(r.domain||r.website);
+  const blob=title+" | "+catStr;
+  const hasWedding=hasTerm(blob,"wedding")||hasTerm(blob,"weddings");
+  const eventCat=anyTerm(catStr,EVENT_CAT);
+  const R=(v,reason,gate)=>[v,reason,gate];
+
+  /* GATE 0 — unreachable listings */
+  for(const a of HARD_AGG) if(dom===a||dom.endsWith("."+a)) return R("REMOVE","unreachable listing domain ("+a+"), outreach never lands","G0 unreachable");
+  for(const u of UMBRELLA) if(dom===u) return R("REVIEW","umbrella/shared domain ("+u+") — confirm this branch has its own site","G0 unreachable");
+
+  /* GATE 1 — alcohol */
+  const al=anyTerm(blob,ALCOHOL);
+  if(al) return R("REMOVE","alcohol producer/retailer ("+al+") — halal income exclusion","G1 alcohol");
+
+  /* GATE 2 — government */
+  for(const d of GOV_DOMS) if(dom===d||dom.endsWith("."+d)) return R("REMOVE","government-owned domain ("+d+")","G2 government");
+  for(const t of GOV_TLD) if(dom.endsWith(t)||site.includes(t+"/")) return R("REMOVE","government TLD ("+t+")","G2 government");
+  if(dom.endsWith(".edu")||site.includes(".edu/")) return R("REMOVE","education domain (.edu)","G2 government");
+  for(const p of GOV_DOMPAT) if(dom.replace(/[^a-z]/g,"").includes(p)) return R("REMOVE","government domain pattern ("+p+")","G2 government");
+  const gv=anyTerm(blob,GOV_TERMS);
+  if(gv) return R("REMOVE","government/public institution ("+gv+")","G2 government");
+
+  /* GATE 3 — hotels and lodging. Applies even with a wedding venue tag. */
+  const ch=CHAINS.find(c=>hasTerm(title,c)||dom.replace(/[^a-z]/g,"").includes(c.replace(/[^a-z]/g,"")));
+  if(ch) return R("REMOVE","hotel chain ("+ch+")","G3 hotel");
+  const hh=cats.map(c=>anyTerm(c,HOTEL_HARD)).find(Boolean);
+  if(hh) return R("REMOVE","hotel/lodging category ("+hh+") — excluded even with a wedding venue tag","G3 hotel");
+  const hs=cats.map(c=>anyTerm(c,HOTEL_SOFT)).find(Boolean);
+  if(hs) return R("REVIEW","soft lodging category ("+hs+") — keep only if event space is a named part of the business, not a room-night business","G3 hotel");
+
+  /* GATE 4 — low-ticket wedding traps. Runs before the vendor gate so
+     elopement businesses are removed rather than sent to review. */
+  const el=anyTerm(blob,ELOPE);
+  if(el) return R("REMOVE","elopement/officiant business ("+el+") — low ticket, no venue tour","G4 low ticket");
+  const hrl=anyTerm(blob,HOURLY);
+  if(hrl) return R("REMOVE","hourly/desk rental ("+hrl+") — low ticket","G4 low ticket");
+
+  /* A proven event category as the PRIMARY tag protects a lead from the
+     secondary-category demotions below. Ballrooms cater, legion halls have bars,
+     club halls run softball leagues — none of that makes them a vendor. */
+  const primaryIsStrong=!!anyTerm(primary,STRONG_EVENT);
+
+  /* GATE 5 — vendors and service businesses */
+  const vsoft=anyTerm(primary,VENDOR_SOFT);
+  if(vsoft) return R("REVIEW","tagged "+vsoft+" — often a real venue mis-tagged, check the site","G5 vendor");
+  const vp=anyTerm(primary,VENDOR);
+  if(vp) return R("REMOVE","vendor/service primary category ("+vp+")","G5 vendor");
+  if(!primaryIsStrong){
+    const vs=anyTerm(catStr,VENDOR);
+    if(vs&&!eventCat) return R("REMOVE","vendor/service category ("+vs+"), no event-space category","G5 vendor");
+    if(vs&&eventCat) return R("REVIEW","vendor category ("+vs+") alongside "+eventCat+" — confirm it rents space rather than selling a service","G5 vendor");
+  }
+
+  /* GATE 6 — sports and recreation rentals */
+  if(!primaryIsStrong){
+    const ssoft=anyTerm(blob,SPORTS_SOFT);
+    if(ssoft) return R("REVIEW","members' sports club ("+ssoft+") — check for a hall-rental page; the hall can be the lead even when the sport is not","G6 sports");
+    const sp=anyTerm(catStr,SPORTS);
+    if(sp&&!eventCat) return R("REMOVE","sports/recreation rental ("+sp+") — hourly bookings, no venue tours","G6 sports");
+    if(sp&&eventCat) return R("REVIEW","sports facility ("+sp+") with "+eventCat+" — keep only if the hall is marketed separately for weddings","G6 sports");
+  }
+
+  /* GATE 7 — organizations that produce events rather than rent space */
+  if(hasTerm(blob,"festival")&&!eventCat) return R("REMOVE","festival — an event, not a venue","G7 organization");
+  if(hasTerm(blob,"festival")&&eventCat) return R("REVIEW","festival wording alongside "+eventCat+" — confirm it is the venue, not the event","G7 organization");
+  if(!primaryIsStrong){
+    const osoft=anyTerm(blob,ORG_SOFT);
+    if(osoft) return R("REVIEW","member/arts organization ("+osoft+") — these often rent a hall, check the site","G7 organization");
+    const og=anyTerm(blob,ORGS);
+    if(og&&!eventCat) return R("REMOVE","organization not a facility ("+og+")","G7 organization");
+    if(og&&eventCat) return R("REVIEW","organization ("+og+") with "+eventCat+" — confirm it rents a hall to outside clients","G7 organization");
+  }
+
+  /* GATE 8 — event-venue trap: read the secondary categories */
+  if(eventCat){
+    const f=anyTerm(catStr,FOOD),fn=anyTerm(catStr,FUN),rt=anyTerm(catStr,RETAIL);
+    const named=hasTerm(title,"banquet")||hasTerm(title,"event centre")||hasTerm(title,"event center")||hasTerm(title,"ballroom")||hasTerm(title,"reception");
+    const hasStrong=!!anyTerm(catStr,STRONG_EVENT);
+    const isGolf=!!(anyTerm(catStr,GOLF)||anyTerm(title,GOLF));
+    if(isGolf&&!hasStrong) return R("REVIEW","golf club with an event tag — check the site for a Weddings / Banquets page. Tournaments and corporate outings do NOT count","G9 golf");
+    const coName=["productions","production","media","dynamics","studios","enterprises","solutions","services inc","group inc"].find(w=>hasTerm(title,w));
+    if(coName&&!hasStrong) return R("REVIEW","company-style name (\""+coName+"\") on a weak event tag — confirm it operates a venue rather than selling a service","G8 event-venue trap");
+    if((f||fn||rt)&&!named&&!hasStrong){
+      const w=f||fn||rt;
+      return R("REMOVE","food/fun/retail business ("+w+") with an event-venue tag — not a dedicated venue","G8 event-venue trap");
+    }
+    if(dom.endsWith(".org")&&!hasWedding) return R("REVIEW",eventCat+" on a .org domain — confirm it is not a non-profit or municipal hall","G8 event-venue trap");
+    const onlyChapel=cats.every(c=>{const e=anyTerm(c,EVENT_CAT);return !e||e==="wedding chapel"})&&hasTerm(catStr,"wedding chapel");
+    if(onlyChapel) return R("REVIEW","standalone wedding chapel — usually an elopement business, confirm it has reception capacity","G8 event-venue trap");
+    return R("KEEP","explicit event category: "+eventCat,"KEEP");
+  }
+
+  /* GATE 9 — golf */
+  const gnv=anyTerm(catStr,GOLF_NON_VENUE);
+  if(gnv) return R("REMOVE","golf practice/retail, not a venue ("+gnv+")","G9 golf");
+  const gf=anyTerm(catStr,GOLF)||anyTerm(title,GOLF);
+  if(gf) return R("REVIEW","golf-only categories ("+gf+") — check the site for a Weddings / Banquets / Private Events page before keeping. Tournaments and corporate outings do NOT count","G9 golf");
+
+  /* GATE 10 — event-capable but unproven */
+  const am=anyTerm(catStr,AMBIGUOUS);
+  if(am) return R("REVIEW","event-capable but unproven ("+am+") — check the site for a Weddings / Private Events / Hall Rentals page","G10 unproven");
+
+  /* GATE 11 — wedding wording with nothing else to go on */
+  if(hasWedding) return R("REVIEW","wedding wording but no event category — confirm it is a venue, not a vendor","G11 fallback");
+
+  return R("REVIEW","no clear signal — check the site","G11 fallback");
+}
+
+const ROLE_PRI = ["events","event","weddings","wedding","sales","booking","bookings","info","contact","hello","inquiries","enquiries","reservations","office","admin","frontdesk"];
+const ROLE_ALL = new Set([...ROLE_PRI,"marketing","press","media","hr","jobs","careers","support","noreply","no-reply","accounting","billing"]);
+const FINAL_COLS = ["placeId","title","domain","categories/0","categories/1","categories/2","categories/3","categories/4","categories/5","County","emails/0","phone","phones/0","website","verification status","icebreaker","shortened name"];
+
+function pickEmail(emails){
+  if(!emails.length) return ["",false,"no email"];
+  if(emails.length===1) return [emails[0],false,"single email"];
+  const role=[],named=[];
+  for(const e of emails){
+    const lp=e.split("@")[0].toLowerCase(), lc=lp.replace(/[^a-z]/g,"");
+    (ROLE_ALL.has(lc)||ROLE_ALL.has(lp)?role:named).push(e);
+  }
+  if(role.length){
+    for(const p of ROLE_PRI) for(const e of role)
+      if(e.split("@")[0].toLowerCase().startsWith(p))
+        return named.length?[e,true,"role email picked but named-person emails exist"]:[e,false,"role priority: "+p];
+    if(!named.length) return [role[0],false,"first role email"];
+  }
+  return [named[0]||emails[0],true,"multiple named-person emails, verify correct contact"];
+}
+
+/* ================= UI plumbing ================= */
+function wireDrop(dropId,inputId,onFile){
+  const d=document.getElementById(dropId),f=document.getElementById(inputId);
+  d.addEventListener("dragover",e=>{e.preventDefault();d.classList.add("over")});
+  d.addEventListener("dragleave",()=>d.classList.remove("over"));
+  d.addEventListener("drop",e=>{e.preventDefault();d.classList.remove("over");if(e.dataTransfer.files[0])handle(e.dataTransfer.files[0])});
+  f.addEventListener("change",()=>f.files[0]&&handle(f.files[0]));
+  function handle(file){
+    const rd=new FileReader();
+    rd.onload=ev=>{try{
+      const wb=XLSX.read(new Uint8Array(ev.target.result),{type:"array"});
+      d.classList.add("loaded"); d.firstChild.textContent="✓ "+file.name;
+      onFile(wb,file.name);
+    }catch(err){alert("Could not read "+file.name+": "+err.message)}};
+    rd.readAsArrayBuffer(file);
+  }
+}
+const GATE_DESC={"G0":"facebook/instagram, aggregators, umbrella domains, no website",
+"G1":"wineries, distilleries, breweries, cideries \u2014 halal income exclusion",
+"G2":"municipal, regional, parks agency, conservation authority, school board, university, hospital",
+"G3":"hotels, motels, resorts (removed); inns, B&Bs, guest houses (review)",
+"G4":"elopement chapels, officiants, drive-through kiosks, hourly studio rental",
+"G5":"photographers, planners, florists, DJs, caterers, retail, real estate",
+"G6":"arenas, rinks, speedways, sports complexes (removed); members' clubs with halls (review)",
+"G7":"festivals, theatre companies, leagues, congregations (removed); service clubs and arts orgs (review)",
+"G8":"food/fun/retail businesses carrying an Event venue tag",
+"G9":"golf with no proven event page; driving ranges and simulators",
+"G10":"farms, museums, halls, estates, clubs \u2014 event-capable but unproven",
+"G11":"no clear signal","duplicate":"same email already kept on another row","email":"multiple named contacts, pick one"};
+function stat(el,items){el.innerHTML=items.map(([k,v,c])=>`<div class="stat ${c||""}"><div class="v">${v}</div><div class="k">${k}</div></div>`).join("")}
+function light(stop,val){document.querySelector(`[data-s=${stop}]`).classList.add("lit");document.getElementById("n-"+stop).textContent=val}
+function dlWB(wb,name){XLSX.writeFile(wb,name)}
+
+/* ================= Stage 1 ================= */
+let rawWB=null, pre=null, county="";
+document.getElementById("govdoms").value=GOV_SEED;
+wireDrop("d1","f1",(wb)=>{rawWB=wb;check1()});
+document.getElementById("county").addEventListener("input",check1);
+function check1(){document.getElementById("run1").disabled=!(rawWB&&document.getElementById("county").value.trim())}
+
+document.getElementById("run1").onclick=()=>{
+  county=document.getElementById("county").value.trim();
+  setGovDomains(document.getElementById("govdoms").value);
+  const ws=rawWB.Sheets[rawWB.SheetNames[0]];
+  const rows=XLSX.utils.sheet_to_json(ws,{defval:""});
+  light("scrape",rows.length);
+  const emailCols=Object.keys(rows[0]||{}).filter(c=>/^emails\/\d+$/.test(c)).sort((a,b)=>+a.split("/")[1]-+b.split("/")[1]);
+  const keep=[],review=[],removed=[];
+  for(const row of rows){
+    const emails=[]; const seen=new Set();
+    for(const c of emailCols){const v=norm(row[c]); if(v&&v.includes("@")&&!seen.has(v)){seen.add(v);emails.push(v)}}
+    let [verdict,reason,gate]=classify(row);
+    if(emails.length>=20){verdict="REMOVE";reason=`bulk emails (${emails.length}): corp/gov mailbox dump`;gate="G2 government"}
+    let chosen="",needsRev=false,eReason="no email";
+    if(verdict!=="REMOVE")[chosen,needsRev,eReason]=pickEmail(emails);
+    if(chosen&&chosen.split("@")[1]&&chosen.split("@")[1].endsWith(".edu")){verdict="REMOVE";reason="education email (.edu): "+chosen}
+    const base={placeId:row.placeId||"",title:row.title||"",domain:normDomain(row.domain||"")};
+    CAT_COLS.forEach(c=>base[c]=row[c]||"");
+    Object.assign(base,{County:county,"emails/0":chosen,phone:row.phone||"","phones/0":row["phones/0"]||"",website:row.website||""});
+    if(verdict==="REMOVE") removed.push({...base,gate,remove_reason:reason});
+    else if(verdict==="REVIEW"||needsRev) review.push({...base,gate:verdict==="REVIEW"?gate:"email ambiguity",classify_reason:reason,email_reason:eReason,all_emails:emails.join(", ")});
+    else if(!chosen && !norm(base.website)) removed.push({...base,gate:"G0 unreachable",remove_reason:"no email and no website, nothing to pitch"});
+    else keep.push({...base,gate,classify_reason:reason,email_reason:eReason});
+  }
+  keep.sort((a,b)=>(b["emails/0"]?1:0)-(a["emails/0"]?1:0)); // emails at top: verify those, hunt the rest
+  // dedupe: same email across different rows, first occurrence wins
+  const seenEmails=new Map();
+  const dedupedKeep=[];
+  for(const r of keep){
+    const e=norm(r["emails/0"]);
+    if(e&&seenEmails.has(e)){removed.push({...r,gate:"duplicate",remove_reason:"duplicate email, kept under: "+seenEmails.get(e)});continue}
+    if(e)seenEmails.set(e,r.title);
+    dedupedKeep.push(r);
+  }
+  keep.length=0; keep.push(...dedupedKeep);
+  const withEmail=keep.filter(r=>r["emails/0"]).length;
+  pre={keep,review,removed};
+
+  stat(document.getElementById("stats1"),[
+    ["Cleaned",keep.length,"ok"],["With email",withEmail,"info"],["No email",keep.length-withEmail,"info"],
+    ["Human review",review.length,"warn"],["Removed",removed.length,"bad"]]);
+  light("clean",keep.length+review.length);
+
+  const gc={}; [...review,...removed].forEach(r=>{const g=r.gate||"other";gc[g]=(gc[g]||0)+1});
+  const order=Object.entries(gc).sort((a,b)=>b[1]-a[1]);
+  document.getElementById("gates1").innerHTML=order.length?
+    "<table><tr><th>Gate</th><th>Rows</th><th>What it caught</th></tr>"+
+    order.map(([g,n])=>{const k=g.split(" ")[0];const rem=["G0","G1","G2","G3"].includes(k)||g==="duplicate";
+      return `<tr><td><span class="tag ${rem?"rem":"rev"}">${g}</span></td><td>${n}</td><td>${GATE_DESC[k]||""}</td></tr>`}).join("")+"</table>":"";
+
+  const pv=document.getElementById("preview1");
+  const revRows=review.slice(0,8).map(r=>`<tr><td>${r.title}</td><td><span class="tag rev">REVIEW</span></td><td>${r.classify_reason}${r.email_reason&&r.email_reason!=="no email"?" · "+r.email_reason:""}</td></tr>`).join("");
+  const remRows=removed.slice(0,6).map(r=>`<tr><td>${r.title}</td><td><span class="tag rem">REMOVE</span></td><td>${r.remove_reason}</td></tr>`).join("");
+  pv.innerHTML=(review.length||removed.length)?`<table><tr><th>Lead</th><th>Verdict</th><th>Reason</th></tr>${revRows}${remRows}</table>`:"";
+  document.getElementById("dl1row").style.display="flex";
+};
+document.getElementById("dl1").onclick=()=>{
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(pre.keep.length?pre.keep:[{}]),"CLEANED");
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(pre.review.length?pre.review:[{}]),"HUMAN_REVIEW");
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(pre.removed.length?pre.removed:[{}]),"REMOVED");
+  dlWB(wb,county+"_precheck.xlsx");
+};
+
+/* ================= Stage 2 ================= */
+let preWB=null,amfWB=null;
+wireDrop("d2a","f2a",wb=>{preWB=wb;check2()});
+wireDrop("d2c","f2c",wb=>{amfWB=wb;check2()});
+function check2(){document.getElementById("run2").disabled=!preWB}
+
+document.getElementById("run2").onclick=()=>{
+  const cleaned=XLSX.utils.sheet_to_json(preWB.Sheets["CLEANED"]||{},{defval:""});
+  const review=preWB.Sheets["HUMAN_REVIEW"]?XLSX.utils.sheet_to_json(preWB.Sheets["HUMAN_REVIEW"],{defval:""}):[];
+  // AMF lookup: scans ALL sheets, handles both schemas.
+  // Decision-maker search: valid_email_only (+person_name). General inbox search: one_valid_email_only.
+  // Decision-maker emails beat general inboxes for the same domain (Owner/CEO > general inbox).
+  const amf={};
+  if(amfWB){
+    const eduOk=e=>{if(!e.includes("@"))return false;const d=e.split("@")[1];return !(d.endsWith(".edu")||d.endsWith(".gov")||d.endsWith(".org"))};
+    for(const sh of amfWB.SheetNames){
+      const rows=XLSX.utils.sheet_to_json(amfWB.Sheets[sh],{defval:""});
+      if(!rows.length)continue;
+      const lower=r=>Object.fromEntries(Object.entries(r).map(([k,v])=>[k.trim().toLowerCase(),v]));
+      const hdr=Object.keys(lower(rows[0]));
+      const isDM=hdr.includes("valid_email_only")&&!hdr.includes("one_valid_email_only");
+      const isGen=hdr.includes("one_valid_email_only");
+      if(!isDM&&!isGen)continue; // not an AMF sheet, skip (e.g. CLEANED tab in same workbook)
+      for(const raw of rows){
+        const r=lower(raw); const d=normDomain(r.domain||""); if(!d)continue;
+        const e=norm(isDM?(r.valid_email_only||""):(r.one_valid_email_only||""));
+        const found=eduOk(e)?e:"";
+        const st=norm(r.amf_status||"");
+        const prev=amf[d];
+        if(isDM){
+          if(found) amf[d]=[found,st,"dm"];          // decision-maker always wins
+          else if(!prev) amf[d]=["",st,"dm"];
+        } else {
+          if(!prev||(!prev[0]&&found)) amf[d]=[found,st,"gen"]; // general fills gaps only
+        }
+      }
+    }
+  }
+  const BASE=FINAL_COLS.slice(0,14);
+  const master=[];
+  for(const row of cleaned){
+    const r={}; BASE.forEach(c=>r[c]=row[c]??""); r.icebreaker="";r["shortened name"]="";r.note="";
+    const email=norm(r["emails/0"]), dom=normDomain(r.domain||r.website), phone=String(r.phone||r["phones/0"]||"").trim();
+    if(email){r["verification status"]="has_email"}
+    else{
+      const [found,st,src]=amf[dom]||["","",""];
+      if(found){r["emails/0"]=found;r["verification status"]=src==="dm"?"amf_found_dm":"amf_found"}
+      else if(phone){r["verification status"]="cold_call"}
+      else{r["verification status"]="no_contact"}
+    }
+    master.push(r);
+  }
+  for(const row of review){
+    const r={}; BASE.forEach(c=>r[c]=row[c]??"");
+    r["verification status"]="human_review"; r.icebreaker="";r["shortened name"]="";r.note="";
+    master.push(r);
+  }
+  // banish rows with .edu/.gov/.org emails OR websites to the REMOVED sheet
+  const badTld=v=>{const x=norm(v);return x.endsWith(".edu")||x.endsWith(".gov")||x.endsWith(".org")};
+  const SOCIAL=["facebook.com","instagram.com","fb.com","fb.me","linktr.ee"];
+  const PLACEHOLDER=["godaddy.com","wixpress.com","sentry.io","example.com","domain.com","mysite.com","website.com","sentry.wixpress.com"];
+  const removed2=[]; const surv=[];
+  for(const r of master){
+    const email=norm(r["emails/0"]);
+    const eDom=email.includes("@")?email.split("@")[1]:"";
+    const eLocal=email.includes("@")?email.split("@")[0]:"";
+    const wDom=normDomain(r.domain||r.website||"");
+    const site=norm(r.website||"");
+    let hit="";
+    if(eDom&&badTld(eDom)) hit="email domain ."+eDom.split(".").pop();
+    else if(eDom&&(PLACEHOLDER.some(p=>eDom===p||eDom.endsWith("."+p))||eLocal==="filler")) hit="placeholder email: "+email;
+    else if(SOCIAL.some(sm=>wDom===sm||wDom.endsWith("."+sm))) hit="social media website: "+wDom;
+    else if((wDom&&badTld(wDom))||/\.(edu|gov|org)(\/|$)/.test(site)) hit="website ."+(badTld(wDom)?wDom.split(".").pop():site.match(/\.(edu|gov|org)(\/|$)/)[1]);
+    if(hit){r.note="removed: "+hit;removed2.push(r)}
+    else surv.push(r);
+  }
+  master.length=0; master.push(...surv);
+  window._removed2=removed2;
+
+  // duplicate emails: first occurrence stays in MASTER, the rest are banished to the DUPLICATES sheet
+  const seenDup=new Map(); const kept=[]; const duplicates=[];
+  for(const r of master){
+    const e=norm(r["emails/0"]);
+    if(e&&seenDup.has(e)){
+      r.note="duplicate email, kept under: "+seenDup.get(e);
+      duplicates.push(r); continue;
+    }
+    if(e)seenDup.set(e,r.title);
+    kept.push(r);
+  }
+  const dupCount=duplicates.length;
+  master.length=0; master.push(...kept);
+  window._master=master; window._duplicates=duplicates;
+  const counts={}; master.forEach(r=>counts[r["verification status"]]=(counts[r["verification status"]]||0)+1);
+  stat(document.getElementById("stats2"),[
+    ["Master",master.length,"ok"],
+    ["Has email",counts.has_email||0,"ok"],
+    ["AMF found",(counts.amf_found||0)+(counts.amf_found_dm||0),"info"],
+    ["Cold call",counts.cold_call||0,"warn"],
+    ["No contact",counts.no_contact||0,"warn"],
+    ["Human review",counts.human_review||0,"warn"],
+    ["Banished dupes",dupCount,"bad"],
+    ["Removed (edu/gov/org/social/filler)",removed2.length,"bad"]]);
+  light("verify",(counts.has_email||0)+(counts.amf_found||0)+(counts.amf_found_dm||0));
+  light("master",master.length);
+  const cc=counts.cold_call||0, nt=document.getElementById("ccnote");
+  if(cc||dupCount){nt.style.display="block";nt.textContent=(cc?cc+" cold call lead"+(cc>1?"s":"")+" (work by phone). ":"")+(dupCount?dupCount+" duplicate-email row"+(dupCount>1?"s":"")+" banished to the DUPLICATES sheet.":"")}
+  document.getElementById("dl2row").style.display="flex";
+};
+document.getElementById("dl2").onclick=()=>{
+  const wb=XLSX.utils.book_new();
+  const cols=[...FINAL_COLS,"note"];
+  const m=window._master.map(r=>{const o={};cols.forEach(c=>o[c]=r[c]??"");return o});
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(m.length?m:[{}]),"MASTER");
+  const d=(window._duplicates||[]).map(r=>{const o={};cols.forEach(c=>o[c]=r[c]??"");return o});
+  if(d.length)XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d),"DUPLICATES");
+  const rm=(window._removed2||[]).map(r=>{const o={};cols.forEach(c=>o[c]=r[c]??"");return o});
+  if(rm.length)XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rm),"REMOVED");
+  const c=(m[0]&&m[0].County)||"leads";
+  dlWB(wb,c+"_master.xlsx");
+};
+</script>
+</body>
+</html>
