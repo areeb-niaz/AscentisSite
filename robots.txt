@@ -1,5 +1,7 @@
 # https://ascentislabs.com/robots.txt
 
+Sitemap: https://ascentislabs.com/sitemap.xml
+
 User-agent: *
 Allow: /
 

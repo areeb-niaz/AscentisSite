@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Public pages only. The venue demo, the lead pipeline pages and the
+  navbar/footer fragments are excluded here and in robots.txt.
+  URLs keep the .html suffix to match how the site links to itself.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ascentislabs.com/</loc>
+    <lastmod>2026-07-16</lastmod>
+  </url>
+  <url>
+    <loc>https://ascentislabs.com/solutions.html</loc>
+    <lastmod>2026-07-16</lastmod>
+  </url>
+  <url>
+    <loc>https://ascentislabs.com/privacy.html</loc>
+    <lastmod>2026-03-02</lastmod>
+  </url>
+  <url>
+    <loc>https://ascentislabs.com/terms.html</loc>
+    <lastmod>2026-03-02</lastmod>
+  </url>
+</urlset>
