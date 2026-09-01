@@ -1,0 +1,19 @@
+# https://ascentislabs.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Client demo. It carries another business's name and branding, so keeping
+# it out of search stops it competing with that venue's own site.
+# GitHub Pages serves this at both paths, so both are listed.
+Disallow: /venue-demo
+Disallow: /venue-demo.html
+Disallow: /assets/maple-grove/
+
+# Internal working pages, not part of the public site.
+Disallow: /ascentis_lead_pipeline_4.html
+Disallow: /ascentis_lead_pipeline_5.html
+
+# Fragments injected into other pages; nothing to index on their own.
+Disallow: /navbar.html
+Disallow: /footer.html
