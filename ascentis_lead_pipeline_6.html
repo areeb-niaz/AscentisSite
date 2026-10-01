@@ -116,7 +116,7 @@ td{padding:6px 8px;border-bottom:1px solid var(--line)}
   <div class="stats" id="stats2"></div>
   <div class="notice" id="ccnote"></div>
   <div class="row" id="dl2row" style="display:none"><button class="ghost" id="dl2">Download master workbook</button></div>
-  <div class="hint">Nothing is deleted: statuses are has_email, amf_found, amf_found_dm, cold_call, no_contact, human_review. Duplicate emails go to a DUPLICATES sheet (first occurrence kept); rows with .edu/.gov/.org emails or websites, facebook/instagram sites, or placeholder emails (filler@godaddy.com etc) go to a REMOVED sheet. Verify emails in Smartlead at import; work cold_call leads by phone.</div>
+  <div class="hint">Nothing is deleted: statuses are has_email, amf_found, amf_found_dm, cold_call, no_contact. Only the CLEANED tab is read, so paste approved HUMAN_REVIEW rows into CLEANED first. Duplicate emails and duplicate domains go to a DUPLICATES sheet (the row with the best contact is kept); rows with .edu/.gov emails or websites, facebook/instagram sites, or placeholder emails (filler@godaddy.com etc) go to a REMOVED sheet. Verify emails in Smartlead at import; work cold_call leads by phone.</div>
 </div>
 </div>
 
@@ -148,7 +148,14 @@ const GOV_TERMS=["city hall","municipal","municipality","town of","city of","cou
 /* GATE 3 — hotels and lodging */
 const HOTEL_HARD=["hotel","motel","resort","resort hotel","extended stay","hostel","lodging","holiday apartment","vacation rental"];
 const HOTEL_SOFT=["inn","bed & breakfast","bed and breakfast","guest house","farmstay","cottage","rv park","campground"];
-const CHAINS=["marriott","hilton","hyatt","sheraton","westin","courtyard","residence inn","hampton","embassy suites","doubletree","holiday inn","best western","ramada","days inn","super 8","comfort inn","quality inn","fairfield","la quinta","wyndham","four seasons","intercontinental","crowne plaza","ritz-carlton","waldorf","conrad","kimpton","omni hotel","loews","radisson","sofitel","candlewood","staybridge","springhill","towneplace","margaritaville","aloft","moxy","travelodge","americana"];
+/* Chain brands that are never anything but a hotel: a title match alone removes. */
+const CHAINS=["marriott","hilton","hyatt","sheraton","westin","residence inn","embassy suites","doubletree","holiday inn","holiday inn express","best western","ramada","days inn","super 8","comfort inn","quality inn","la quinta","wyndham","intercontinental","crowne plaza","ritz-carlton","radisson","sofitel","novotel","fairmont","delta hotels","candlewood suites","staybridge suites","travelodge"];
+/* Brands that are also ordinary words (a "Courtyard Banquet Hall" is not a Marriott):
+   only removed when the title also says hotel / inn / suites / "by marriott" etc. */
+const CHAINS_WORDY=["courtyard","fairfield","hampton","springhill","towneplace","four seasons","waldorf","conrad","kimpton","omni","loews","aloft","moxy","margaritaville","americana"];
+const HOTEL_WORDS=["hotel","hotels","inn","suites","resort","by marriott","by hilton","by hyatt","by ihg","by wyndham"];
+/* Chain-owned booking domains: a listing on one of these is a hotel whatever the title says. */
+const CHAIN_DOMS=["marriott.com","hilton.com","hyatt.com","ihg.com","wyndhamhotels.com","choicehotels.com","bestwestern.com","radissonhotels.com","accor.com","fairmont.com","fourseasons.com","omnihotels.com","loewshotels.com","sandmanhotels.com"];
 
 /* Vendor and service term list (used by gate 5) */
 const VENDOR_SOFT=["event management","event management company","event planner","meeting planning service","event organiser","event organizer"];
@@ -229,7 +236,9 @@ function classify(r){
   if(gv) return R("REMOVE","government/public institution ("+gv+")","G2 government");
 
   /* GATE 3 — hotels and lodging. Applies even with a wedding venue tag. */
-  const ch=CHAINS.find(c=>hasTerm(title,c)||dom.replace(/[^a-z]/g,"").includes(c.replace(/[^a-z]/g,"")));
+  const chd=CHAIN_DOMS.find(d=>dom===d||dom.endsWith("."+d));
+  if(chd) return R("REMOVE","hotel chain domain ("+chd+")","G3 hotel");
+  const ch=CHAINS.find(c=>hasTerm(title,c))||(anyTerm(title,HOTEL_WORDS)&&CHAINS_WORDY.find(c=>hasTerm(title,c)));
   if(ch) return R("REMOVE","hotel chain ("+ch+")","G3 hotel");
   const hh=cats.map(c=>anyTerm(c,HOTEL_HARD)).find(Boolean);
   if(hh) return R("REMOVE","hotel/lodging category ("+hh+") — excluded even with a wedding venue tag","G3 hotel");
@@ -447,7 +456,7 @@ function check2(){document.getElementById("run2").disabled=!preWB}
 
 document.getElementById("run2").onclick=()=>{
   const cleaned=XLSX.utils.sheet_to_json(preWB.Sheets["CLEANED"]||{},{defval:""});
-  const review=preWB.Sheets["HUMAN_REVIEW"]?XLSX.utils.sheet_to_json(preWB.Sheets["HUMAN_REVIEW"],{defval:""}):[];
+  // HUMAN_REVIEW is ignored: approved rows are pasted into CLEANED before this stage.
   // AMF lookup: scans ALL sheets, handles both schemas.
   // Decision-maker search: valid_email_only (+person_name). General inbox search: one_valid_email_only.
   // Decision-maker emails beat general inboxes for the same domain (Owner/CEO > general inbox).
@@ -491,13 +500,11 @@ document.getElementById("run2").onclick=()=>{
     }
     master.push(r);
   }
-  for(const row of review){
-    const r={}; BASE.forEach(c=>r[c]=row[c]??"");
-    r["verification status"]="human_review"; r.icebreaker="";r["shortened name"]="";r.note="";
-    master.push(r);
-  }
-  // banish rows with .edu/.gov/.org emails OR websites to the REMOVED sheet
-  const badTld=v=>{const x=norm(v);return x.endsWith(".edu")||x.endsWith(".gov")||x.endsWith(".org")};
+  // safety net, mainly for Anymailfinder emails and rows pasted in from HUMAN_REVIEW:
+  // banish rows with .edu/.gov emails OR websites to the REMOVED sheet.
+  // .org is allowed: cultural clubs and legion halls live on .org, and stage 01 already
+  // sends .org venues to HUMAN_REVIEW and catches municipal ones by domain.
+  const badTld=v=>{const x=norm(v);return x.endsWith(".edu")||x.endsWith(".gov")};
   const SOCIAL=["facebook.com","instagram.com","fb.com","fb.me","linktr.ee"];
   const PLACEHOLDER=["godaddy.com","wixpress.com","sentry.io","example.com","domain.com","mysite.com","website.com","sentry.wixpress.com"];
   const removed2=[]; const surv=[];
@@ -511,7 +518,7 @@ document.getElementById("run2").onclick=()=>{
     if(eDom&&badTld(eDom)) hit="email domain ."+eDom.split(".").pop();
     else if(eDom&&(PLACEHOLDER.some(p=>eDom===p||eDom.endsWith("."+p))||eLocal==="filler")) hit="placeholder email: "+email;
     else if(SOCIAL.some(sm=>wDom===sm||wDom.endsWith("."+sm))) hit="social media website: "+wDom;
-    else if((wDom&&badTld(wDom))||/\.(edu|gov|org)(\/|$)/.test(site)) hit="website ."+(badTld(wDom)?wDom.split(".").pop():site.match(/\.(edu|gov|org)(\/|$)/)[1]);
+    else if((wDom&&badTld(wDom))||/\.(edu|gov)(\/|$)/.test(site)) hit="website ."+(badTld(wDom)?wDom.split(".").pop():site.match(/\.(edu|gov)(\/|$)/)[1]);
     if(hit){r.note="removed: "+hit;removed2.push(r)}
     else surv.push(r);
   }
@@ -529,6 +536,18 @@ document.getElementById("run2").onclick=()=>{
     if(e)seenDup.set(e,r.title);
     kept.push(r);
   }
+  // duplicate domains: one venue, two listings. Keep the row with the best contact
+  // (email > AMF general > phone > nothing), first occurrence on a tie.
+  const RANK={has_email:0,amf_found_dm:0,amf_found:1,cold_call:2,no_contact:3};
+  const rk=r=>RANK[r["verification status"]]??9;
+  const bestByDom=new Map();
+  kept.forEach((r,i)=>{const d=normDomain(r.domain||r.website);if(!d)return;
+    const b=bestByDom.get(d); if(b===undefined||rk(r)<rk(kept[b]))bestByDom.set(d,i)});
+  const keptDom=[];
+  kept.forEach((r,i)=>{const d=normDomain(r.domain||r.website);
+    if(d&&bestByDom.get(d)!==i){r.note="duplicate domain ("+d+"), kept under: "+kept[bestByDom.get(d)].title;duplicates.push(r)}
+    else keptDom.push(r)});
+  kept.length=0; kept.push(...keptDom);
   const dupCount=duplicates.length;
   master.length=0; master.push(...kept);
   window._master=master; window._duplicates=duplicates;
@@ -539,13 +558,12 @@ document.getElementById("run2").onclick=()=>{
     ["AMF found",(counts.amf_found||0)+(counts.amf_found_dm||0),"info"],
     ["Cold call",counts.cold_call||0,"warn"],
     ["No contact",counts.no_contact||0,"warn"],
-    ["Human review",counts.human_review||0,"warn"],
     ["Banished dupes",dupCount,"bad"],
-    ["Removed (edu/gov/org/social/filler)",removed2.length,"bad"]]);
+    ["Removed (edu/gov/social/filler)",removed2.length,"bad"]]);
   light("verify",(counts.has_email||0)+(counts.amf_found||0)+(counts.amf_found_dm||0));
   light("master",master.length);
   const cc=counts.cold_call||0, nt=document.getElementById("ccnote");
-  if(cc||dupCount){nt.style.display="block";nt.textContent=(cc?cc+" cold call lead"+(cc>1?"s":"")+" (work by phone). ":"")+(dupCount?dupCount+" duplicate-email row"+(dupCount>1?"s":"")+" banished to the DUPLICATES sheet.":"")}
+  if(cc||dupCount){nt.style.display="block";nt.textContent=(cc?cc+" cold call lead"+(cc>1?"s":"")+" (work by phone). ":"")+(dupCount?dupCount+" duplicate email/domain row"+(dupCount>1?"s":"")+" banished to the DUPLICATES sheet.":"")}
   document.getElementById("dl2row").style.display="flex";
 };
 document.getElementById("dl2").onclick=()=>{
