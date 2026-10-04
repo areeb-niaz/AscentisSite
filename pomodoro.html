@@ -71,6 +71,16 @@
 
   #round { font-size: 15px; opacity: 0.85; }
 
+  /* Weather, top right */
+  #weather {
+    position: fixed; top: 24px; right: 24px; z-index: 2;
+    text-align: right; text-shadow: 0 2px 12px rgba(0,0,0,0.45);
+    line-height: 1.25;
+  }
+  #weather .now { font-size: 26px; font-weight: 700; }
+  #weather .sub { font-size: 13px; opacity: 0.85; }
+  @media (max-width: 600px) { #weather { top: 16px; right: 16px; } #weather .now { font-size: 20px; } }
+
   /* To-do: top item is the focus, the rest trail off underneath */
   .todos { width: min(460px, calc(100vw - 32px)); display: flex; flex-direction: column; align-items: center; gap: 8px; }
   #todoList { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 8px; }
@@ -121,27 +131,27 @@
     border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: #fff;
   }
   .row input[type=checkbox] { width: 18px; height: 18px; }
-  .field { margin: 6px 0 16px; }
-  .field label { display: block; font-size: 15px; margin-bottom: 6px; }
-  .field input {
-    width: 100%; font: inherit; font-size: 13px; padding: 8px; border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: #fff;
-  }
-  .actions { display: flex; justify-content: flex-end; gap: 10px; }
+  .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
   .actions button {
     font: inherit; font-weight: 600; border-radius: 999px; padding: 8px 18px; cursor: pointer;
     border: 1.5px solid #fff; background: transparent; color: #fff;
   }
   .actions button.primary { background: #fff; color: #111; }
 
-  /* Spotify embed */
-  #player {
-    position: fixed; left: 24px; bottom: 24px; z-index: 2;
-    width: 320px; max-width: calc(100vw - 32px);
-    border-radius: 12px; overflow: hidden;
-  }
-  #player iframe { display: block; border: 0; width: 100%; height: 80px; }
-  @media (max-width: 600px) { #player { left: 16px; bottom: 16px; } }
+  /* Stats panel */
+  #stats { width: min(440px, calc(100vw - 32px)); }
+  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .tile { background: rgba(255,255,255,0.07); border-radius: 12px; padding: 12px 14px; }
+  .tile .k { font-size: 12px; opacity: 0.65; text-transform: lowercase; }
+  .tile .v { font-size: 22px; font-weight: 700; margin-top: 2px; }
+  .tile .v small { font-size: 13px; font-weight: 500; opacity: 0.7; }
+  .chart-title { font-size: 13px; opacity: 0.65; margin-bottom: 8px; }
+  .chart { display: flex; align-items: flex-end; gap: 4px; height: 110px; }
+  .chart .col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; }
+  .chart .bar { width: 100%; min-height: 2px; border-radius: 4px 4px 0 0; background: rgba(255,255,255,0.75); }
+  .chart .col.today .bar { background: #fff; }
+  .chart .col.empty .bar { background: rgba(255,255,255,0.15); }
+  .chart .d { font-size: 10px; opacity: 0.6; }
 </style>
 </head>
 <body>
@@ -161,6 +171,12 @@
       <button class="icon" id="reset" title="Reset">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>
       </button>
+      <button class="icon" id="nextWall" title="Next wallpaper">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="9.5" r="1.8"/><path d="M21 16l-5-5-9 9"/></svg>
+      </button>
+      <button class="icon" id="openStats" title="Study stats">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 20v-6M12 20V5M19 20v-10"/></svg>
+      </button>
       <button class="icon" id="openSettings" title="Settings">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94a7.5 7.5 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.8a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.48a.5.5 0 0 0 .12.64l2.03 1.58a7.5 7.5 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.05.24.25.42.49.42h3.8c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg>
       </button>
@@ -172,7 +188,13 @@
     </div>
   </main>
 
-  <div id="player"></div>
+  <div id="weather"></div>
+
+  <dialog id="stats">
+    <h2>Your study</h2>
+    <div id="statsBody"></div>
+    <div class="actions"><button type="button" class="primary" id="closeStats">close</button></div>
+  </dialog>
 
   <dialog id="settings">
     <form method="dialog" id="settingsForm">
@@ -182,10 +204,6 @@
       <div class="row"><label for="sLong">Long break (min)</label><input type="number" id="sLong" min="1" max="120"></div>
       <div class="row"><label for="sEvery">Long break every</label><input type="number" id="sEvery" min="1" max="12"></div>
       <div class="row"><label for="sAuto">Auto-start next session</label><input type="checkbox" id="sAuto"></div>
-      <div class="field">
-        <label for="sSpotify">Spotify playlist / album link (blank to hide)</label>
-        <input type="url" id="sSpotify" placeholder="https://open.spotify.com/playlist/...">
-      </div>
       <div class="actions">
         <button type="button" id="cancelSettings">cancel</button>
         <button type="submit" class="primary">save</button>
@@ -205,7 +223,6 @@
 
   const DEFAULTS = {
     pomodoro: 25, short: 5, long: 15, every: 4, auto: true,
-    spotify: 'https://open.spotify.com/playlist/37i9dQZF1DWWQRwui0ExPn',
   };
 
   const load = (k, fallback) => {
@@ -258,8 +275,8 @@
     timeEl.textContent = fmt(remaining);
     document.title = `${fmt(remaining)} · ${LABELS[mode]}`;
     toggleBtn.textContent = endAt ? 'pause' : 'start';
-    roundEl.textContent = `${completedPomos} done · ${
-      mode === 'pomodoro' ? 'time to focus' : 'take a breather'}`;
+    const today = stats[dayKey()] || { s: 0, p: 0 };
+    roundEl.textContent = `today: ${today.p} pomodoro${today.p === 1 ? '' : 's'} · ${fmtDur(today.s)} focused`;
     document.querySelectorAll('.mode').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
   }
 
@@ -276,12 +293,14 @@
   function start() {
     if (endAt) return;
     endAt = Date.now() + remaining * 1000;
+    lastCredit = Date.now();
     tick = setInterval(update, 250);
     render();
   }
 
   function stop() {
     if (!endAt) return;
+    creditFocus();
     remaining = Math.max(0, Math.round((endAt - Date.now()) / 1000));
     endAt = null;
     clearInterval(tick);
@@ -289,6 +308,7 @@
   }
 
   function update() {
+    creditFocus();
     remaining = Math.max(0, Math.ceil((endAt - Date.now()) / 1000));
     if (remaining === 0) return finish();
     render();
@@ -301,12 +321,108 @@
     let next;
     if (mode === 'pomodoro') {
       completedPomos++;
+      bumpDay().p++;
+      save('pomo.stats', stats);
       next = completedPomos % settings.every === 0 ? 'long' : 'short';
     } else {
       next = 'pomodoro';
     }
     notify(next === 'pomodoro' ? 'Break over — back to it.' : 'Pomodoro done — take a break.');
     setMode(next, { autostart: settings.auto });
+  }
+
+  // ---- Study tracking (saved in this browser's localStorage) ----
+  // stats = { 'YYYY-MM-DD': { s: focused seconds, p: pomodoros completed } }
+  let stats = load('pomo.stats', {});
+  let lastCredit = 0;
+
+  const dayKey = (d = new Date()) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const bumpDay = () => (stats[dayKey()] ||= { s: 0, p: 0 });
+
+  function fmtDur(sec) {
+    const m = Math.floor(sec / 60), h = Math.floor(m / 60);
+    return h ? `${h}h ${m % 60}m` : `${m}m`;
+  }
+
+  // Only time actually spent running in pomodoro mode counts
+  function creditFocus() {
+    if (!endAt || mode !== 'pomodoro') return;
+    const now = Math.min(Date.now(), endAt);
+    const sec = (now - lastCredit) / 1000;
+    lastCredit = now;
+    if (sec <= 0) return;
+    bumpDay().s += sec;
+    save('pomo.stats', stats);
+  }
+
+  function renderStats() {
+    const day = d => stats[dayKey(d)] || { s: 0, p: 0 };
+    const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return d; };
+
+    const today = day(new Date());
+    let week = 0, weekP = 0;
+    for (let i = 0; i < 7; i++) { week += day(daysAgo(i)).s; weekP += day(daysAgo(i)).p; }
+
+    // Streak: consecutive days with some focus, counting back from today
+    // (today not studied yet doesn't break it)
+    let streak = 0;
+    for (let i = today.s > 0 ? 0 : 1; day(daysAgo(i)).s > 0; i++) streak++;
+
+    const all = Object.values(stats);
+    const total = all.reduce((a, d) => a + d.s, 0);
+    const totalP = all.reduce((a, d) => a + d.p, 0);
+    const best = Object.entries(stats).sort((a, b) => b[1].s - a[1].s)[0];
+
+    const days = Array.from({ length: 14 }, (_, i) => daysAgo(13 - i));
+    const max = Math.max(1, ...days.map(d => day(d).s));
+    const bars = days.map((d, i) => {
+      const s = day(d).s;
+      const cls = i === 13 ? 'today' : s ? '' : 'empty';
+      const label = d.toLocaleDateString(undefined, { weekday: 'short' })[0];
+      return `<div class="col ${cls}" title="${d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}: ${fmtDur(s)}, ${day(d).p} pomodoros">
+        <div class="bar" style="height:${(s / max) * 100}%"></div><span class="d">${label}</span></div>`;
+    }).join('');
+
+    $('statsBody').innerHTML = `
+      <div class="tiles">
+        <div class="tile"><div class="k">today</div><div class="v">${fmtDur(today.s)} <small>${today.p} pomo</small></div></div>
+        <div class="tile"><div class="k">last 7 days</div><div class="v">${fmtDur(week)} <small>${weekP} pomo</small></div></div>
+        <div class="tile"><div class="k">streak</div><div class="v">${streak} <small>day${streak === 1 ? '' : 's'}</small></div></div>
+        <div class="tile"><div class="k">all time</div><div class="v">${fmtDur(total)} <small>${totalP} pomo</small></div></div>
+        <div class="tile"><div class="k">daily avg (7d)</div><div class="v">${fmtDur(week / 7)}</div></div>
+        <div class="tile"><div class="k">best day</div><div class="v">${best ? fmtDur(best[1].s) : '—'} <small>${best ? new Date(best[0] + 'T00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''}</small></div></div>
+      </div>
+      <div class="chart-title">last 14 days</div>
+      <div class="chart">${bars}</div>`;
+  }
+
+  // ---- Weather (Open-Meteo, no key needed) ----
+  const WX = {
+    0: ['☀️', 'Clear'], 1: ['🌤️', 'Mostly clear'], 2: ['⛅', 'Partly cloudy'], 3: ['☁️', 'Overcast'],
+    45: ['🌫️', 'Fog'], 48: ['🌫️', 'Fog'],
+    51: ['🌦️', 'Drizzle'], 53: ['🌦️', 'Drizzle'], 55: ['🌦️', 'Drizzle'], 56: ['🌧️', 'Freezing drizzle'], 57: ['🌧️', 'Freezing drizzle'],
+    61: ['🌧️', 'Light rain'], 63: ['🌧️', 'Rain'], 65: ['🌧️', 'Heavy rain'], 66: ['🌧️', 'Freezing rain'], 67: ['🌧️', 'Freezing rain'],
+    71: ['🌨️', 'Light snow'], 73: ['🌨️', 'Snow'], 75: ['❄️', 'Heavy snow'], 77: ['🌨️', 'Snow grains'],
+    80: ['🌦️', 'Showers'], 81: ['🌧️', 'Showers'], 82: ['⛈️', 'Heavy showers'], 85: ['🌨️', 'Snow showers'], 86: ['❄️', 'Snow showers'],
+    95: ['⛈️', 'Thunderstorm'], 96: ['⛈️', 'Thunderstorm'], 99: ['⛈️', 'Thunderstorm'],
+  };
+
+  async function loadWeather() {
+    try {
+      const url = 'https://api.open-meteo.com/v1/forecast?latitude=43.589&longitude=-79.6441'
+        + '&current=temperature_2m,apparent_temperature,weather_code,is_day'
+        + '&daily=temperature_2m_max,temperature_2m_min&timezone=America%2FToronto&forecast_days=1';
+      const d = await (await fetch(url)).json();
+      const c = d.current;
+      let [icon, text] = WX[c.weather_code] || ['', ''];
+      if (!c.is_day && c.weather_code <= 1) icon = '🌙';
+      const r = Math.round;
+      $('weather').innerHTML = `
+        <div class="now">${icon} ${r(c.temperature_2m)}°</div>
+        <div class="sub">${text} · feels ${r(c.apparent_temperature)}°</div>
+        <div class="sub">H ${r(d.daily.temperature_2m_max[0])}° L ${r(d.daily.temperature_2m_min[0])}° · Mississauga</div>`;
+    } catch {}
   }
 
   // ---- Sound + notifications ----
@@ -334,15 +450,6 @@
     }
   }
 
-  // ---- Spotify embed ----
-  function renderPlayer() {
-    const box = $('player');
-    const m = (settings.spotify || '').match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(playlist|album|track|episode|show)\/([A-Za-z0-9]+)/);
-    box.innerHTML = m
-      ? `<iframe src="https://open.spotify.com/embed/${m[1]}/${m[2]}?utm_source=generator&theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`
-      : '';
-  }
-
   // ---- Settings dialog ----
   const dlg = $('settings');
   $('openSettings').onclick = () => {
@@ -351,7 +458,6 @@
     $('sLong').value = settings.long;
     $('sEvery').value = settings.every;
     $('sAuto').checked = settings.auto;
-    $('sSpotify').value = settings.spotify;
     dlg.showModal();
   };
   $('cancelSettings').onclick = () => dlg.close();
@@ -364,12 +470,10 @@
       long: num('sLong', 1, DEFAULTS.long),
       every: num('sEvery', 1, DEFAULTS.every),
       auto: $('sAuto').checked,
-      spotify: $('sSpotify').value.trim(),
     };
     save('pomo.settings', settings);
     // If the current mode's length changed and the timer isn't running, apply it now
     if (!endAt && prev[mode] !== settings[mode]) remaining = settings[mode] * 60;
-    if (prev.spotify !== settings.spotify) renderPlayer();
     render();
   };
 
@@ -420,16 +524,21 @@
     endAt ? stop() : start();
   };
   $('reset').onclick = () => { stop(); remaining = settings[mode] * 60; render(); };
+  $('nextWall').onclick = nextWallpaper;
+  const statsDlg = $('stats');
+  $('openStats').onclick = () => { creditFocus(); renderStats(); statsDlg.showModal(); };
+  $('closeStats').onclick = () => statsDlg.close();
   document.addEventListener('keydown', e => {
-    if (dlg.open || e.target.tagName === 'INPUT') return;
+    if (dlg.open || statsDlg.open || e.target.tagName === 'INPUT') return;
     if (e.code === 'Space') { e.preventDefault(); toggleBtn.click(); }
   });
 
   remaining = settings.pomodoro * 60;
   showWallpaper(wallIndex);
-  renderPlayer();
   renderTodos();
   render();
+  loadWeather();
+  setInterval(loadWeather, 20 * 60 * 1000);
 </script>
 </body>
 </html>
