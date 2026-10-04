@@ -13,6 +13,9 @@
     --fg: #fff;
     --glass: rgba(20, 20, 30, 0.45);
     --border: rgba(255, 255, 255, 0.85);
+    --green-1: #0f9b4a;
+    --green-2: #2fd96b;
+    --green-3: #b6ff6a;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
@@ -36,7 +39,7 @@
     position: relative; z-index: 1;
     height: 100%;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 28px;
+    gap: 26px;
     text-shadow: 0 2px 12px rgba(0,0,0,0.35);
   }
 
@@ -50,11 +53,32 @@
   }
   .mode.active { background: #fff; color: #111; text-shadow: none; }
 
+  .timer { display: flex; flex-direction: column; align-items: center; gap: 16px; }
   #time {
     font-size: clamp(88px, 18vw, 150px); font-weight: 700;
     letter-spacing: -0.04em; line-height: 1;
     font-variant-numeric: tabular-nums;
   }
+
+  /* Progress bar: green "charging" fill with a shimmer while running */
+  .track {
+    width: min(420px, 78vw); height: 8px; border-radius: 999px;
+    background: rgba(255,255,255,0.16);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+  }
+  .fill {
+    position: relative; height: 100%; width: 0; border-radius: inherit; overflow: hidden;
+    background: linear-gradient(90deg, var(--green-1), var(--green-2) 65%, var(--green-3));
+    box-shadow: 0 0 14px rgba(70, 255, 140, 0.55);
+    transition: width .4s linear;
+  }
+  .fill::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+    transform: translateX(-100%);
+  }
+  body.running .fill::after { animation: shimmer 1.8s ease-in-out infinite; }
+  @keyframes shimmer { to { transform: translateX(100%); } }
 
   .controls { display: flex; align-items: center; gap: 14px; }
   #toggle {
@@ -71,15 +95,27 @@
 
   #round { font-size: 15px; opacity: 0.85; }
 
-  /* Weather, top right */
-  #weather {
-    position: fixed; top: 24px; right: 24px; z-index: 2;
-    text-align: right; text-shadow: 0 2px 12px rgba(0,0,0,0.45);
-    line-height: 1.25;
+  /* Corners: clock top-left, weather top-right, small buttons bottom-right */
+  .corner { position: fixed; z-index: 2; text-shadow: 0 2px 12px rgba(0,0,0,0.45); line-height: 1.25; }
+  #clock { top: 24px; left: 24px; }
+  #weather { top: 24px; right: 24px; text-align: right; }
+  .corner .big { font-size: 26px; font-weight: 700; }
+  .corner .sub { font-size: 13px; opacity: 0.85; }
+  #greeting { font-size: 15px; opacity: 0.9; }
+  #tools { bottom: 20px; right: 20px; display: flex; gap: 4px; }
+  #tools .icon { width: 36px; height: 36px; opacity: 0.85; }
+  #tools .icon:hover { opacity: 1; }
+  #tools .icon svg { width: 24px; height: 24px; }
+  @media (max-width: 600px) {
+    #clock { top: 16px; left: 16px; } #weather { top: 16px; right: 16px; }
+    .corner .big { font-size: 20px; }
+    #tools { bottom: 12px; right: 12px; }
   }
-  #weather .now { font-size: 26px; font-weight: 700; }
-  #weather .sub { font-size: 13px; opacity: 0.85; }
-  @media (max-width: 600px) { #weather { top: 16px; right: 16px; } #weather .now { font-size: 20px; } }
+
+  /* Focus mode: fade everything but the timer, bar and top task */
+  .fadeable { transition: opacity .8s ease; }
+  body.focus .fadeable { opacity: 0; pointer-events: none; }
+  body.focus { cursor: none; }
 
   /* To-do: top item is the focus, the rest trail off underneath */
   .todos { width: min(460px, calc(100vw - 32px)); display: flex; flex-direction: column; align-items: center; gap: 8px; }
@@ -114,23 +150,35 @@
   #todoInput::placeholder { color: rgba(255,255,255,0.65); }
   #todoInput:focus { border-style: solid; background: var(--glass); }
 
-  /* Settings panel */
+  /* Dialogs */
   dialog {
     margin: auto; border: 0; border-radius: 16px;
     background: rgba(25, 25, 35, 0.92); color: var(--fg);
     backdrop-filter: blur(12px);
-    padding: 24px; width: min(360px, calc(100vw - 32px));
+    padding: 24px; width: min(380px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px); overflow: auto;
     font-family: inherit;
   }
   dialog::backdrop { background: rgba(0,0,0,0.4); }
   dialog h2 { font-size: 18px; margin-bottom: 16px; }
+  dialog h3 { font-size: 13px; font-weight: 500; opacity: 0.65; margin: 20px 0 10px; text-transform: lowercase; }
   .row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
   .row label { font-size: 15px; }
-  .row input[type=number] {
+  .row .inline { display: flex; gap: 8px; align-items: center; }
+  .row input[type=number], .row select {
     width: 72px; font: inherit; padding: 6px 8px; border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: #fff;
   }
+  .row select { width: auto; }
+  .row select option { background: #22222c; }
   .row input[type=checkbox] { width: 18px; height: 18px; }
+  .mini {
+    font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+    border: 1px solid rgba(255,255,255,0.4); background: transparent; color: #fff;
+    border-radius: 999px; padding: 5px 12px;
+  }
+  .mini:hover { background: rgba(255,255,255,0.12); }
+  .hint { font-size: 12px; opacity: 0.55; margin-top: -4px; }
   .actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
   .actions button {
     font: inherit; font-weight: 600; border-radius: 999px; padding: 8px 18px; cursor: pointer;
@@ -139,19 +187,47 @@
   .actions button.primary { background: #fff; color: #111; }
 
   /* Stats panel */
-  #stats { width: min(440px, calc(100vw - 32px)); }
-  .tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  #stats { width: min(560px, calc(100vw - 32px)); }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 520px) { .tiles { grid-template-columns: 1fr 1fr; } }
   .tile { background: rgba(255,255,255,0.07); border-radius: 12px; padding: 12px 14px; }
   .tile .k { font-size: 12px; opacity: 0.65; text-transform: lowercase; }
   .tile .v { font-size: 22px; font-weight: 700; margin-top: 2px; }
   .tile .v small { font-size: 13px; font-weight: 500; opacity: 0.7; }
-  .chart-title { font-size: 13px; opacity: 0.65; margin-bottom: 8px; }
   .chart { display: flex; align-items: flex-end; gap: 4px; height: 110px; }
   .chart .col { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; }
   .chart .bar { width: 100%; min-height: 2px; border-radius: 4px 4px 0 0; background: rgba(255,255,255,0.75); }
-  .chart .col.today .bar { background: #fff; }
+  .chart .col.today .bar { background: linear-gradient(0deg, var(--green-1), var(--green-3)); }
   .chart .col.empty .bar { background: rgba(255,255,255,0.15); }
   .chart .d { font-size: 10px; opacity: 0.6; }
+
+  .heat { display: grid; grid-template-rows: repeat(7, 1fr); grid-auto-flow: column; grid-auto-columns: 1fr; gap: 2px; }
+  .heat i { aspect-ratio: 1; border-radius: 2px; background: rgba(255,255,255,0.08); }
+  .heat i.l1 { background: #1e5c38; }
+  .heat i.l2 { background: #23894a; }
+  .heat i.l3 { background: #2fc463; }
+  .heat i.l4 { background: #9dff7a; }
+  .heat i.today { outline: 1px solid rgba(255,255,255,0.7); }
+  .legend { display: flex; justify-content: space-between; align-items: center; font-size: 11px; opacity: 0.6; margin-top: 8px; }
+  .legend span { display: inline-flex; gap: 2px; align-items: center; }
+  .legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  .task-row { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin-bottom: 10px; font-size: 14px; }
+  .task-row .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .task-row .dur { opacity: 0.7; }
+  .task-row .tbar { grid-column: 1 / -1; height: 4px; border-radius: 999px; background: rgba(255,255,255,0.08); }
+  .task-row .tbar div { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green-1), var(--green-3)); }
+  .empty-note { font-size: 13px; opacity: 0.55; }
+
+  /* Goal celebration */
+  .money { position: fixed; inset: 0; z-index: 50; pointer-events: none; overflow: hidden; }
+  .money span { position: absolute; top: 0; will-change: transform; }
+  .goal-banner {
+    position: fixed; left: 50%; top: 18%; z-index: 51; pointer-events: none;
+    transform: translateX(-50%);
+    font-size: clamp(26px, 5vw, 44px); font-weight: 700; white-space: nowrap;
+    text-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 30px rgba(120,255,150,0.5);
+  }
 </style>
 </head>
 <body>
@@ -160,19 +236,19 @@
   <div class="shade"></div>
 
   <main>
-    <div class="modes">
+    <div class="modes fadeable">
       <button class="mode active" data-mode="pomodoro">pomodoro</button>
       <button class="mode" data-mode="short">short break</button>
       <button class="mode" data-mode="long">long break</button>
     </div>
-    <div id="time">25:00</div>
-    <div class="controls">
+    <div class="timer">
+      <div id="time">25:00</div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+    </div>
+    <div class="controls fadeable">
       <button id="toggle">start</button>
       <button class="icon" id="reset" title="Reset">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>
-      </button>
-      <button class="icon" id="nextWall" title="Next wallpaper">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="9.5" r="1.8"/><path d="M21 16l-5-5-9 9"/></svg>
       </button>
       <button class="icon" id="openStats" title="Study stats">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M5 20v-6M12 20V5M19 20v-10"/></svg>
@@ -181,14 +257,23 @@
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94a7.5 7.5 0 0 0 0-1.88l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.3 7.3 0 0 0-1.63-.94l-.36-2.54A.5.5 0 0 0 13.9 2h-3.8a.5.5 0 0 0-.49.42l-.36 2.54c-.59.24-1.13.56-1.63.94l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.48a.5.5 0 0 0 .12.64l2.03 1.58a7.5 7.5 0 0 0 0 1.88l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.13.22.39.3.6.22l2.39-.96c.5.38 1.04.7 1.63.94l.36 2.54c.05.24.25.42.49.42h3.8c.24 0 .45-.18.49-.42l.36-2.54c.59-.24 1.13-.56 1.63-.94l2.39.96c.22.08.47 0 .6-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1 1 12 8.5a3.5 3.5 0 0 1 0 7z"/></svg>
       </button>
     </div>
-    <div id="round"></div>
+    <div id="round" class="fadeable"></div>
     <div class="todos">
       <div id="todoList"></div>
-      <input id="todoInput" maxlength="200" placeholder="+ add a task (enter)" autocomplete="off">
+      <input id="todoInput" class="fadeable" maxlength="200" placeholder="+ add a task (enter)" autocomplete="off">
     </div>
   </main>
 
-  <div id="weather"></div>
+  <div id="clock" class="corner fadeable"><div class="big" id="clockTime"></div><div id="greeting"></div></div>
+  <div id="weather" class="corner fadeable"></div>
+  <div id="tools" class="corner fadeable">
+    <button class="icon" id="nextWall" title="Next wallpaper (N)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><circle cx="9" cy="9.5" r="1.8"/><path d="M21 16l-5-5-9 9"/></svg>
+    </button>
+    <button class="icon" id="fullscreen" title="Fullscreen (F)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path id="fsPath" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+    </button>
+  </div>
 
   <dialog id="stats">
     <h2>Your study</h2>
@@ -204,6 +289,36 @@
       <div class="row"><label for="sLong">Long break (min)</label><input type="number" id="sLong" min="1" max="120"></div>
       <div class="row"><label for="sEvery">Long break every</label><input type="number" id="sEvery" min="1" max="12"></div>
       <div class="row"><label for="sAuto">Auto-start next session</label><input type="checkbox" id="sAuto"></div>
+      <div class="row">
+        <label for="sGoal">Daily goal (pomodoros)</label>
+        <span class="inline"><button type="button" class="mini" id="testGoal" title="Preview the celebration">💸</button><input type="number" id="sGoal" min="1" max="30"></span>
+      </div>
+      <div class="row"><label for="sFocus">Focus mode while running</label><input type="checkbox" id="sFocus"></div>
+      <div class="row">
+        <label for="sChime">Chime</label>
+        <span class="inline">
+          <button type="button" class="mini" id="previewChime" title="Preview">▶</button>
+          <select id="sChime">
+            <option value="bells">bells</option>
+            <option value="soft">soft</option>
+            <option value="digital">digital</option>
+            <option value="gong">gong</option>
+            <option value="kaching">ka-ching</option>
+            <option value="none">none</option>
+          </select>
+        </span>
+      </div>
+
+      <h3>Backup</h3>
+      <div class="row">
+        <span class="inline">
+          <button type="button" class="mini" id="exportData">export</button>
+          <button type="button" class="mini" id="importData">import</button>
+        </span>
+      </div>
+      <p class="hint">Saves your stats, tasks and settings to a file. Import replaces what's here.</p>
+      <input type="file" id="importFile" accept="application/json,.json" hidden>
+
       <div class="actions">
         <button type="button" id="cancelSettings">cancel</button>
         <button type="submit" class="primary">save</button>
@@ -223,6 +338,14 @@
 
   const DEFAULTS = {
     pomodoro: 25, short: 5, long: 15, every: 4, auto: true,
+    goal: 4, focus: true, chime: 'bells',
+  };
+
+  const GREETINGS = {
+    pomodoro: 'time to lock in boss',
+    goalDone: 'goal hit. bonus round, boss',
+    short: 'breathe, boss',
+    long: 'long break. you earned it boss',
   };
 
   const load = (k, fallback) => {
@@ -230,6 +353,9 @@
     catch { return fallback; }
   };
   const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
+
+  // Ask the browser not to evict this site's storage on its own
+  try { navigator.storage?.persist?.(); } catch {}
 
   let settings = { ...DEFAULTS, ...load('pomo.settings', {}) };
   let wallIndex = load('pomo.wall', 0) % WALLPAPERS.length;
@@ -241,6 +367,40 @@
 
   const $ = id => document.getElementById(id);
   const timeEl = $('time'), toggleBtn = $('toggle'), roundEl = $('round');
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  // ---- Study tracking (saved in this browser's localStorage) ----
+  // stats = { 'YYYY-MM-DD': { s: focused seconds, p: pomodoros, g: goal celebrated, t: { task: seconds } } }
+  let stats = load('pomo.stats', {});
+  let lastCredit = 0;
+
+  const dayKey = (d = new Date()) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const bumpDay = () => (stats[dayKey()] ||= { s: 0, p: 0 });
+  const getDay = d => stats[dayKey(d)] || { s: 0, p: 0 };
+  const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return d; };
+
+  function fmtDur(sec) {
+    const m = Math.floor(sec / 60), h = Math.floor(m / 60);
+    return h ? `${h}h ${m % 60}m` : `${m}m`;
+  }
+
+  // Only time actually spent running in pomodoro mode counts.
+  // It's also credited to whatever task is on top of the list.
+  function creditFocus() {
+    if (!endAt || mode !== 'pomodoro') return;
+    const now = Math.min(Date.now(), endAt);
+    const sec = (now - lastCredit) / 1000;
+    lastCredit = now;
+    if (sec <= 0) return;
+    const d = bumpDay();
+    d.s += sec;
+    if (todos[0]) {
+      d.t ||= {};
+      d.t[todos[0]] = (d.t[todos[0]] || 0) + sec;
+    }
+    save('pomo.stats', stats);
+  }
 
   // ---- Wallpapers ----
   const layers = [$('bgA'), $('bgB')];
@@ -275,8 +435,18 @@
     timeEl.textContent = fmt(remaining);
     document.title = `${fmt(remaining)} · ${LABELS[mode]}`;
     toggleBtn.textContent = endAt ? 'pause' : 'start';
-    const today = stats[dayKey()] || { s: 0, p: 0 };
-    roundEl.textContent = `today: ${today.p} pomodoro${today.p === 1 ? '' : 's'} · ${fmtDur(today.s)} focused`;
+    document.body.classList.toggle('running', !!endAt);
+
+    const total = settings[mode] * 60;
+    const left = endAt ? Math.max(0, (endAt - Date.now()) / 1000) : remaining;
+    $('fill').style.width = `${Math.min(1, Math.max(0, 1 - left / total)) * 100}%`;
+
+    const today = getDay(new Date());
+    roundEl.textContent = `${today.p} / ${settings.goal} today · ${fmtDur(today.s)} focused`;
+
+    $('greeting').textContent = mode !== 'pomodoro' ? GREETINGS[mode]
+      : today.p >= settings.goal ? GREETINGS.goalDone : GREETINGS.pomodoro;
+
     document.querySelectorAll('.mode').forEach(b => b.classList.toggle('active', b.dataset.mode === mode));
   }
 
@@ -295,6 +465,7 @@
     endAt = Date.now() + remaining * 1000;
     lastCredit = Date.now();
     tick = setInterval(update, 250);
+    wake();
     render();
   }
 
@@ -304,6 +475,7 @@
     remaining = Math.max(0, Math.round((endAt - Date.now()) / 1000));
     endAt = null;
     clearInterval(tick);
+    wake();
     render();
   }
 
@@ -317,84 +489,119 @@
   function finish() {
     endAt = null;
     clearInterval(tick);
-    chime();
-    let next;
+    let next, celebrateNow = false;
     if (mode === 'pomodoro') {
       completedPomos++;
-      bumpDay().p++;
+      const d = bumpDay();
+      d.p++;
+      if (d.p >= settings.goal && !d.g) { d.g = true; celebrateNow = true; }
       save('pomo.stats', stats);
       next = completedPomos % settings.every === 0 ? 'long' : 'short';
     } else {
       next = 'pomodoro';
     }
-    notify(next === 'pomodoro' ? 'Break over — back to it.' : 'Pomodoro done — take a break.');
+    celebrateNow ? celebrate() : chime();
+    notify(celebrateNow ? 'Daily goal hit. Paid in full.'
+      : next === 'pomodoro' ? 'Break over — back to it.' : 'Pomodoro done — take a break.');
     setMode(next, { autostart: settings.auto });
   }
 
-  // ---- Study tracking (saved in this browser's localStorage) ----
-  // stats = { 'YYYY-MM-DD': { s: focused seconds, p: pomodoros completed } }
-  let stats = load('pomo.stats', {});
-  let lastCredit = 0;
+  // ---- Focus mode: fade the extras a few seconds after the mouse goes still ----
+  let idleTimer;
+  function wake() {
+    document.body.classList.remove('focus');
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      const busy = document.querySelector('dialog[open]') || document.activeElement === $('todoInput');
+      if (endAt && settings.focus && !busy) document.body.classList.add('focus');
+    }, 3000);
+  }
+  ['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel'].forEach(ev =>
+    document.addEventListener(ev, wake, { passive: true }));
 
-  const dayKey = (d = new Date()) =>
-    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-  const bumpDay = () => (stats[dayKey()] ||= { s: 0, p: 0 });
-
-  function fmtDur(sec) {
-    const m = Math.floor(sec / 60), h = Math.floor(m / 60);
-    return h ? `${h}h ${m % 60}m` : `${m}m`;
+  // ---- Clock ----
+  function renderClock() {
+    $('clockTime').textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   }
 
-  // Only time actually spent running in pomodoro mode counts
-  function creditFocus() {
-    if (!endAt || mode !== 'pomodoro') return;
-    const now = Math.min(Date.now(), endAt);
-    const sec = (now - lastCredit) / 1000;
-    lastCredit = now;
-    if (sec <= 0) return;
-    bumpDay().s += sec;
-    save('pomo.stats', stats);
+  // ---- Fullscreen ----
+  const FS_ENTER = 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5';
+  const FS_EXIT = 'M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5';
+  function toggleFullscreen() {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen?.().catch(() => {});
   }
+  document.addEventListener('fullscreenchange', () =>
+    $('fsPath').setAttribute('d', document.fullscreenElement ? FS_EXIT : FS_ENTER));
 
+  // ---- Stats panel ----
   function renderStats() {
-    const day = d => stats[dayKey(d)] || { s: 0, p: 0 };
-    const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return d; };
-
-    const today = day(new Date());
+    const today = getDay(new Date());
     let week = 0, weekP = 0;
-    for (let i = 0; i < 7; i++) { week += day(daysAgo(i)).s; weekP += day(daysAgo(i)).p; }
+    for (let i = 0; i < 7; i++) { week += getDay(daysAgo(i)).s; weekP += getDay(daysAgo(i)).p; }
 
     // Streak: consecutive days with some focus, counting back from today
     // (today not studied yet doesn't break it)
     let streak = 0;
-    for (let i = today.s > 0 ? 0 : 1; day(daysAgo(i)).s > 0; i++) streak++;
+    for (let i = today.s > 0 ? 0 : 1; getDay(daysAgo(i)).s > 0; i++) streak++;
 
     const all = Object.values(stats);
     const total = all.reduce((a, d) => a + d.s, 0);
     const totalP = all.reduce((a, d) => a + d.p, 0);
     const best = Object.entries(stats).sort((a, b) => b[1].s - a[1].s)[0];
+    const dateLabel = (d, opts) => d.toLocaleDateString(undefined, opts);
 
+    // Last 14 days bar chart
     const days = Array.from({ length: 14 }, (_, i) => daysAgo(13 - i));
-    const max = Math.max(1, ...days.map(d => day(d).s));
+    const max = Math.max(1, ...days.map(d => getDay(d).s));
     const bars = days.map((d, i) => {
-      const s = day(d).s;
+      const { s, p } = getDay(d);
       const cls = i === 13 ? 'today' : s ? '' : 'empty';
-      const label = d.toLocaleDateString(undefined, { weekday: 'short' })[0];
-      return `<div class="col ${cls}" title="${d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}: ${fmtDur(s)}, ${day(d).p} pomodoros">
-        <div class="bar" style="height:${(s / max) * 100}%"></div><span class="d">${label}</span></div>`;
+      return `<div class="col ${cls}" title="${dateLabel(d, { weekday: 'short', month: 'short', day: 'numeric' })}: ${fmtDur(s)}, ${p} pomodoros">
+        <div class="bar" style="height:${(s / max) * 100}%"></div><span class="d">${dateLabel(d, { weekday: 'short' })[0]}</span></div>`;
     }).join('');
+
+    // Year heatmap: columns are weeks (Sun–Sat), starting ~52 weeks back
+    const startDay = daysAgo(364);
+    startDay.setDate(startDay.getDate() - startDay.getDay());
+    const level = s => !s ? '' : s < 1800 ? 'l1' : s < 3600 ? 'l2' : s < 7200 ? 'l3' : 'l4';
+    let heat = '', yearTotal = 0;
+    const todayKey = dayKey();
+    for (const d = new Date(startDay); dayKey(d) <= todayKey; d.setDate(d.getDate() + 1)) {
+      const { s, p } = getDay(d);
+      yearTotal += s;
+      heat += `<i class="${level(s)}${dayKey(d) === todayKey ? ' today' : ''}" title="${dateLabel(d, { month: 'short', day: 'numeric', year: 'numeric' })}: ${fmtDur(s)}, ${p} pomodoros"></i>`;
+    }
+
+    // Time per task, last 7 days
+    const tasks = {};
+    for (let i = 0; i < 7; i++) {
+      for (const [name, s] of Object.entries(getDay(daysAgo(i)).t || {})) tasks[name] = (tasks[name] || 0) + s;
+    }
+    const topTasks = Object.entries(tasks).filter(([, s]) => s >= 60).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const taskMax = topTasks[0]?.[1] || 1;
+    const taskHtml = topTasks.length
+      ? topTasks.map(([name, s]) => `<div class="task-row"><span class="name" title="${esc(name)}">${esc(name)}</span><span class="dur">${fmtDur(s)}</span>
+          <div class="tbar"><div style="width:${(s / taskMax) * 100}%"></div></div></div>`).join('')
+      : '<p class="empty-note">Whatever task is on top of your list while you focus gets the time.</p>';
 
     $('statsBody').innerHTML = `
       <div class="tiles">
-        <div class="tile"><div class="k">today</div><div class="v">${fmtDur(today.s)} <small>${today.p} pomo</small></div></div>
+        <div class="tile"><div class="k">today</div><div class="v">${fmtDur(today.s)} <small>${today.p}/${settings.goal}</small></div></div>
         <div class="tile"><div class="k">last 7 days</div><div class="v">${fmtDur(week)} <small>${weekP} pomo</small></div></div>
         <div class="tile"><div class="k">streak</div><div class="v">${streak} <small>day${streak === 1 ? '' : 's'}</small></div></div>
-        <div class="tile"><div class="k">all time</div><div class="v">${fmtDur(total)} <small>${totalP} pomo</small></div></div>
         <div class="tile"><div class="k">daily avg (7d)</div><div class="v">${fmtDur(week / 7)}</div></div>
-        <div class="tile"><div class="k">best day</div><div class="v">${best ? fmtDur(best[1].s) : '—'} <small>${best ? new Date(best[0] + 'T00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : ''}</small></div></div>
+        <div class="tile"><div class="k">best day</div><div class="v">${best ? fmtDur(best[1].s) : '—'} <small>${best ? dateLabel(new Date(best[0] + 'T00:00'), { month: 'short', day: 'numeric' }) : ''}</small></div></div>
+        <div class="tile"><div class="k">all time</div><div class="v">${fmtDur(total)} <small>${totalP} pomo</small></div></div>
       </div>
-      <div class="chart-title">last 14 days</div>
-      <div class="chart">${bars}</div>`;
+      <h3>last 14 days</h3>
+      <div class="chart">${bars}</div>
+      <h3>last 12 months · ${fmtDur(yearTotal)}</h3>
+      <div class="heat">${heat}</div>
+      <div class="legend"><span>&lt;30m · &lt;1h · &lt;2h · 2h+</span>
+        <span>less <i style="background:rgba(255,255,255,0.08)"></i><i style="background:#1e5c38"></i><i style="background:#23894a"></i><i style="background:#2fc463"></i><i style="background:#9dff7a"></i> more</span></div>
+      <h3>top tasks this week</h3>
+      ${taskHtml}`;
   }
 
   // ---- Weather (Open-Meteo, no key needed) ----
@@ -419,28 +626,44 @@
       if (!c.is_day && c.weather_code <= 1) icon = '🌙';
       const r = Math.round;
       $('weather').innerHTML = `
-        <div class="now">${icon} ${r(c.temperature_2m)}°</div>
+        <div class="big">${icon} ${r(c.temperature_2m)}°</div>
         <div class="sub">${text} · feels ${r(c.apparent_temperature)}°</div>
         <div class="sub">H ${r(d.daily.temperature_2m_max[0])}° L ${r(d.daily.temperature_2m_min[0])}° · Mississauga</div>`;
     } catch {}
   }
 
-  // ---- Sound + notifications ----
+  // ---- Sounds ----
   let audioCtx;
-  function chime() {
+  function tone(freq, at, dur, { type = 'sine', vol = 0.3, attack = 0.02 } = {}) {
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    const t = audioCtx.currentTime + at;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(audioCtx.destination);
+    o.start(t); o.stop(t + dur + 0.05);
+  }
+
+  const CHIMES = {
+    bells: () => [660, 880, 990].forEach((f, i) => tone(f, i * 0.25, 0.6)),
+    soft: () => { tone(523, 0, 1.2, { type: 'triangle', vol: 0.22, attack: 0.08 }); tone(784, 0.35, 1.4, { type: 'triangle', vol: 0.18, attack: 0.08 }); },
+    digital: () => [0, 0.16, 0.32, 0.7, 0.86, 1.02].forEach(t => tone(1100, t, 0.09, { type: 'square', vol: 0.08, attack: 0.005 })),
+    gong: () => { tone(110, 0, 3.5, { vol: 0.35, attack: 0.01 }); tone(222, 0, 2.5, { vol: 0.15, attack: 0.01 }); tone(331, 0, 1.8, { vol: 0.08, attack: 0.01 }); },
+    kaching: () => {
+      tone(1568, 0, 0.12, { type: 'triangle', vol: 0.18, attack: 0.005 });
+      tone(2093, 0.08, 0.15, { type: 'triangle', vol: 0.18, attack: 0.005 });
+      tone(2637, 0.16, 1.0, { vol: 0.2, attack: 0.005 });
+      tone(3136, 0.16, 0.8, { vol: 0.1, attack: 0.005 });
+    },
+    none: () => {},
+  };
+
+  function chime(name = settings.chime) {
     try {
-      audioCtx = audioCtx || new AudioContext();
-      [0, 0.25, 0.5].forEach((t, i) => {
-        const o = audioCtx.createOscillator(), g = audioCtx.createGain();
-        o.type = 'sine';
-        o.frequency.value = [660, 880, 990][i];
-        const at = audioCtx.currentTime + t;
-        g.gain.setValueAtTime(0.0001, at);
-        g.gain.exponentialRampToValueAtTime(0.3, at + 0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, at + 0.6);
-        o.connect(g).connect(audioCtx.destination);
-        o.start(at); o.stop(at + 0.65);
-      });
+      audioCtx ||= new AudioContext();
+      (CHIMES[name] || CHIMES.bells)();
     } catch {}
   }
 
@@ -448,6 +671,43 @@
     if ('Notification' in window && Notification.permission === 'granted') {
       new Notification('Pomodoro', { body: text, silent: true });
     }
+  }
+
+  // ---- Goal celebration: make it rain ----
+  function celebrate() {
+    chime('kaching');
+    const layer = document.createElement('div');
+    layer.className = 'money';
+    document.body.append(layer);
+
+    const bills = ['💵', '💵', '💵', '💸', '💰'];
+    const h = window.innerHeight;
+    for (let i = 0; i < 90; i++) {
+      const b = document.createElement('span');
+      b.textContent = bills[Math.floor(Math.random() * bills.length)];
+      b.style.left = `${Math.random() * 100}vw`;
+      b.style.fontSize = `${22 + Math.random() * 30}px`;
+      layer.append(b);
+      const spin = Math.random() * 360, sway = (Math.random() - 0.5) * 240;
+      b.animate([
+        { transform: `translate(0, -80px) rotate(${spin}deg)` },
+        { transform: `translate(${sway * 0.6}px, ${h * 0.5}px) rotate(${spin + 200}deg)` },
+        { transform: `translate(${sway}px, ${h + 80}px) rotate(${spin + 400}deg)` },
+      ], { duration: 2600 + Math.random() * 2600, delay: Math.random() * 1800, easing: 'cubic-bezier(.35,.1,.65,1)', fill: 'both' });
+    }
+
+    const banner = document.createElement('div');
+    banner.className = 'goal-banner';
+    banner.textContent = 'daily goal hit. paid in full 💰';
+    document.body.append(banner);
+    banner.animate([
+      { opacity: 0, transform: 'translateX(-50%) scale(0.7)' },
+      { opacity: 1, transform: 'translateX(-50%) scale(1.05)', offset: 0.12 },
+      { opacity: 1, transform: 'translateX(-50%) scale(1)', offset: 0.8 },
+      { opacity: 0, transform: 'translateX(-50%) scale(1)' },
+    ], { duration: 4200, easing: 'ease-out', fill: 'both' });
+
+    setTimeout(() => { layer.remove(); banner.remove(); }, 7000);
   }
 
   // ---- Settings dialog ----
@@ -458,9 +718,14 @@
     $('sLong').value = settings.long;
     $('sEvery').value = settings.every;
     $('sAuto').checked = settings.auto;
+    $('sGoal').value = settings.goal;
+    $('sFocus').checked = settings.focus;
+    $('sChime').value = settings.chime;
     dlg.showModal();
   };
   $('cancelSettings').onclick = () => dlg.close();
+  $('previewChime').onclick = () => chime($('sChime').value);
+  $('testGoal').onclick = () => { dlg.close(); celebrate(); };
   $('settingsForm').onsubmit = () => {
     const num = (id, min, fallback) => Math.max(min, parseInt($(id).value, 10) || fallback);
     const prev = { ...settings };
@@ -470,6 +735,9 @@
       long: num('sLong', 1, DEFAULTS.long),
       every: num('sEvery', 1, DEFAULTS.every),
       auto: $('sAuto').checked,
+      goal: num('sGoal', 1, DEFAULTS.goal),
+      focus: $('sFocus').checked,
+      chime: $('sChime').value,
     };
     save('pomo.settings', settings);
     // If the current mode's length changed and the timer isn't running, apply it now
@@ -477,9 +745,38 @@
     render();
   };
 
+  // ---- Backup ----
+  $('exportData').onclick = () => {
+    creditFocus();
+    const data = { app: 'pomodoro', version: 1, exported: new Date().toISOString(), settings, stats, todos, wall: wallIndex };
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+    a.download = `pomodoro-backup-${dayKey()}.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  $('importData').onclick = () => $('importFile').click();
+  $('importFile').onchange = async e => {
+    const file = e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      if (data.app !== 'pomodoro' || typeof data.stats !== 'object') throw new Error('not a pomodoro backup');
+      const when = data.exported ? new Date(data.exported).toLocaleString() : 'unknown date';
+      if (!confirm(`Replace your current stats, tasks and settings with the backup from ${when}?`)) return;
+      save('pomo.stats', data.stats);
+      save('pomo.todos', Array.isArray(data.todos) ? data.todos : []);
+      save('pomo.settings', { ...DEFAULTS, ...data.settings });
+      if (Number.isInteger(data.wall)) save('pomo.wall', data.wall);
+      location.reload();
+    } catch (err) {
+      alert(`Couldn't import that file (${err.message}).`);
+    }
+  };
+
   // ---- To-do list ----
   let todos = load('pomo.todos', []);
-  const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   function renderTodos() {
     const box = $('todoList');
@@ -493,13 +790,14 @@
         <button data-act="remove" title="Delete">✕</button>
         <button data-act="done" class="done" title="Done">✓</button>
       </div>
-      ${shown.length ? `<ul class="todo-next">${shown.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
-      ${rest.length > 3 ? `<div class="todo-more">+${rest.length - 3} more</div>` : ''}`;
+      ${shown.length ? `<ul class="todo-next fadeable">${shown.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+      ${rest.length > 3 ? `<div class="todo-more fadeable">+${rest.length - 3} more</div>` : ''}`;
   }
 
   $('todoList').addEventListener('click', e => {
     const act = e.target.closest('button')?.dataset.act;
     if (!act) return;
+    creditFocus(); // give the outgoing top task its time before the list changes
     const top = todos.shift();
     if (act === 'skip') todos.push(top);
     if (act === 'done') chime();
@@ -511,6 +809,7 @@
     if (e.key !== 'Enter') return;
     const text = e.target.value.trim();
     if (!text) return;
+    creditFocus();
     todos.push(text);
     save('pomo.todos', todos);
     e.target.value = '';
@@ -525,18 +824,29 @@
   };
   $('reset').onclick = () => { stop(); remaining = settings[mode] * 60; render(); };
   $('nextWall').onclick = nextWallpaper;
+  $('fullscreen').onclick = toggleFullscreen;
   const statsDlg = $('stats');
   $('openStats').onclick = () => { creditFocus(); renderStats(); statsDlg.showModal(); };
   $('closeStats').onclick = () => statsDlg.close();
+
   document.addEventListener('keydown', e => {
-    if (dlg.open || statsDlg.open || e.target.tagName === 'INPUT') return;
+    if (document.querySelector('dialog[open]') || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
     if (e.code === 'Space') { e.preventDefault(); toggleBtn.click(); }
+    else if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+    else if (e.key === 'n' || e.key === 'N') nextWallpaper();
+  });
+  // Stop a focused button from also "clicking" on space after the shortcut above handled it
+  document.addEventListener('keyup', e => {
+    if (e.code === 'Space' && e.target.tagName === 'BUTTON' && !document.querySelector('dialog[open]')) e.preventDefault();
   });
 
   remaining = settings.pomodoro * 60;
   showWallpaper(wallIndex);
   renderTodos();
   render();
+  renderClock();
+  setInterval(renderClock, 1000);
   loadWeather();
   setInterval(loadWeather, 20 * 60 * 1000);
 </script>
