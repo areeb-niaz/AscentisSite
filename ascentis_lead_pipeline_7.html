@@ -111,7 +111,7 @@ td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
   <div class="hint"><b>Work HUMAN_REVIEW before stage 02.</b> Sort by <code>review_flag</code>:
     <ul>
       <li><b>SITE CHECK</b>: open the site. Keep on a Weddings, Private Events, Banquets, Hall Rentals or Rent Our Space page, including party rooms and small community halls that rent for real money. Golf tournaments, corporate outings, member socials, ice rentals and Jack &amp; Jill-only club rentals do not count.</li>
-      <li><b>COLD CALL</b>: halls and venues with no website or email. Call to confirm they rent; approved rows go to CLEANED and become <code>cold_call</code> in stage 02.</li>
+      <li><b>COLD CALL</b>: halls and venues with no website (free builder subdomains like wixsite.com count as none) and no real email (filler@godaddy.com and similar placeholders are dropped). Call to confirm they rent; approved rows go to CLEANED and become <code>cold_call</code> in stage 02.</li>
       <li><b>CHECK: typo domain</b>: one letter off another lead's domain, usually a dead duplicate.</li>
     </ul>
     <br><b>Still invisible to the gates</b>, so spot-check CLEANED: a venue run inside a hotel under its own brand (Harmony Event Centre was the Courtyard by Marriott's); members-only clubs; municipal ownership with no tell in the domain, email or phone; and dead domains.</div>
@@ -240,6 +240,13 @@ const GOLF=["golf course","golf club","country club","public golf course","priva
 /* Websites */
 const SOCIAL=["facebook.com","instagram.com","fb.com","fb.me","linktr.ee","linktree.ee","tiktok.com","twitter.com","x.com"];
 const DEAD_HOSTS=["business.site"];  /* Google retired these free sites in 2024 */
+/* Free site-builder subdomains: no domain of their own, so they count as NO website (boss, Oct 2026).
+   A Wix/GoDaddy/Squarespace site on the venue's own domain is a real website and is not affected. */
+const BASIC_HOSTS=["wixsite.com","weebly.com","godaddysites.com","square.site","sites.google.com","webnode.com","jimdosite.com","wordpress.com","blogspot.com","carrd.co","mystrikingly.com","strikingly.com","site123.me","yolasite.com","ueniweb.com","webflow.io","netlify.app","vercel.app","github.io"];
+/* Placeholder / template emails: dropped, the row is treated as having no email */
+const PLACEHOLDER_DOMS=["godaddy.com","wixpress.com","sentry.io","sentry.wixpress.com","example.com","domain.com","mysite.com","website.com","yourdomain.com","yoursite.com","mailservice.com","edge-themes.com","qodeinteractive.com","mikado-themes.com","select-themes.com"];
+const PLACEHOLDER_LOCAL=["filler","mymail","youremail","your-email","yourname","example","test","user","name","email","johndoe","john.doe"];
+const isPlaceholder=e=>{const [l,d]=String(e).toLowerCase().split("@");return !!d&&(PLACEHOLDER_DOMS.some(p=>d===p||d.endsWith("."+p))||PLACEHOLDER_LOCAL.includes(l))};
 const MARKETPLACE=["eventbrite.com","eventbrite.ca","sidedooraccess.com","expedia.com","expedia.ca","booking.com","tripadvisor.com","tripadvisor.ca","yelp.com","yelp.ca","decolar.com","despegar.com","tagvenue.com","giggster.com","eventective.com","peerspace.com","weddingwire.ca","weddingwire.com","theknot.com","bridebook.com","bluepillow.com","airbnb.com","airbnb.ca","vrbo.com","etsy.com","snappr.com","poi.place","wa.me","211centralsouth.ca","211ontario.ca","edan.io"];
 const JUNK_DOMS=["betfuryx.com","eliteplaypalace.com","stellarsandscasino.com","phoenixpalacecasino.com","polianenovaes.com","casinoexplorerhub.com","treasuretrovescasino.com","gameglorygrove.com"];
 const UMBRELLA=["legion.ca","mooseintl.org","e-clubhouse.org","lionsclubs.org","kofc.org","kaneffgolf.com"];   /* branch of a club network: review */
@@ -277,6 +284,7 @@ function siteStatus(r){
   if(!norm(r.website)) return "none";
   if(onDom(dom,SOCIAL)) return "social";
   if(onDom(dom,DEAD_HOSTS)) return "none";
+  if(onDom(dom,BASIC_HOSTS)) return "basic";
   return "own";
 }
 
@@ -506,7 +514,8 @@ function stage1(rows,county){
   const items=[];
   for(const row of rows){
     const emails=[]; const seen=new Set();
-    for(const c of emailCols){const v=norm(row[c]); if(v&&v.includes("@")&&!seen.has(v)){seen.add(v);emails.push(v)}}
+    const dropped=[];
+    for(const c of emailCols){const v=norm(row[c]); if(v&&v.includes("@")&&!seen.has(v)){seen.add(v);(isPlaceholder(v)?dropped:emails).push(v)}}
     let [verdict,reason,gate]=classify(row);
     const phone=String(row.phone||row["phones/0"]||"").trim();
     const ph=digits(phone);
@@ -532,13 +541,14 @@ function stage1(rows,county){
     /* no website: halls become cold calls, everything else goes */
     if(verdict!=="REMOVE"&&site!=="own"){
       const ok=coldCallable(row,verdict,gate);
-      if(!ok){verdict="REMOVE";reason=(site==="social"?"social-media page only":"no website")+(emails.length?"":" and no email")+", and no venue signal";gate="G0 unreachable"}
+      const what=site==="social"?"social page only":site==="basic"?"free site-builder page only ("+onDom(normDomain(row.website),BASIC_HOSTS)+")":"no website";
+      if(!ok){verdict="REMOVE";reason=what+(emails.length?"":" and no email")+", and no venue signal";gate="G0 unreachable"}
       else{
         verdict="REVIEW";
-        flag=site==="social"?"COLD CALL: social page only":(emails.length?"EMAIL ONLY: no website":"COLD CALL: no website or email");
+        flag=site==="social"?"COLD CALL: social page only":site==="basic"?(emails.length?"EMAIL ONLY: free site-builder page":"COLD CALL: free site-builder page, no email"):(emails.length?"EMAIL ONLY: no website":"COLD CALL: no website or email");
         if(!ph&&!emails.length) flag+="; no phone either";
         const cl=CAT_COLS.map(c=>row[c]).filter(Boolean).slice(0,3).join(", ")||"no category";
-        reason=(site==="social"?"social page only":"no website")+(emails.length?"":", no email")+" ("+cl+"): call to confirm it rents the space";gate="G0 cold call";
+        reason=what+(emails.length?"":", no email")+(dropped.length?" (placeholder email dropped: "+dropped.join(", ")+")":"")+" ("+cl+"): call to confirm it rents the space";gate="G0 cold call";
       }
     }
     const base={placeId:row.placeId||"",title:row.title||"",domain:normDomain(row.domain||"")};
@@ -696,8 +706,6 @@ wireDrop("d2a","f2a",wb=>{preWB=wb;check2()});
 wireDrop("d2c","f2c",wb=>{amfWB=wb;check2()});
 function check2(){document.getElementById("run2").disabled=!preWB}
 
-const PLACEHOLDER_DOMS=["godaddy.com","wixpress.com","sentry.io","sentry.wixpress.com","example.com","domain.com","mysite.com","website.com","yourdomain.com","yoursite.com","mailservice.com"];
-const PLACEHOLDER_LOCAL=["filler","mymail","youremail","your-email","yourname","example","test","user","name"];
 
 function stage2(cleaned,amfWB){
   /* AMF lookup: scans ALL sheets, handles both schemas.
@@ -729,7 +737,6 @@ function stage2(cleaned,amfWB){
     }
   }
   const badTld=v=>{const x=norm(v);return x.endsWith(".edu")||x.endsWith(".gov")};
-  const isPlaceholder=e=>{const [l,d]=e.split("@");return PLACEHOLDER_DOMS.some(p=>d===p||d.endsWith("."+p))||PLACEHOLDER_LOCAL.includes(l)};
   const BASE=FINAL_COLS.slice(0,14);
   const master=[],removed2=[];
   for(const row of cleaned){
@@ -743,6 +750,7 @@ function stage2(cleaned,amfWB){
     if(eDom&&badTld(eDom)){r.note="removed: email domain ."+eDom.split(".").pop();removed2.push(r);continue}
     if((wDom&&badTld(wDom))||/\.(edu|gov)(\/|$)/.test(site)){r.note="removed: .edu/.gov website";removed2.push(r);continue}
     if(onDom(wDom,SOCIAL)) notes.push("social page only, no website");
+    else if(onDom(wDom,BASIC_HOSTS)) notes.push("free site-builder page only, treated as no website");
     else if(!site) notes.push("no website");
     const dom=normDomain(r.domain||r.website), phone=String(r.phone||r["phones/0"]||"").trim();
     if(email) r["verification status"]="has_email";
@@ -767,7 +775,7 @@ function stage2(cleaned,amfWB){
      cherrydowns.clublink.ca and wyndance.clublink.ca stay separate. Best contact wins. */
   const RANK={has_email:0,amf_found_dm:0,amf_found:1,cold_call:2,no_contact:3};
   const rk=r=>RANK[r["verification status"]]??9;
-  const keyOf=r=>{const s=norm(r.website);return s&&!onDom(normDomain(s),SOCIAL)?siteKey(s):""};
+  const keyOf=r=>{const s=norm(r.website);return s&&!onDom(normDomain(s),SOCIAL)&&!onDom(normDomain(s),BASIC_HOSTS)?siteKey(s):""};
   const best=new Map();
   kept.forEach((r,i)=>{const k=keyOf(r);if(!k)return;const b=best.get(k);if(b===undefined||rk(r)<rk(kept[b]))best.set(k,i)});
   const out=[];
