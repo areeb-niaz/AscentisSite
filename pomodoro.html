@@ -214,10 +214,10 @@
   }
   .cal i.blank { background: none; }
   .cal i.future { opacity: 0.35; }
-  .cal i.l1 { background: #1e5c38; }
-  .cal i.l2 { background: #23894a; }
-  .cal i.l3 { background: #2fc463; color: #08200f; }
-  .cal i.l4 { background: #9dff7a; color: #08200f; }
+  .cal i.l1 { background: #1d4a30; }
+  .cal i.l2 { background: #1f8a47; }
+  .cal i.l3 { background: #2fd36a; color: #08200f; }
+  .cal i.l4 { background: #c4ff5e; color: #08200f; box-shadow: 0 0 12px rgba(196,255,94,0.45); font-weight: 700; }
   .cal i.today { outline: 1.5px solid rgba(255,255,255,0.8); }
   .legend { display: flex; justify-content: space-between; align-items: center; font-size: 11px; opacity: 0.6; margin-top: 8px; }
   .legend span { display: inline-flex; gap: 2px; align-items: center; }
@@ -401,6 +401,9 @@
   const getDay = d => stats[dayKey(d)] || { s: 0, p: 0 };
   const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return d; };
 
+  // Under 5 minutes doesn't count as a study day (stray start/pause clicks)
+  const MIN_DAY_SEC = 300;
+
   function fmtDur(sec) {
     const m = Math.floor(sec / 60), h = Math.floor(m / 60);
     return h ? `${h}h ${m % 60}m` : `${m}m`;
@@ -564,7 +567,7 @@
     // Streak: consecutive days with some focus, counting back from today
     // (today not studied yet doesn't break it)
     let streak = 0;
-    for (let i = today.s > 0 ? 0 : 1; getDay(daysAgo(i)).s > 0; i++) streak++;
+    for (let i = today.s >= MIN_DAY_SEC ? 0 : 1; getDay(daysAgo(i)).s >= MIN_DAY_SEC; i++) streak++;
 
     const all = Object.values(stats);
     const total = all.reduce((a, d) => a + d.s, 0);
@@ -586,7 +589,13 @@
     const now = new Date();
     const y = statsMonth.getFullYear(), m = statsMonth.getMonth();
     const isCurrentMonth = y === now.getFullYear() && m === now.getMonth();
-    const level = s => !s ? '' : s < 1800 ? 'l1' : s < 3600 ? 'l2' : s < 7200 ? 'l3' : 'l4';
+    // Shade by progress toward the daily goal; hitting the goal is the brightest
+    const goalSec = settings.goal * settings.pomodoro * 60;
+    const level = (s, p) => {
+      if (s < MIN_DAY_SEC) return '';
+      const f = Math.max(p / settings.goal, s / goalSec);
+      return f >= 1 ? 'l4' : f >= 0.5 ? 'l3' : f >= 0.25 ? 'l2' : 'l1';
+    };
     const todayKey = dayKey();
     let cal = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => `<span class="dow">${d}</span>`).join('');
     cal += '<i class="blank"></i>'.repeat(new Date(y, m, 1).getDay());
@@ -596,9 +605,9 @@
       const d = new Date(y, m, day);
       const k = dayKey(d);
       const { s, p, t } = getDay(d);
-      monthTotal += s; monthP += p; if (s > 0) monthDays++;
+      monthTotal += s; monthP += p; if (s >= MIN_DAY_SEC) monthDays++;
       for (const [name, sec] of Object.entries(t || {})) tasks[name] = (tasks[name] || 0) + sec;
-      const cls = [level(s), k === todayKey ? 'today' : '', k > todayKey ? 'future' : ''].join(' ').trim();
+      const cls = [level(s, p), k === todayKey ? 'today' : '', k > todayKey ? 'future' : ''].join(' ').trim();
       cal += `<i class="${cls}" title="${dateLabel(d, { weekday: 'short', month: 'short', day: 'numeric' })}: ${fmtDur(s)}, ${p} pomodoros">${day}</i>`;
     }
     const monthName = dateLabel(statsMonth, { month: 'long', year: y === now.getFullYear() ? undefined : 'numeric' });
@@ -628,8 +637,8 @@
         <button type="button" class="mini" data-month="1" title="Next month" ${isCurrentMonth ? 'disabled' : ''}>›</button>
       </div>
       <div class="cal">${cal}</div>
-      <div class="legend"><span>&lt;30m · &lt;1h · &lt;2h · 2h+</span>
-        <span>less <i style="background:rgba(255,255,255,0.08)"></i><i style="background:#1e5c38"></i><i style="background:#23894a"></i><i style="background:#2fc463"></i><i style="background:#9dff7a"></i> more</span></div>
+      <div class="legend"><span>% of daily goal: &lt;25 · &lt;50 · &lt;100 · goal hit</span>
+        <span>less <i style="background:rgba(255,255,255,0.08)"></i><i style="background:#1d4a30"></i><i style="background:#1f8a47"></i><i style="background:#2fd36a"></i><i style="background:#c4ff5e"></i> more</span></div>
       <h3>top tasks in ${dateLabel(statsMonth, { month: 'long' })}</h3>
       ${taskHtml}`;
   }
