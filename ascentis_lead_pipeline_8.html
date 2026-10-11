@@ -79,7 +79,7 @@ td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 <body>
 <div class="wrap">
 <header>
-  <h1>Ascentis <em>Lead Pipeline</em><span class="ver">v7</span></h1>
+  <h1>Ascentis <em>Lead Pipeline</em><span class="ver">v8</span></h1>
   <p>Raw Apify scrape to Smartlead-ready master. Runs entirely in your browser, nothing is uploaded anywhere.</p>
 </header>
 
@@ -123,7 +123,7 @@ td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
   <div class="sub">Merges Anymailfinder results (joined on domain, both decision-maker and general inbox schemas). No venue is dropped for a bad email: placeholder addresses are cleared and the row falls through to Anymailfinder, then phone. Email verification happens in Smartlead at import.</div>
   <label class="drop" id="d2a">Precheck workbook (from stage 01)<input type="file" id="f2a" accept=".xlsx"></label>
   <div style="height:10px"></div>
-  <label class="drop" id="d2c">Anymailfinder results (.xlsx or .csv), optional<input type="file" id="f2c" accept=".xlsx,.csv"></label>
+  <label class="drop" id="d2c">Anymailfinder results (.xlsx or .csv), optional. Drop one or more files: decision-maker and company results can go in together<input type="file" id="f2c" accept=".xlsx,.csv" multiple></label>
   <div class="row" id="s2go"><button id="run2" disabled>Build master sheet</button></div>
   <div class="stats" id="stats2"></div>
   <div class="notice" id="ccnote"></div>
@@ -623,6 +623,31 @@ function wireDrop(dropId,inputId,onFile){
     rd.readAsArrayBuffer(file);
   }
 }
+/* multi-file drop: every file dropped or picked is added to the list (same name replaces) */
+function wireDropMulti(dropId,inputId,onFiles){
+  const d=document.getElementById(dropId),f=document.getElementById(inputId);
+  const loaded=new Map();
+  d.addEventListener("dragover",e=>{e.preventDefault();d.classList.add("over")});
+  d.addEventListener("dragleave",()=>d.classList.remove("over"));
+  d.addEventListener("drop",e=>{e.preventDefault();d.classList.remove("over");addAll(e.dataTransfer.files)});
+  f.addEventListener("change",()=>{addAll(f.files);f.value=""});
+  function addAll(list){
+    const files=[...list]; let left=files.length; if(!left)return;
+    for(const file of files){
+      const rd=new FileReader();
+      rd.onload=ev=>{
+        try{loaded.set(file.name,XLSX.read(new Uint8Array(ev.target.result),{type:"array"}))}
+        catch(err){alert("Could not read "+file.name+": "+err.message)}
+        if(--left===0){
+          d.classList.add("loaded");
+          d.firstChild.textContent="✓ "+loaded.size+" file"+(loaded.size>1?"s":"")+": "+[...loaded.keys()].join(", ")+" (drop more to add)";
+          onFiles([...loaded.values()]);
+        }
+      };
+      rd.readAsArrayBuffer(file);
+    }
+  }
+}
 const GATE_DESC={
 "G0 junk":"offshore casino pages, foreign phone numbers, listings marked closed",
 "G0 unreachable":"marketplaces, organization umbrella domains, no website and no venue signal",
@@ -701,13 +726,13 @@ document.getElementById("dl1").onclick=()=>{
 };
 
 /* ================= Stage 2 ================= */
-let preWB=null,amfWB=null;
+let preWB=null,amfWBs=[];
 wireDrop("d2a","f2a",wb=>{preWB=wb;check2()});
-wireDrop("d2c","f2c",wb=>{amfWB=wb;check2()});
+wireDropMulti("d2c","f2c",wbs=>{amfWBs=wbs;check2()});
 function check2(){document.getElementById("run2").disabled=!preWB}
 
 
-function stage2(cleaned,amfWB){
+function stage2(cleaned,amfWBs){
   /* AMF lookup: scans ALL sheets, handles both schemas.
      Decision-maker search: valid_email_only (+person_name). General inbox search: one_valid_email_only.
      Decision-maker emails beat general inboxes for the same domain (Owner/CEO > general inbox). */
@@ -716,7 +741,8 @@ function stage2(cleaned,amfWB){
     if(ed.endsWith(".edu")||ed.endsWith(".gov"))return false;
     if(ed.endsWith(".org"))return ed===d||ed.endsWith("."+d); /* a club's own .org inbox is fine; a stray .org is not */
     return true};
-  if(amfWB){
+  /* every sheet of every dropped file; each sheet is recognised by its own columns */
+  for(const amfWB of (amfWBs||[])){
     for(const sh of amfWB.SheetNames){
       const rows=XLSX.utils.sheet_to_json(amfWB.Sheets[sh],{defval:""});
       if(!rows.length)continue;
@@ -787,7 +813,7 @@ function stage2(cleaned,amfWB){
 
 document.getElementById("run2").onclick=()=>{
   const cleaned=XLSX.utils.sheet_to_json(preWB.Sheets["CLEANED"]||{},{defval:""});
-  const {master,duplicates,removed2}=stage2(cleaned,amfWB);
+  const {master,duplicates,removed2}=stage2(cleaned,amfWBs);
   window._master=master; window._duplicates=duplicates; window._removed2=removed2;
   const counts={}; master.forEach(r=>counts[r["verification status"]]=(counts[r["verification status"]]||0)+1);
   const cleared=master.filter(r=>/placeholder email cleared/.test(r.note)).length;
