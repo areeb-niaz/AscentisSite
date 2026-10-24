@@ -6,11 +6,12 @@ User-agent: *
 Allow: /
 
 # Client demo. It carries another business's name and branding, so keeping
-# it out of search stops it competing with that venue's own site.
+# it out of search stops it competing with that club's own site.
 # GitHub Pages serves this at both paths, so both are listed.
 Disallow: /venue-demo
 Disallow: /venue-demo.html
 Disallow: /assets/maple-grove/
+Disallow: /assets/optimist/
 
 # Internal working pages, not part of the public site.
 Disallow: /ascentis_lead_pipeline_8.html
