@@ -171,7 +171,12 @@
         position: relative;
         isolation: isolate;
         overflow: hidden;
-        background: var(--glow);
+        /* the club roundel's own colours: Optimist blue in one corner,
+           its gold in the other, deep navy between them */
+        background:
+          radial-gradient(90% 80% at 0% 0%, rgba(38, 84, 184, 0.9), transparent 62%),
+          radial-gradient(80% 80% at 100% 100%, rgba(214, 168, 72, 0.5), transparent 64%),
+          linear-gradient(135deg, #0a1c47 0%, #102a63 55%, #0b1f4d 100%);
         color: #c9d5ee;
         padding-block: clamp(2.75rem, 7vw, 5rem);
       }
@@ -181,8 +186,20 @@
         position: absolute;
         inset: -25%;
         z-index: -1;
-        background: radial-gradient(35% 45% at 35% 40%, rgba(74, 134, 245, 0.32), transparent 70%);
-        animation: hero-drift 20s ease-in-out infinite alternate;
+        background: radial-gradient(38% 48% at 35% 40%, rgba(56, 104, 205, 0.45), transparent 70%);
+        animation: hero-drift 12s ease-in-out infinite alternate;
+        pointer-events: none;
+      }
+      /* film grain over the gradient, so it reads as printed light rather than a flat fill */
+      .hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-size: 180px 180px;
+        opacity: 0.32;
+        mix-blend-mode: overlay;
         pointer-events: none;
       }
       @keyframes hero-drift {
@@ -191,9 +208,9 @@
       }
       .hero__grid { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
       .hero h1 { color: #fff; font-size: clamp(2.25rem, 5.6vw, 3.4rem); letter-spacing: -0.03em; margin-bottom: 1rem; max-width: 14ch; }
-      .hero__sub { font-size: clamp(1.125rem, 2.1vw, 1.25rem); color: #c9d5ee; max-width: 30rem; margin-bottom: 1.75rem; }
+      .hero__sub { font-size: clamp(1.125rem, 2.1vw, 1.25rem); color: #eef3ff; max-width: 30rem; margin-bottom: 1.75rem; }
       .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-      .hero__call { margin: 1.25rem 0 0; color: #b9c7e6; font-size: 1rem; }
+      .hero__call { margin: 1.25rem 0 0; color: #dfe7f8; font-size: 1rem; }
       .hero__call a { color: #fff; font-weight: 600; text-decoration-color: rgba(255, 255, 255, 0.45); }
       .hero__photo img {
         width: 100%;
