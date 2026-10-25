@@ -35,8 +35,8 @@
       /* ============================================================
          Optimist Club of Newmarket: design tokens
          Plain and quiet on purpose. White page, thin rules, flat
-         buttons. The one bold element is the navy mission band,
-         which shares its glow with the chat header.
+         buttons. The one bold element is the navy hero, which
+         shares its glow with the chat header.
          ============================================================ */
       :root {
         --navy:      #0b1f4d;  /* headings, mission band            */
@@ -166,32 +166,72 @@
       /* ============================================================
          Hero
          ============================================================ */
-      .hero { padding-block: clamp(2.25rem, 6vw, 4.5rem); }
+      /* The page's one bold moment: same glow as the chat header. */
+      .hero {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        background: var(--glow);
+        color: #c9d5ee;
+        padding-block: clamp(2.75rem, 7vw, 5rem);
+      }
+      /* a second patch of blue light that drifts very slowly across the navy */
+      .hero::before {
+        content: '';
+        position: absolute;
+        inset: -25%;
+        z-index: -1;
+        background: radial-gradient(35% 45% at 35% 40%, rgba(74, 134, 245, 0.32), transparent 70%);
+        animation: hero-drift 20s ease-in-out infinite alternate;
+        pointer-events: none;
+      }
+      @keyframes hero-drift {
+        from { transform: translate3d(-8%, -6%, 0); }
+        to   { transform: translate3d(12%, 8%, 0); }
+      }
       .hero__grid { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
-      .hero h1 { font-size: clamp(2.25rem, 5.6vw, 3.4rem); letter-spacing: -0.03em; margin-bottom: 1rem; max-width: 14ch; }
-      .hero__sub { font-size: clamp(1.125rem, 2.1vw, 1.25rem); color: var(--muted); max-width: 30rem; margin-bottom: 1.75rem; }
+      .hero h1 { color: #fff; font-size: clamp(2.25rem, 5.6vw, 3.4rem); letter-spacing: -0.03em; margin-bottom: 1rem; max-width: 14ch; }
+      .hero__sub { font-size: clamp(1.125rem, 2.1vw, 1.25rem); color: #c9d5ee; max-width: 30rem; margin-bottom: 1.75rem; }
       .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
-      .hero__call { margin: 1.25rem 0 0; color: var(--muted); font-size: 1rem; }
-      .hero__call a { font-weight: 600; }
+      .hero__call { margin: 1.25rem 0 0; color: #b9c7e6; font-size: 1rem; }
+      .hero__call a { color: #fff; font-weight: 600; text-decoration-color: rgba(255, 255, 255, 0.45); }
       .hero__photo img {
         width: 100%;
         height: auto;
         aspect-ratio: 1330 / 924;
         object-fit: cover;
         border-radius: 12px;
+        outline: 1px solid rgba(255, 255, 255, 0.14);
+        outline-offset: -1px;
+      }
+      /* flat buttons, inverted for the navy ground */
+      .hero .btn { transition: background-color 0.15s, border-color 0.15s, box-shadow 0.3s; }
+      .hero .btn--primary { background: #fff; color: var(--navy); }
+      .hero .btn--secondary { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.45); }
+      /* soft halo on hover or keyboard focus: light around the button, not a drop shadow */
+      .hero .btn--primary:hover,
+      .hero .btn--primary:focus-visible {
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.14), 0 0 28px 2px rgba(130, 170, 255, 0.55);
+      }
+      .hero .btn--secondary:hover,
+      .hero .btn--secondary:focus-visible {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: #fff;
+        box-shadow: 0 0 22px 0 rgba(130, 170, 255, 0.35);
       }
       @media (max-width: 899px) { .hero__actions .btn { flex: 1 1 12rem; } }
       @media (min-width: 900px) { .hero__grid { grid-template-columns: 1fr 1fr; } }
 
       /* ============================================================
-         Mission: the page's one bold moment
+         Mission: warm light band under the navy hero
          ============================================================ */
-      .mission { background: var(--glow); color: #dfe7f8; }
-      .mission__inner { display: flex; align-items: center; gap: 1.25rem; padding-block: clamp(2rem, 5vw, 2.75rem); }
+      .mission { background: #fbf6ea; border-bottom: 1px solid #f0e4c6; }
+      .mission__inner { display: flex; align-items: center; gap: 1.25rem; padding-block: clamp(1.75rem, 4.5vw, 2.5rem); }
       .mission__mark { width: 56px; height: 56px; flex-shrink: 0; border-radius: 50%; }
       .mission p { margin: 0; }
-      .mission__line { font-weight: 700; font-size: clamp(1.25rem, 3vw, 1.75rem); color: #fff; line-height: 1.25; letter-spacing: -0.02em; }
-      .mission__sub { color: #b9c7e6; font-size: 1rem; margin-top: 0.35rem !important; }
+      .mission__line { font-weight: 700; font-size: clamp(1.25rem, 3vw, 1.75rem); color: var(--navy); line-height: 1.25; letter-spacing: -0.02em; }
+      .mission__sub { color: var(--muted); font-size: 1rem; margin-top: 0.35rem !important; }
 
       /* ============================================================
          Quick facts: one row of figures split by thin rules
@@ -316,7 +356,7 @@
       }
       .faq summary::after { transform: rotate(90deg); }
       .faq details[open] summary::after { transform: rotate(0deg); }
-      .faq details > div { padding: 0 0 1.15rem; color: var(--muted); max-width: 40rem; }
+      .faq details > div { padding: 0 0 1.15rem; color: var(--muted); max-width: 40rem; overflow: hidden; }
       .faq details > div p:last-child { margin-bottom: 0; }
 
       /* ============================================================
@@ -348,6 +388,7 @@
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
         *, *::before, *::after { transition-duration: 0.001ms !important; }
+        .hero::before { animation: none; }
       }
 
       /* ============================================================
@@ -764,6 +805,40 @@
             }, 250);
           });
         });
+
+        /* ---------- FAQ: answers slide open and closed ----------
+           <details> snaps open by default. We take over the click, set
+           the open state ourselves and animate the answer's height.
+           Without the Web Animations API, or with reduced motion on,
+           the native snap is left alone. */
+        var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!reduced && 'animate' in Element.prototype) {
+          document.querySelectorAll('.faq details').forEach(function (d) {
+            var summary = d.querySelector('summary');
+            var answer = d.querySelector('summary + div');
+            var running = null;
+
+            summary.addEventListener('click', function (e) {
+              e.preventDefault();
+              if (running) running.cancel();
+
+              if (d.open) {
+                running = answer.animate(
+                  [{ height: answer.offsetHeight + 'px', paddingBottom: '1.15rem', opacity: 1 }, { height: '0px', paddingBottom: '0px', opacity: 0 }],
+                  { duration: 220, easing: 'ease-in' }
+                );
+                running.onfinish = function () { d.open = false; running = null; };
+              } else {
+                d.open = true;
+                running = answer.animate(
+                  [{ height: '0px', paddingBottom: '0px', opacity: 0 }, { height: answer.offsetHeight + 'px', paddingBottom: '1.15rem', opacity: 1 }],
+                  { duration: 280, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
+                );
+                running.onfinish = function () { running = null; };
+              }
+            });
+          });
+        }
       })();
     </script>
 
