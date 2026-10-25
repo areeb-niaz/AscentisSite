@@ -18,7 +18,7 @@
       name="description"
       content="Optimist Youth Centre Hall Rentals: an affordable event space in Newmarket that gives back to the community. Seats 250."
     />
-    <meta name="theme-color" content="#1d4a9e" />
+    <meta name="theme-color" content="#0b1f4d" />
     <link rel="icon" type="image/png" href="assets/optimist/logo-192.png" />
     <link rel="apple-touch-icon" href="assets/optimist/logo-192.png" />
     <link rel="preload" as="image" href="assets/optimist/hall-800.webp" imagesrcset="assets/optimist/hall-800.webp 800w, assets/optimist/hall.webp 1330w" imagesizes="(min-width: 900px) 50vw, 100vw" />
@@ -26,7 +26,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link href="https://cdn.jsdelivr.net/npm/@n8n/chat@1.29.1/dist/style.css" rel="stylesheet" />
@@ -34,28 +34,32 @@
     <style>
       /* ============================================================
          Optimist Club of Newmarket: design tokens
-         Light page. Optimist blue carries actions and headings, gold
-         is the accent, taken from the club roundel.
+         Plain and quiet on purpose. White page, thin rules, flat
+         buttons. The one bold element is the navy mission band,
+         which shares its glow with the chat header.
          ============================================================ */
       :root {
-        --blue:      #1d4a9e;  /* Optimist blue, buttons and links   */
-        --blue-deep: #12306b;  /* headings, hover                    */
-        --blue-soft: #eaf0fb;  /* tinted surfaces                    */
-        --gold:      #c9a24a;  /* decorative accent only             */
-        --gold-ink:  #7a5a12;  /* gold that is safe for text         */
-        --gold-soft: #fbf4e2;  /* warm band behind the mission line  */
-        --cream:     #fbf9f4;  /* page ground                        */
-        --paper:     #ffffff;  /* cards                              */
-        --ink:       #1b2333;  /* body text                          */
-        --muted:     #4a5468;  /* secondary text                     */
-        --line:      #e4e1d8;
+        --navy:      #0b1f4d;  /* headings, mission band            */
+        --blue:      #1d4a9e;  /* Optimist blue, links and actions  */
+        --blue-dark: #163b80;  /* button hover                      */
+        --blue-soft: #eef3fc;
+        --gold:      #c9a24a;  /* small accents only                */
+        --gold-ink:  #7a5a12;  /* gold that is safe for text        */
+        --paper:     #ffffff;
+        --mist:      #f5f7fa;  /* alternate section ground          */
+        --ink:       #1a2133;
+        --muted:     #4f586b;
+        --line:      #e2e5ec;
 
-        --display: 'Source Serif 4', Georgia, serif;
-        --body:    'Public Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+        --font: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+        --glow:
+          radial-gradient(120% 90% at 0% 0%, rgba(58, 118, 230, 0.55), transparent 55%),
+          radial-gradient(90% 80% at 100% 100%, rgba(226, 176, 74, 0.22), transparent 60%),
+          linear-gradient(135deg, #0b1f4d 0%, #14306f 100%);
 
         --gut: clamp(1rem, 4vw, 2.5rem);
         --max: 1120px;
-        --radius: 14px;
       }
 
       *, *::before, *::after { box-sizing: border-box; }
@@ -63,41 +67,24 @@
 
       body {
         margin: 0;
-        background: var(--cream);
+        background: var(--paper);
         color: var(--ink);
-        font-family: var(--body);
+        font-family: var(--font);
         font-size: 1.125rem;      /* 18px: the readers here skew older */
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
       }
 
-      h1, h2, h3 {
-        font-family: var(--display);
-        font-weight: 700;
-        color: var(--blue-deep);
-        line-height: 1.15;
-        margin: 0;
-      }
-      h2 { font-size: clamp(1.75rem, 4vw, 2.375rem); }
-      h3 { font-size: 1.1875rem; }
+      h1, h2, h3 { font-weight: 700; color: var(--navy); line-height: 1.15; letter-spacing: -0.02em; margin: 0; }
+      h2 { font-size: clamp(1.625rem, 3.6vw, 2.125rem); margin-bottom: clamp(1.25rem, 3vw, 2rem); }
+      h3 { font-size: 1.125rem; letter-spacing: -0.01em; }
       p { margin: 0 0 1em; }
-      a { color: var(--blue); }
+      a { color: var(--blue); text-underline-offset: 3px; }
       img { max-width: 100%; display: block; }
 
       .wrap { width: 100%; max-width: var(--max); margin-inline: auto; padding-inline: var(--gut); }
-      .band { padding-block: clamp(3.25rem, 8vw, 5.5rem); }
-      .band--white { background: var(--paper); border-block: 1px solid var(--line); }
-      .section-head { margin-bottom: clamp(1.5rem, 4vw, 2.25rem); max-width: 40rem; }
-      .section-head p { color: var(--muted); margin: 0.6rem 0 0; }
-      .kicker {
-        display: inline-block;
-        font-size: 0.875rem;
-        font-weight: 600;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: var(--gold-ink);
-        margin-bottom: 0.6rem;
-      }
+      .section { padding-block: clamp(3rem, 7vw, 5rem); }
+      .section--mist { background: var(--mist); border-block: 1px solid var(--line); }
 
       .icon { width: 1.5rem; height: 1.5rem; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 
@@ -106,45 +93,46 @@
         left: 1rem;
         top: -4rem;
         z-index: 100;
-        background: var(--blue-deep);
+        background: var(--navy);
         color: #fff;
         padding: 0.75rem 1rem;
-        border-radius: 8px;
+        border-radius: 6px;
       }
       .skip:focus { top: 1rem; }
 
-      :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+      :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
 
-      /* ---------- buttons ---------- */
+      /* ---------- buttons: flat, small radius, no shadow ---------- */
       .btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 0.55rem;
-        min-height: 3.25rem;      /* generous tap target */
-        padding: 0.8rem 1.6rem;
-        border-radius: 999px;
-        border: 2px solid transparent;
-        font-family: var(--body);
+        gap: 0.5rem;
+        min-height: 3rem;
+        padding: 0.7rem 1.35rem;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        font-family: var(--font);
         font-size: 1.0625rem;
         font-weight: 600;
+        line-height: 1.2;
         text-decoration: none;
         cursor: pointer;
-        transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+        transition: background-color 0.15s, border-color 0.15s, color 0.15s;
       }
-      .btn .icon { width: 1.25rem; height: 1.25rem; }
+      .btn .icon { width: 1.2rem; height: 1.2rem; }
       .btn--primary { background: var(--blue); color: #fff; }
-      .btn--primary:hover { background: var(--blue-deep); }
-      .btn--secondary { background: var(--paper); color: var(--blue); border-color: var(--blue); }
-      .btn--secondary:hover { background: var(--blue-soft); }
-      .btn--small { min-height: 2.75rem; padding: 0.5rem 1.1rem; font-size: 0.9375rem; white-space: nowrap; }
+      .btn--primary:hover { background: var(--blue-dark); }
+      .btn--secondary { background: var(--paper); color: var(--blue); border-color: #c3cee2; }
+      .btn--secondary:hover { border-color: var(--blue); background: var(--blue-soft); }
+      .btn--small { min-height: 2.6rem; padding: 0.45rem 1rem; font-size: 0.9375rem; white-space: nowrap; }
 
       /* ============================================================
          Demo banner + header
          ============================================================ */
       .demo-banner {
-        background: var(--blue-deep);
-        color: #dfe7f7;
+        background: var(--navy);
+        color: #c9d5ee;
         font-size: 0.8125rem;
         text-align: center;
         padding: 0.45rem var(--gut);
@@ -155,251 +143,201 @@
         position: sticky;
         top: 0;
         z-index: 50;
-        background: rgba(255, 255, 255, 0.96);
+        background: rgba(255, 255, 255, 0.94);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
         border-bottom: 1px solid var(--line);
       }
-      .header__inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 4.5rem; }
-      .brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; color: var(--blue-deep); min-width: 0; }
-      .brand img { width: 44px; height: 44px; }
-      .brand__name { font-family: var(--display); font-weight: 700; font-size: 1.0625rem; line-height: 1.15; }
-      .brand__sub { display: block; font-family: var(--body); font-size: 0.75rem; font-weight: 500; color: var(--muted); }
-      .header__actions { display: flex; align-items: center; gap: 1.1rem; }
+      .header__inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; height: 4.25rem; }
+      .brand { display: flex; align-items: center; gap: 0.65rem; text-decoration: none; color: var(--navy); min-width: 0; }
+      .brand img { width: 40px; height: 40px; }
+      .brand__name { font-weight: 700; font-size: 1rem; line-height: 1.2; }
+      .brand__sub { display: block; font-size: 0.75rem; font-weight: 500; color: var(--muted); }
+      .header__actions { display: flex; align-items: center; gap: 1.25rem; }
       .header__phone { font-weight: 600; text-decoration: none; white-space: nowrap; font-size: 0.9375rem; }
       @media (max-width: 720px) { .header__phone { display: none; } }
       @media (max-width: 400px) {
         .brand__sub { display: none; }
-        .brand img { width: 38px; height: 38px; }
+        .brand img { width: 36px; height: 36px; }
         .header .brand__name { font-size: 0.9375rem; }
-        .header .btn--small { padding-inline: 0.85rem; font-size: 0.875rem; }
-        .mission__mark { width: 40px; height: 40px; }
+        .header .btn--small { padding-inline: 0.8rem; font-size: 0.875rem; }
       }
 
       /* ============================================================
          Hero
          ============================================================ */
-      .hero { padding-block: clamp(2rem, 6vw, 4.5rem); }
-      .hero__grid { display: grid; gap: clamp(1.75rem, 5vw, 3.5rem); align-items: center; }
-      .hero h1 { font-size: clamp(2.125rem, 6vw, 3.5rem); letter-spacing: -0.01em; margin-bottom: 1rem; }
-      .hero__sub { font-size: clamp(1.125rem, 2.2vw, 1.3125rem); color: var(--muted); max-width: 32rem; margin-bottom: 1.75rem; }
+      .hero { padding-block: clamp(2.25rem, 6vw, 4.5rem); }
+      .hero__grid { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+      .hero h1 { font-size: clamp(2.25rem, 5.6vw, 3.4rem); letter-spacing: -0.03em; margin-bottom: 1rem; max-width: 14ch; }
+      .hero__sub { font-size: clamp(1.125rem, 2.1vw, 1.25rem); color: var(--muted); max-width: 30rem; margin-bottom: 1.75rem; }
       .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
       .hero__call { margin: 1.25rem 0 0; color: var(--muted); font-size: 1rem; }
       .hero__call a { font-weight: 600; }
-      .hero__photo { position: relative; }
       .hero__photo img {
         width: 100%;
         height: auto;
         aspect-ratio: 1330 / 924;
         object-fit: cover;
-        border-radius: var(--radius);
-        box-shadow: 0 18px 40px -22px rgba(18, 48, 107, 0.45);
+        border-radius: 12px;
       }
-      .hero__photo::before {
-        content: '';
-        position: absolute;
-        inset: 14px -14px -14px 14px;
-        border: 2px solid var(--gold);
-        border-radius: var(--radius);
-        z-index: -1;
-      }
-      @media (max-width: 899px) {
-        .hero__actions .btn { flex: 1 1 12rem; }
-        .hero__photo::before { inset: 10px -8px -10px 8px; }
-      }
-      @media (min-width: 900px) { .hero__grid { grid-template-columns: 1.05fr 1fr; } }
+      @media (max-width: 899px) { .hero__actions .btn { flex: 1 1 12rem; } }
+      @media (min-width: 900px) { .hero__grid { grid-template-columns: 1fr 1fr; } }
 
       /* ============================================================
-         Mission
+         Mission: the page's one bold moment
          ============================================================ */
-      .mission { background: var(--gold-soft); border-block: 1px solid #efe3c2; }
-      .mission__inner { display: flex; align-items: center; gap: 1.1rem; padding-block: 1.6rem; }
-      .mission__mark { width: 52px; height: 52px; flex-shrink: 0; }
+      .mission { background: var(--glow); color: #dfe7f8; }
+      .mission__inner { display: flex; align-items: center; gap: 1.25rem; padding-block: clamp(2rem, 5vw, 2.75rem); }
+      .mission__mark { width: 56px; height: 56px; flex-shrink: 0; border-radius: 50%; }
       .mission p { margin: 0; }
-      .mission__line { font-family: var(--display); font-weight: 700; font-size: clamp(1.1875rem, 2.8vw, 1.5rem); color: var(--blue-deep); line-height: 1.3; }
-      .mission__sub { color: var(--muted); font-size: 1rem; margin-top: 0.2rem !important; }
+      .mission__line { font-weight: 700; font-size: clamp(1.25rem, 3vw, 1.75rem); color: #fff; line-height: 1.25; letter-spacing: -0.02em; }
+      .mission__sub { color: #b9c7e6; font-size: 1rem; margin-top: 0.35rem !important; }
 
       /* ============================================================
-         Quick facts
+         Quick facts: one row of figures split by thin rules
          ============================================================ */
-      .facts { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
-      .fact {
-        background: var(--paper);
-        border: 1px solid var(--line);
-        border-top: 4px solid var(--blue);
-        border-radius: 10px;
-        padding: 1.1rem 1rem;
-        text-align: center;
-      }
-      .fact__num { display: block; font-family: var(--display); font-weight: 700; font-size: clamp(1.625rem, 4.5vw, 2.125rem); color: var(--blue-deep); line-height: 1.1; }
-      .fact__label { display: block; color: var(--muted); font-size: 0.9375rem; margin-top: 0.25rem; }
-      .fact .icon { width: 2.125rem; height: 2.125rem; color: var(--blue); margin: 0 auto 0.25rem; }
-      @media (min-width: 760px) { .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-
-      /* ============================================================
-         Event types
-         ============================================================ */
-      .events { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr)); gap: 0.75rem; }
-      .event {
-        display: flex;
-        align-items: center;
-        gap: 0.9rem;
-        background: var(--paper);
-        border: 1px solid var(--line);
-        border-radius: 10px;
-        padding: 1rem 1.1rem;
-      }
-      .event__icon {
+      .facts {
+        list-style: none;
+        margin: 0;
+        padding: 0;
         display: grid;
-        place-items: center;
-        width: 2.75rem;
-        height: 2.75rem;
-        border-radius: 50%;
-        background: var(--blue-soft);
-        color: var(--blue);
-        flex-shrink: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-top: 1px solid var(--line);
       }
-      .event h3 { font-family: var(--body); font-weight: 600; font-size: 1.0625rem; color: var(--ink); }
-      .event p { margin: 0.1rem 0 0; font-size: 0.9375rem; color: var(--muted); }
-      /* five cards in one row on wide screens, so none is left on its own */
-      @media (min-width: 1000px) {
-        .events { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-        .event { flex-direction: column; align-items: flex-start; padding: 1.25rem 1.1rem; }
+      .fact { padding: 1.25rem 1rem 1.25rem 0; border-bottom: 1px solid var(--line); }
+      .fact__num { display: block; font-weight: 700; font-size: clamp(1.75rem, 4.2vw, 2.25rem); letter-spacing: -0.03em; line-height: 1.1; color: var(--navy); }
+      .fact__label { display: block; color: var(--muted); font-size: 1rem; margin-top: 0.25rem; }
+      .fact .icon { width: 2.1rem; height: 2.1rem; color: var(--navy); }
+      @media (min-width: 760px) {
+        .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); border-bottom: 1px solid var(--line); }
+        .fact { border-bottom: 0; padding: 1.5rem 1.5rem 1.5rem 0; }
+        .fact + .fact { border-left: 1px solid var(--line); padding-left: 1.5rem; }
       }
 
       /* ============================================================
-         Rates
+         Event types: plain list with icons, no boxes
          ============================================================ */
-      .rates__grid { display: grid; gap: 1.25rem; align-items: start; }
-      @media (min-width: 900px) { .rates__grid { grid-template-columns: 1.35fr 1fr; } }
-      .card { background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(1.25rem, 3vw, 1.75rem); }
-      .rates { width: 100%; border-collapse: collapse; }
-      .rates caption {
-        text-align: left;
-        font-family: var(--display);
-        font-weight: 700;
-        font-size: 1.25rem;
-        color: var(--blue-deep);
-        padding-bottom: 0.4rem;
+      .events {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+        column-gap: 2rem;
       }
-      .rates th, .rates td { padding: 0.95rem 0; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
-      .rates tbody tr:last-child th, .rates tbody tr:last-child td { border-bottom: 0; }
+      .event { display: flex; align-items: center; gap: 0.9rem; padding: 0.9rem 0; border-bottom: 1px solid var(--line); }
+      .event .icon { color: var(--blue); }
+      .event h3 { font-size: 1.0625rem; font-weight: 600; color: var(--ink); }
+      .event p { margin: 0.1rem 0 0; font-size: 0.9375rem; color: var(--muted); }
+
+      /* ============================================================
+         Rates, included, booking
+         ============================================================ */
+      .rates__grid { display: grid; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+      @media (min-width: 900px) { .rates__grid { grid-template-columns: 1.3fr 1fr; } }
+      .rates { width: 100%; border-collapse: collapse; }
+      .rates caption { text-align: left; font-weight: 700; font-size: 1.125rem; color: var(--navy); padding-bottom: 0.5rem; }
+      .rates th, .rates td { padding: 0.9rem 0; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left; }
+      .rates thead + tbody tr:first-child th, .rates caption + tbody tr:first-child th, .rates caption + tbody tr:first-child td { border-top: 1px solid var(--line); }
       .rates th { font-weight: 600; padding-right: 1rem; }
       .rates th span { display: block; font-weight: 400; color: var(--muted); font-size: 0.9375rem; }
-      .rates td { text-align: right; font-family: var(--display); font-weight: 700; font-size: 1.375rem; color: var(--blue-deep); white-space: nowrap; }
-      .rates td small { display: block; font-family: var(--body); font-weight: 400; font-size: 0.875rem; color: var(--muted); white-space: normal; }
-      .rates__group th {
-        padding: 1.4rem 0 0.4rem;
-        font-size: 0.8125rem;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: var(--gold-ink);
-      }
-      .deposit-note {
-        display: flex;
-        gap: 0.75rem;
-        align-items: flex-start;
-        background: var(--blue-soft);
-        border-radius: 10px;
-        padding: 1rem 1.1rem;
-        margin-top: 1rem;
-        font-size: 1rem;
-      }
-      .deposit-note .icon { color: var(--blue); margin-top: 0.1rem; }
-      .deposit-note p { margin: 0; }
+      .rates td { text-align: right; font-weight: 700; font-size: 1.25rem; color: var(--navy); white-space: nowrap; }
+      .rates td small { display: block; font-weight: 400; font-size: 0.875rem; color: var(--muted); white-space: normal; }
+      .rates__group th { padding: 1.5rem 0 0.5rem; font-size: 1rem; font-weight: 700; color: var(--navy); }
+      .deposit-note { display: flex; gap: 0.6rem; align-items: flex-start; margin: 1.25rem 0 0; font-size: 1rem; color: var(--muted); }
+      .deposit-note .icon { color: var(--blue); width: 1.3rem; height: 1.3rem; margin-top: 0.15rem; }
+      .deposit-note strong { color: var(--ink); }
 
-      .included h3, .booking h3 { font-size: 1.25rem; margin-bottom: 0.9rem; }
-      .checklist { list-style: none; margin: 0; padding: 0; }
-      .checklist li { display: flex; gap: 0.7rem; align-items: flex-start; padding: 0.55rem 0; }
-      .checklist .icon { color: #1e7a46; width: 1.375rem; height: 1.375rem; margin-top: 0.15rem; stroke-width: 2.25; }
+      .block-title { font-size: 1.125rem; margin-bottom: 0.5rem; }
+      .checklist { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+      .checklist li { display: flex; gap: 0.7rem; align-items: flex-start; padding: 0.8rem 0; border-bottom: 1px solid var(--line); }
+      .checklist .icon { color: #17703f; width: 1.3rem; height: 1.3rem; margin-top: 0.15rem; stroke-width: 2.25; }
       .tag {
         display: inline-block;
         font-size: 0.8125rem;
         font-weight: 600;
         color: var(--gold-ink);
-        background: var(--gold-soft);
-        border: 1px solid #efe3c2;
-        border-radius: 999px;
-        padding: 0.05rem 0.55rem;
+        background: #fbf3df;
+        border-radius: 4px;
+        padding: 0.05rem 0.45rem;
         margin-left: 0.25rem;
         white-space: nowrap;
       }
 
-      /* ---------- booking timeline ---------- */
-      .steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
-      .steps li { position: relative; padding: 0 0 1.25rem 3.25rem; counter-increment: step; }
-      .steps li:last-child { padding-bottom: 0; }
+      /* ---------- booking: a real two-step sequence, so it's numbered ---------- */
+      .booking { margin-top: clamp(2.5rem, 6vw, 3.5rem); }
+      .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; counter-reset: step; }
+      @media (min-width: 760px) { .steps { grid-template-columns: 1fr 1fr; gap: 2rem; } }
+      .steps li { position: relative; padding-left: 3rem; counter-increment: step; }
       .steps li::before {
         content: counter(step);
         position: absolute;
         left: 0;
         top: 0;
-        width: 2.25rem;
-        height: 2.25rem;
+        width: 2rem;
+        height: 2rem;
         border-radius: 50%;
-        background: var(--blue);
-        color: #fff;
+        border: 1.5px solid var(--blue);
+        color: var(--blue);
         font-weight: 700;
+        font-size: 0.9375rem;
         display: grid;
         place-items: center;
       }
-      .steps li:not(:last-child)::after {
-        content: '';
-        position: absolute;
-        left: calc(1.125rem - 1px);
-        top: 2.5rem;
-        bottom: 0.3rem;
-        width: 2px;
-        background: var(--line);
-      }
-      .steps strong { display: block; color: var(--blue-deep); }
+      .steps strong { display: block; color: var(--navy); }
       .steps p { margin: 0.15rem 0 0; color: var(--muted); }
 
-      .two-up { display: grid; gap: 1.25rem; margin-top: 1.25rem; }
-      @media (min-width: 760px) { .two-up { grid-template-columns: 1fr 1fr; } }
-
       /* ============================================================
-         FAQ
+         FAQ: hairline accordion
          ============================================================ */
-      .faq { max-width: 46rem; }
-      .faq details { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 0.6rem; }
+      .faq { max-width: 46rem; border-top: 1px solid var(--line); }
+      .faq details { border-bottom: 1px solid var(--line); }
       .faq summary {
         list-style: none;
         cursor: pointer;
-        padding: 1.05rem 3.25rem 1.05rem 1.2rem;
+        padding: 1.1rem 3rem 1.1rem 0;
         position: relative;
         font-weight: 600;
-        color: var(--blue-deep);
+        color: var(--navy);
       }
+      .faq summary:hover { color: var(--blue); }
       .faq summary::-webkit-details-marker { display: none; }
-      .faq summary::after {
+      .faq summary::before,
+      .faq summary::after {     /* plus that turns into a minus */
         content: '';
         position: absolute;
-        right: 1.25rem;
+        right: 0.35rem;
         top: 50%;
-        width: 0.6rem;
-        height: 0.6rem;
-        border-right: 2.5px solid var(--blue);
-        border-bottom: 2.5px solid var(--blue);
-        transform: translateY(-70%) rotate(45deg);
+        width: 0.85rem;
+        height: 2px;
+        border-radius: 1px;
+        background: var(--blue);
         transition: transform 0.2s;
       }
-      .faq details[open] summary::after { transform: translateY(-25%) rotate(-135deg); }
-      .faq details > div { padding: 0 1.2rem 1.1rem; color: var(--muted); }
+      .faq summary::after { transform: rotate(90deg); }
+      .faq details[open] summary::after { transform: rotate(0deg); }
+      .faq details > div { padding: 0 0 1.15rem; color: var(--muted); max-width: 40rem; }
       .faq details > div p:last-child { margin-bottom: 0; }
 
       /* ============================================================
          Final CTA + footer
          ============================================================ */
-      .cta { background: var(--blue-soft); border-top: 1px solid #d6e1f5; text-align: center; }
-      .cta h2 { margin-bottom: 0.6rem; }
-      .cta p { color: var(--muted); margin-bottom: 1.5rem; }
-      .cta__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
+      .cta__inner { display: grid; gap: 1.5rem; align-items: center; }
+      .cta h2 { margin-bottom: 0.4rem; }
+      .cta p { color: var(--muted); margin: 0; }
+      .cta__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+      @media (min-width: 900px) {
+        .cta__inner { grid-template-columns: 1fr auto; }
+      }
+      @media (max-width: 899px) { .cta__actions .btn { flex: 1 1 12rem; } }
 
-      .footer { background: var(--paper); border-top: 1px solid var(--line); padding-block: 2.25rem 2.75rem; font-size: 1rem; }
+      .footer { padding-block: 2.25rem 2.75rem; font-size: 1rem; }
       .footer__inner { display: grid; gap: 1.5rem; }
       .footer__contact { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
       .footer__contact li { display: flex; gap: 0.6rem; align-items: flex-start; }
       .footer__contact .icon { color: var(--blue); width: 1.25rem; height: 1.25rem; margin-top: 0.2rem; }
-      .footer__contact a { color: var(--ink); text-decoration-color: var(--gold); text-underline-offset: 3px; }
+      .footer__contact a { color: var(--ink); text-decoration-color: rgba(29, 74, 158, 0.35); }
+      .footer__contact a:hover { text-decoration-color: var(--blue); }
       .footer__small { margin: 0; font-size: 0.8125rem; color: var(--muted); }
       @media (min-width: 900px) {
         .footer__inner { grid-template-columns: auto 1fr; align-items: center; column-gap: 3rem; }
@@ -418,64 +356,98 @@
       :root {
         --chat--color-primary: #1d4a9e;
         --chat--color-primary-shade-50: #183f88;
-        --chat--color-primary-shade-100: #12306b;
-        --chat--color-secondary: #c9a24a;
+        --chat--color-primary-shade-100: #0b1f4d;
+        --chat--color-secondary: #e2b04a;
         --chat--color-white: #ffffff;
-        --chat--color-light: #f6f4ee;
-        --chat--color-light-shade-50: #ece9e0;
-        --chat--color-light-shade-100: #e4e1d8;
-        --chat--color-medium: #c9c6bd;
-        --chat--color-dark: #1b2333;
+        --chat--color-light: #f6f7fb;
+        --chat--color-light-shade-50: #eef0f6;
+        --chat--color-light-shade-100: #e3e6ee;
+        --chat--color-medium: #c7ccd8;
+        --chat--color-dark: #141b2d;
         --chat--color-disabled: #8a91a0;
         --chat--color-typing: #1d4a9e;
 
-        --chat--header--background: #12306b;
+        --chat--header--background: #0b1f4d;
         --chat--header--color: #ffffff;
-        --chat--heading--font-size: 1.15rem;
-        --chat--subtitle--color: #dfe7f7;
+        --chat--heading--font-size: 1.1rem;
+        --chat--subtitle--color: #b9c7e6;
         --chat--subtitle--font-size: 0.85rem;
 
-        --chat--body--background: #f6f4ee;
+        --chat--body--background: #f6f7fb;
         --chat--message--bot--background: #ffffff;
-        --chat--message--bot--color: #1b2333;
-        --chat--message--bot--border: 1px solid #e4e1d8;
+        --chat--message--bot--color: #141b2d;
+        --chat--message--bot--border: none;
         --chat--message--user--background: #1d4a9e;
         --chat--message--user--color: #ffffff;
         --chat--message--user--border: none;
-        --chat--message--border-radius: 0.85rem;
+        --chat--message--border-radius: 1rem;
         --chat--message--font-size: 1rem;
         --chat--message-line-height: 1.55;
 
         --chat--textarea--background: #ffffff;
-        --chat--textarea--color: #1b2333;
+        --chat--textarea--color: #141b2d;
         --chat--input--background: #ffffff;
-        --chat--input--text-color: #1b2333;
-        --chat--input--border: 1px solid #e4e1d8;
+        --chat--input--text-color: #141b2d;
+        --chat--input--border: none;
         --chat--input--placeholder--color: #6b7283;
         --chat--button--background: #1d4a9e;
         --chat--button--color: #ffffff;
-        --chat--button--hover--background: #12306b;
+        --chat--button--hover--background: #0b1f4d;
 
         --chat--toggle--background: #1d4a9e;
-        --chat--toggle--hover--background: #12306b;
-        --chat--toggle--active--background: #12306b;
+        --chat--toggle--hover--background: #14306f;
+        --chat--toggle--active--background: #0b1f4d;
         --chat--toggle--color: #ffffff;
         --chat--toggle--size: 60px;
 
         --chat--window--width: 390px;
         --chat--window--height: 600px;
-        --chat--border-radius: 12px;
+        --chat--window--border: none;
+        --chat--border-radius: 20px;
         --chat--spacing: 1rem;
       }
 
-      /* The widget ships its own font stack; the variables don't reach it. */
-      #n8n-chat, #n8n-chat * { font-family: var(--body) !important; }
-      #n8n-chat .chat-heading, #n8n-chat .chat-header h1 {
-        font-family: var(--display) !important;
-        font-weight: 700 !important;
+      /* The widget ships its own font stack and a 1px light border on the
+         window (the "white line"); the variables don't reach either. */
+      #n8n-chat, #n8n-chat * { font-family: var(--font) !important; }
+      #n8n-chat .chat-window {
+        border: 0 !important;
+        border-radius: 20px !important;
+        box-shadow: 0 30px 70px -24px rgba(11, 31, 77, 0.45), 0 4px 14px -6px rgba(11, 31, 77, 0.2) !important;
       }
+      #n8n-chat .chat-header {
+        position: relative;
+        background: var(--glow) !important;
+        padding: 1.15rem 1.25rem 1.15rem 4.4rem !important;
+      }
+      /* club roundel beside the heading */
+      #n8n-chat .chat-header::before {
+        content: '';
+        position: absolute;
+        left: 1.15rem;
+        top: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        transform: translateY(-50%);
+        border-radius: 50%;
+        background: url('assets/optimist/logo-192.webp') center / cover no-repeat;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+      }
+      #n8n-chat .chat-heading h1,
+      #n8n-chat .chat-header h1 { font-weight: 800 !important; letter-spacing: -0.015em; margin: 0 !important; }
+      #n8n-chat .chat-header p { margin: 0.15rem 0 0 !important; }
+      #n8n-chat .chat-message-from-bot { box-shadow: 0 1px 2px rgba(16, 24, 48, 0.06), 0 4px 12px -6px rgba(16, 24, 48, 0.12); }
+      #n8n-chat .chat-message-from-user { background: linear-gradient(160deg, #2c63c9, #1d4a9e) !important; }
+      #n8n-chat .chat-footer,
+      #n8n-chat .chat-inputs { background: #fff !important; }
+      #n8n-chat .chat-footer { border-top: 1px solid #eef0f6; }
+      #n8n-chat .chat-input textarea { color: #141b2d !important; }
       #n8n-chat .chat-input-send-button svg path { fill: #1d4a9e !important; }
       #n8n-chat .chat-input-send-button:disabled svg path { fill: #a5abb8 !important; }
+      #n8n-chat .chat-window-toggle {
+        background: linear-gradient(150deg, #3a76e6, #0b1f4d) !important;
+        box-shadow: 0 14px 30px -10px rgba(11, 31, 77, 0.6);
+      }
     </style>
   </head>
 
@@ -484,7 +456,6 @@
 
     <!-- Icon sprite (Lucide outlines, inlined so nothing extra loads) -->
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
-      <symbol id="i-chat" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></symbol>
       <symbol id="i-calendar" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></symbol>
       <symbol id="i-rings" viewBox="0 0 24 24"><circle cx="9" cy="14.5" r="5.5" /><circle cx="15" cy="14.5" r="5.5" /><path d="m10 5.5 2-2.5 2 2.5-2 2.5Z" /></symbol>
       <symbol id="i-cake" viewBox="0 0 24 24"><path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8" /><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1" /><path d="M2 21h20M7 8v3M12 8v3M17 8v3M7 4h.01M12 4h.01M17 4h.01" /></symbol>
@@ -508,7 +479,7 @@
     <header class="header">
       <div class="wrap header__inner">
         <a class="brand" href="#top">
-          <img src="assets/optimist/logo-192.webp" width="44" height="44" alt="" />
+          <img src="assets/optimist/logo-192.webp" width="40" height="40" alt="" />
           <span class="brand__name">
             Optimist Club of Newmarket
             <span class="brand__sub">Optimist Youth Centre Hall</span>
@@ -554,7 +525,7 @@
       <!-- ==================== 2. MISSION ==================== -->
       <section class="mission" aria-label="Our mission">
         <div class="wrap mission__inner">
-          <img class="mission__mark" src="assets/optimist/logo-192.webp" width="52" height="52" alt="" loading="lazy" />
+          <img class="mission__mark" src="assets/optimist/logo-192.webp" width="56" height="56" alt="" loading="lazy" />
           <div>
             <p class="mission__line">Every rental helps fund youth programs in Newmarket.</p>
             <p class="mission__sub">The Optimist Club of Newmarket is a nonprofit service club, here since 1949.</p>
@@ -563,47 +534,44 @@
       </section>
 
       <!-- ==================== 3. QUICK FACTS ==================== -->
-      <section class="band" aria-labelledby="facts-title" style="padding-bottom: 0">
+      <section class="section" aria-labelledby="facts-title" style="padding-bottom: 0">
         <div class="wrap">
-          <h2 id="facts-title" class="section-head">The hall at a glance</h2>
+          <h2 id="facts-title">The hall at a glance</h2>
           <ul class="facts">
             <li class="fact"><span class="fact__num">250</span><span class="fact__label">seats</span></li>
             <li class="fact"><span class="fact__num">3,400</span><span class="fact__label">square feet</span></li>
             <li class="fact"><span class="fact__num">350</span><span class="fact__label">sq ft stage</span></li>
             <li class="fact">
               <svg class="icon" aria-hidden="true"><use href="#i-access" /></svg>
-              <span class="fact__label" style="color: var(--blue-deep); font-weight: 600">Wheelchair accessible</span>
+              <span class="fact__label">Wheelchair accessible</span>
             </li>
           </ul>
         </div>
       </section>
 
       <!-- ==================== 4. EVENT TYPES ==================== -->
-      <section class="band" aria-labelledby="events-title">
+      <section class="section" aria-labelledby="events-title">
         <div class="wrap">
-          <div class="section-head">
-            <span class="kicker">Events</span>
-            <h2 id="events-title">What you can host here</h2>
-          </div>
+          <h2 id="events-title">What you can host here</h2>
           <ul class="events">
             <li class="event">
-              <span class="event__icon"><svg class="icon" aria-hidden="true"><use href="#i-rings" /></svg></span>
+              <svg class="icon" aria-hidden="true"><use href="#i-rings" /></svg>
               <h3>Wedding receptions</h3>
             </li>
             <li class="event">
-              <span class="event__icon"><svg class="icon" aria-hidden="true"><use href="#i-cake" /></svg></span>
+              <svg class="icon" aria-hidden="true"><use href="#i-cake" /></svg>
               <h3>Anniversary and birthday parties</h3>
             </li>
             <li class="event">
-              <span class="event__icon"><svg class="icon" aria-hidden="true"><use href="#i-heart" /></svg></span>
+              <svg class="icon" aria-hidden="true"><use href="#i-heart" /></svg>
               <h3>Fundraisers</h3>
             </li>
             <li class="event">
-              <span class="event__icon"><svg class="icon" aria-hidden="true"><use href="#i-people" /></svg></span>
+              <svg class="icon" aria-hidden="true"><use href="#i-people" /></svg>
               <h3>Jack and Jills</h3>
             </li>
             <li class="event">
-              <span class="event__icon"><svg class="icon" aria-hidden="true"><use href="#i-briefcase" /></svg></span>
+              <svg class="icon" aria-hidden="true"><use href="#i-briefcase" /></svg>
               <div>
                 <h3>Business meetings</h3>
                 <p>Upstairs room, up to 60</p>
@@ -614,15 +582,12 @@
       </section>
 
       <!-- ==================== 5-7. RATES, INCLUDED, BOOKING ==================== -->
-      <section class="band band--white" id="rates" aria-labelledby="rates-title">
+      <section class="section section--mist" id="rates" aria-labelledby="rates-title">
         <div class="wrap">
-          <div class="section-head">
-            <span class="kicker">Rates</span>
-            <h2 id="rates-title">Simple, affordable pricing</h2>
-          </div>
+          <h2 id="rates-title">Rates</h2>
 
           <div class="rates__grid">
-            <div class="card">
+            <div>
               <table class="rates">
                 <caption>Hall rental</caption>
                 <tbody>
@@ -651,14 +616,14 @@
                   </tr>
                 </tbody>
               </table>
-              <div class="deposit-note">
+              <p class="deposit-note">
                 <svg class="icon" aria-hidden="true"><use href="#i-info" /></svg>
-                <p>A <strong>$200 refundable damage deposit</strong> applies to all rentals.</p>
-              </div>
+                <span>A <strong>$200 refundable damage deposit</strong> applies to all rentals.</span>
+              </p>
             </div>
 
-            <div class="card included">
-              <h3>What's included</h3>
+            <div>
+              <h3 class="block-title">What's included</h3>
               <ul class="checklist">
                 <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg><span>Rectangular tables and chairs for 250</span></li>
                 <li><svg class="icon" aria-hidden="true"><use href="#i-check" /></svg><span>Servery and bar area</span></li>
@@ -668,41 +633,26 @@
             </div>
           </div>
 
-          <div class="two-up">
-            <div class="card booking" id="booking">
-              <h3>Booking and payment</h3>
-              <ol class="steps">
-                <li>
-                  <strong>When you book</strong>
-                  <p>Pay a $200 deposit, or 50% of the fee for weekday rentals.</p>
-                </li>
-                <li>
-                  <strong>30 days before your event</strong>
-                  <p>Pay the balance, plus the $200 refundable damage deposit.</p>
-                </li>
-              </ol>
-            </div>
-            <div class="card" style="display: flex; flex-direction: column; justify-content: center; gap: 1rem">
-              <h3 style="font-size: 1.25rem">Is your date open?</h3>
-              <p style="margin: 0; color: var(--muted)">Our rental assistant can check availability and answer questions any time of day.</p>
-              <div>
-                <button class="btn btn--primary" type="button" data-open-chat>
-                  <svg class="icon" aria-hidden="true"><use href="#i-chat" /></svg>
-                  Check your date
-                </button>
-              </div>
-            </div>
+          <div class="booking" id="booking">
+            <h3 class="block-title" style="margin-bottom: 1.25rem">Booking and payment</h3>
+            <ol class="steps">
+              <li>
+                <strong>When you book</strong>
+                <p>Pay a $200 deposit, or 50% of the fee for weekday rentals.</p>
+              </li>
+              <li>
+                <strong>30 days before your event</strong>
+                <p>Pay the balance, plus the $200 refundable damage deposit.</p>
+              </li>
+            </ol>
           </div>
         </div>
       </section>
 
       <!-- ==================== 8. FAQ ==================== -->
-      <section class="band" id="faq" aria-labelledby="faq-title">
+      <section class="section" id="faq" aria-labelledby="faq-title">
         <div class="wrap">
-          <div class="section-head">
-            <span class="kicker">Questions</span>
-            <h2 id="faq-title">Frequently asked questions</h2>
-          </div>
+          <h2 id="faq-title">Questions</h2>
           <div class="faq">
             <details>
               <summary>Can we serve alcohol?</summary>
@@ -737,10 +687,12 @@
       </section>
 
       <!-- ==================== 9. FINAL CTA ==================== -->
-      <section class="band cta" aria-labelledby="cta-title">
-        <div class="wrap">
-          <h2 id="cta-title">Have questions or want to see the hall?</h2>
-          <p>Check your date or book a viewing in a minute.</p>
+      <section class="section section--mist cta" aria-labelledby="cta-title">
+        <div class="wrap cta__inner">
+          <div>
+            <h2 id="cta-title">Have questions or want to see the hall?</h2>
+            <p>Our rental assistant can check your date or book a viewing, any time of day.</p>
+          </div>
           <div class="cta__actions">
             <button class="btn btn--primary" type="button" data-open-chat>
               <svg class="icon" aria-hidden="true"><use href="#i-calendar" /></svg>
@@ -759,7 +711,7 @@
     <footer class="footer">
       <div class="wrap footer__inner">
         <a class="brand" href="#top">
-          <img src="assets/optimist/logo-192.webp" width="44" height="44" alt="" loading="lazy" />
+          <img src="assets/optimist/logo-192.webp" width="40" height="40" alt="" loading="lazy" />
           <span class="brand__name">
             Optimist Club of Newmarket
             <span class="brand__sub">Optimist Youth Centre Hall</span>
