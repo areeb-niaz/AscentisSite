@@ -146,7 +146,25 @@ td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 
 <script>
 /*CLASSIFIER-START*/
-/* ================= Stage 1 rules — v7 =================
+/* ================= Stage 1 rules — v9 =================
+   Halton + Hamilton audit (Nov 2026). Under v8, 23 of 85 auto-keeps failed a site check,
+   4 real venues were auto-removed and 211 of 296 review rows were obvious removes.
+   What changed in v9:
+   - terms match plurals ("Elopements", "Weddings", "Scouts")
+   - Legion branches are removed outright (standing decision, overrides the ICP keep)
+   - KEEP needs corroboration: a venue tag beside church, private club, private golf,
+     restaurant, dance school, apartment, court reporter etc. goes to review; a lone
+     Conference center / Ballroom / Fairground / Event venue tag needs a venue word in the name
+   - events named as events (faire, walk, pageant, "... Conference") are removed
+   - .on.ca is no longer treated as government (yacht clubs and private schools use it): review
+   - a 20+ email dump means a corporation, not a government: review, not remove
+   - golf chains on one registrable domain (ClubLink subdomains) collapse to one lead
+   - museums/galleries/heritage sites and ethnic centres are protected from the food and sports traps
+   - "Event Venue" in a restaurant's name counts as a named hall
+   - no website, no email and no phone is unreachable: removed instead of cold call
+   - scout halls, car clubs, theatre groups, congregations without a named hall are removed
+   - Halton and Hamilton government presets added
+   ---- v7 notes ----
    Rebuilt from the Durham audit (Oct 2026). Under v6, 21 of 56 auto-keeps failed a
    site check and 150+ of 313 review rows were obvious removes. What changed:
    - every negative gate runs BEFORE the keep; an event tag no longer shields a
@@ -165,7 +183,7 @@ td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 const _RE={};
 function hasTerm(hay,term){
   let r=_RE[term];
-  if(!r) r=_RE[term]=new RegExp("(^|[^a-z0-9])"+term.replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/\s+/g,"[\\s\\-]+")+"($|[^a-z0-9])");
+  if(!r) r=_RE[term]=new RegExp("(^|[^a-z0-9])"+term.replace(/[.*+?^${}()|[\]\\]/g,"\\$&").replace(/\s+/g,"[\\s\\-]+")+"(s|es)?($|[^a-z0-9])");
   return r.test(hay);
 }
 const anyTerm=(hay,list)=>list.find(t=>hasTerm(hay,t));
@@ -182,11 +200,14 @@ const GAMBLING=["casino","casinos","bingo","bingo hall","slots","slot parlour","
 /* GATE 2 — government. Domains, email domains and phone numbers. Edit per region. */
 const GOV_PRESETS={
   "Niagara":"welland.ca, grimsby.ca, niagarafalls.ca, portcolborne.ca, pelham.ca, thorold.ca, forterie.ca, westlincoln.ca, stcatharines.ca, wainfleet.ca, lincoln.ca, notl.org, niagararegion.ca, niagaraparks.com, npca.ca, brocku.ca, dsbn.org, niagaracatholic.ca",
+  "Halton":"halton.ca, burlington.ca, oakville.ca, milton.ca, haltonhills.ca, burlingtonpac.ca, oakvillecentre.ca, museumsofburlington.ca, firstontarioartscentremilton.ca, oakvillegalleries.com, sheridancollege.ca, hdsb.ca, haltonrc.ca, conservationhalton.ca, cvc.ca, tyandagagolf.com, heritagetrust.on.ca",
+  "Hamilton":"hamilton.ca, hamiltoncivicmuseums.ca, hamiltonwaterfront.com, hamiltonfarmersmarket.ca, conservationhamilton.ca, mcmaster.ca, marauders.ca, mohawkcollege.ca, mcintyrepac.ca, hwdsb.on.ca, hwcdsb.ca, cityofwaterfalls.ca, 905-546-2424",
   "Durham":"durham.ca, oshawa.ca, whitby.ca, ajax.ca, pickering.ca, clarington.net, scugog.ca, uxbridge.ca, uxbridge.on.ca, townshipofbrock.ca, cloca.com, trca.ca, lsrca.on.ca, cplma.ca, pickeringlibrary.ca, durhamcollege.ca, ontariotechu.ca, durhamlords.com, lakeridgehealth.on.ca, occnaoshawa.org, 705-432-2355"
 };
-const GOV_TLD=[".gov",".gc.ca",".on.ca",".mil"];
+const GOV_TLD=[".gov",".gc.ca",".mil","gov.on.ca","ontario.ca"];
+const SOFT_GOV_TLD=[".on.ca"];   /* municipalities AND private clubs/schools use it: review */
 const GOV_DOMPAT=["cityof","townof","countyof","municipality","conservationauthority","parkscommission","schoolboard"];
-const GOV_TERMS=["city hall","municipal","municipality","town of","city of","county of","township of","region of","regional municipality","school board","district school","public library","conservation authority","conservation area","parks commission","provincial park","university","college","hospital","health system","public health","court house","courthouse","fire station","police","ontario tech"];
+const GOV_TERMS=["city hall","constituency office","community office","mpp","mp office","municipal","municipality","town of","city of","county of","township of","region of","regional municipality","school board","district school","public library","conservation authority","conservation area","parks commission","provincial park","university","college","hospital","health system","public health","court house","courthouse","fire station","police","ontario tech"];
 
 /* GATE 3 — hotels and lodging */
 const HOTEL_HARD=["hotel","motel","resort","resort hotel","extended stay","hostel","lodging","holiday apartment","vacation rental","holiday home","serviced accommodation"];
@@ -197,7 +218,7 @@ const HOTEL_WORDS=["hotel","hotels","inn","suites","resort","by marriott","by hi
 const CHAIN_DOMS=["marriott.com","hilton.com","hyatt.com","ihg.com","wyndhamhotels.com","choicehotels.com","bestwestern.com","radissonhotels.com","accor.com","fairmont.com","fourseasons.com","omnihotels.com","loewshotels.com","sandmanhotels.com"];
 
 /* GATE 4 — low-ticket wedding traps */
-const ELOPE=["elope","elopement","drive through","drive-thru","drive thru","officiant","marriage celebrant","wedding officiant","celebrant","minister","justice of the peace"];
+const ELOPE=["elope","elopement","micro wedding","micro-wedding","drive through","drive-thru","drive thru","officiant","marriage celebrant","wedding officiant","celebrant","minister","justice of the peace"];
 const HOURLY=["studio rental","rental studio","by the hour","hourly rental","coworking space","office space rental agency","meeting room rental","virtual office rental"];
 
 /* GATE 5 — vendors and service businesses */
@@ -209,20 +230,20 @@ const GOLF_VENDOR=["golf shop","golf instructor","golf cart dealer"];
 const SPORTS_SOFT=["archery club","gun club","rod & gun","rod and gun","fishing club","shooting range","sportsmen","hockey club","curling club","curling hall","skating club","swim club","rowing club","boat club","yacht club","sailing club","canoe club","conservation club","outdoor activity organiser","softball club"];
 const SPORTS=["arena","stadium","ice rink","skating rink","ice skating rink","ice hockey rink","sports complex","sportsplex","sports activity location","sports club","recreation center","recreation centre","racecourse","race track","racetrack","speedway","car racing venue","off-road racing venue","go-karting venue","go kart","karting","rowing club","curling club","skating club","hockey club","hockey association","minor hockey","swim club","swimming facility","swimming pool","pickleball court","padel club","tennis court","badminton court","badminton club","gym","fitness center","fitness centre","athletic club","martial arts school","martial arts club","soccer club","batting cage","softball club","baseball field","soccer field","basketball court","athletic field","beach volleyball court","volleyball court","motorsport","archery club","gun club","shooting range","disc golf course","ski resort","ski school","ski club","nordic ski"];
 const MARINE=["marina","boat storage facility","boating instructor","sailing school","boat club","yacht club","sailing club","boat ramp","boat rental service"];
-const ETHNIC=["italian","portuguese","polish","ukrainian","german","croatian","hungarian","slovenian","caribbean","greek","filipino","macedonian","serbian","maltese","lebanese","irish","scottish","dutch","latvian","estonian","lithuanian","slovak","czech","finnish","korean","chinese","indian","pakistani","afghan","tamil","sri lankan","jamaican","trinidad","guyanese","navy","legion","veterans"];
+const ETHNIC=["romanian","armenian","latvian","venetian","friulian","malayalee","italian","portuguese","polish","ukrainian","german","croatian","hungarian","slovenian","caribbean","greek","filipino","macedonian","serbian","maltese","lebanese","irish","scottish","dutch","latvian","estonian","lithuanian","slovak","czech","finnish","korean","chinese","indian","pakistani","afghan","tamil","sri lankan","jamaican","trinidad","guyanese","navy","veterans"];
 
 /* GATE 7 — organizations that produce events rather than rent space */
-const SHOWS=["bridal show","wedding show","wedding expo","bridal expo","expo","trade show","parade","car show","music week","fest"];
+const SHOWS=["faire","pageant","walk","tree lighting","promotions","wrestling","photos with santa","bridal show","wedding show","wedding expo","bridal expo","expo","trade show","parade","car show","music week","fest"];
 const ORG_SOFT=["arts organization","historical society","heritage society","rotary club","kiwanis club","lions club","optimist club","fraternal organization","cultural center","cultural centre","non-profit organization","association"];
-const ORGS=["performing arts group","theater company","theatre company","theatre troupe","drama school","dance school","dance company","opera company","operatic society","concert association","arts organization","choir","band","historical society","heritage society","genealogist","charity","charitable organization","volunteer organization","youth club","youth organization","scouts","cadet","rotary club","kiwanis club","chamber of commerce","political party","labor union","trade union","social services organization","food bank","religious organization","religious institution","congregation","church","performers","players","singers","chorus","orchestra","troupe","pentecostal church","baptist church","quaker church","mosque","musalla","temple","synagogue","cemetery","funeral home"];
+const ORGS=["performing arts group","theater company","theatre company","theatre troupe","drama school","dance school","dance company","opera company","operatic society","concert association","arts organization","choir","band","historical society","heritage society","genealogist","charity","charitable organization","volunteer organization","youth club","youth organization","scouts","cadet","rotary club","kiwanis club","chamber of commerce","political party","labor union","trade union","social services organization","food bank","religious organization","religious institution","congregation","church","performers","players","singers","chorus","chorale","orchestra","troupe","little theatre","little theater","car club","scout group","scouting","men's shed","circus","pentecostal church","baptist church","quaker church","mosque","musalla","temple","synagogue","cemetery","funeral home"];
 
 /* Business types that an event tag does not turn into a venue */
 const FOOD=["restaurant","bistro","diner","bar","bar & grill","grill","pub","gastropub","tavern","cafe","coffee shop","coffee store","espresso bar","tea house","tea room","bakery","cake shop","cupcake shop","cookie shop","dessert shop","pastry shop","patisserie","donut shop","ice cream shop","deli","delicatessen","charcuterie","cheese shop","food court","juice shop","bubble tea store","steak house","sandwich shop"];
 const FUN=["bowling alley","bowling club","video arcade","arcade","laser tag center","paintball center","paintball store","amusement center","children's amusement center","amusement park","indoor playground","playground","escape room center","escape room","trampoline park","miniature golf course","indoor golf course","golf driving range","golf simulator","paint studio","painting studio","pottery","art studio","board game club","haunted house","water park","petting zoo","zoo","aquarium","children's camp","summer camp","summer camp organizer","children's party service","children's party buffet","children hall","adventure sports center","parkour","climbing gym","axe throwing","pool hall","pool billard club","billiards","comedy club","night club","adult entertainment club","movie theater","cinema","children's theater","farm school","pick your own farm produce","pumpkin patch","corn maze","high ropes course"];
 const RETAIL=["toy store","clothing store","record store","music store","game store","video game store","hobby store","collectibles store","gift shop","gift basket store","sporting goods store","book store","boutique","cigar shop","shopping mall","furniture store","antique store","thrift store","convenience store","balloon store","mirror shop","store"];
-const NONVENUE=["park","city park","memorial park","parking lot","nursing home","retirement home","senior housing","youth organization","food bank","family counselor","counselor","immigration","social services organization","support group","employment agency","dog day care center","pet boarding service","kennel","estate liquidator","property maintenance","livestock producer","car repair and maintenance service","auto body shop","car dealer","beautician","balloon artist","stable","horse riding school","horseback riding service","horse boarding stable","equestrian facility","horse riding field","day camp","school","preschool","learning center","training center","education center","tutoring service","academic department","charity","nature preserve","hiking area","stage","bike wash","fresh food market","farmers' market","market","farm shop","agricultural product wholesaler","seed supplier","warehouse store","musical instrument rental service","engineering consultant","corporate office"];
+const NONVENUE=["retirement home","assisted living facility","retirement community","cooperative","jeweler","jewelry appraiser","gymnastics center","tennis club","rugby club","automobile storage facility","manufacturer","golf course builder","transportation service","park","city park","memorial park","parking lot","nursing home","retirement home","senior housing","youth organization","food bank","family counselor","counselor","immigration","social services organization","support group","employment agency","dog day care center","pet boarding service","kennel","estate liquidator","property maintenance","livestock producer","car repair and maintenance service","auto body shop","car dealer","beautician","balloon artist","stable","horse riding school","horseback riding service","horse boarding stable","equestrian facility","horse riding field","day camp","school","preschool","learning center","training center","education center","tutoring service","academic department","charity","nature preserve","hiking area","stage","bike wash","fresh food market","farmers' market","market","farm shop","agricultural product wholesaler","seed supplier","warehouse store","musical instrument rental service","engineering consultant","corporate office"];
 /* Names that mark a non-venue even when Google tags it "Community center" */
-const NONVENUE_TITLE=["immigration","settlement services","support services","community care","community support","education centre","education center","day camp","student centre","student center","counselling","counseling","food bank","shelter","clinic","health centre","family services","employment","toastmasters","ywca","ymca","salvation army","funeral","alano","closed"];
+const NONVENUE_TITLE=["mission","resource centre","resource center","neighbourhood centre","neighborhood center","neighbourhood center","community cares","interfaith","collective","food centre","community development","co-operative homes","cooperative homes","hospitality inc","immigration","settlement services","support services","community care","community support","education centre","education center","day camp","student centre","student center","counselling","counseling","food bank","shelter","clinic","health centre","family services","employment","toastmasters","ywca","ymca","salvation army","funeral","alano","closed"];
 
 /* Event categories */
 const STRONG_EVENT=["banquet hall","festival hall","reception hall","ballroom","function room facility","function room","convention center","convention centre","conference center","conference centre","wedding venue","wedding chapel","catering hall","fairground","retreat center","retreat centre","event hall"];
@@ -231,7 +252,7 @@ const EVENT_CAT=[...STRONG_EVENT,...WEAK_EVENT];
 /* words in a business name that say "this is a room/venue" */
 const VENUE_NOUNS=["banquet","ballroom","hall","halls","venue","event centre","event center","events centre","events center","event space","event studio","event hub","event place","event room","loft","barn","manor","estate","mansion","pavilion","gardens","garden","chateau","palace","palais","conference","convention","lodge","acres","chapel","theatre","theater","clubhouse","club house"];
 /* a restaurant or club only escapes the food trap when the hall is named */
-const NAMED_HALL=["banquet","ballroom","reception","event centre","event center","events centre","event space","event hall","party hall","hall"];
+const NAMED_HALL=["event venue","banquet","ballroom","reception","event centre","event center","events centre","event space","event hall","party hall","hall"];
 const CLUB_WORDS=["club","legion","lodge","society","association","cultural","columbus","moose","masonic","shrine","kinsmen","optimist","richelieu","navy","veterans"];
 /* vendor-style names on a weak event tag */
 const CO_NAME=["productions","production","media","dynamics","studios","enterprises","solutions","services inc","group inc","rentals","rental","decor","balloon","balloons","photography","photo","films","dj","catering","florist","flowers","cakes","bridal","planning","planner"];
@@ -239,9 +260,29 @@ const CO_NAME=["productions","production","media","dynamics","studios","enterpri
 /* Event-capable but unproven: WHOLE category values only. These go to review. */
 const AMBIGUOUS=["farm","organic farm","dairy farm","flower farm","ranch","orchard","barn","garden","botanical garden","arboretum","museum","history museum","local history museum","art museum","heritage museum","historical landmark","historical place","historical place museum","heritage building","historic site","art center","art centre","art gallery","cultural center","cultural centre","community center","community centre","community hall","village hall","town hall","civic center","senior citizen center","marina","boat club","yacht club","sailing club","canoe club","conservation club","social club","private club","club","fraternal organization","masonic center","masonic temple","veterans organization","auditorium","concert hall","live music venue","performing arts theater","theater","theatre","amphitheater","opera house","agricultural organization","agricultural society","estate","manor","chateau","villa","lodge","pavilion","hall","scout hall","mansion","castle","tourist attraction"];
 const AMBIG_WEAK=["tourist attraction"];
+/* AMBIGUOUS values too weak to shield a food/fun/retail listing from removal */
+const AMBIG_NO_SHIELD=["live music venue","art center","art centre","art gallery","social club","club","tourist attraction","art museum"];
+/* heritage / culture categories that the food and sports traps must not auto-remove */
+const PROTECT=["museum","heritage museum","history museum","art gallery","art museum","historical landmark","historical place museum","heritage building","historic site","botanical garden"];
+/* categories that contradict a venue tag: a KEEP needs a site check */
+const CONTRA=["church","christian church","united church of canada","anglican church","catholic church","presbyterian church","religious organization","mosque","dance school","ballroom dance instructor","court reporter","legal services","transcription service","apartment building","corporate campus","private golf course","club","social club","event planner","wedding planner","meeting planning service","training center","performing arts theater","concert hall"];
+/* event tags that prove nothing alone unless the name says venue */
+const SOLO_SUSPECT=["conference center","conference centre","ballroom","fairground","wedding venue","wedding chapel","event venue","event center","event centre","event space"];
+const VENUE_NAME=["banquet","ballroom","hall","venue","event centre","event center","events centre","event space","estate","mansion","manor","barn","gardens","chateau","palace","convention","pavilion","fairground","fairgrounds","farm","club","centre","center","agricultural society","retreat","lodge","acres","loft"];
+/* a restaurant with a venue tag escapes review only when the name says venue */
+const FOOD_ESCAPE=["banquet","ballroom","hall","venue","event centre","event center","event space","estate","mansion","manor","barn","farm","gardens"];
+/* event tags that prove the business sells the room */
+const HARD_EVENT=["banquet hall","reception hall","function room facility","function room","convention center","convention centre","catering hall","event hall","festival hall","retreat center","retreat centre"];
+const CHURCHY=["church","christian church","united church of canada","anglican church","catholic church","presbyterian church","evangelical church","baptist church","pentecostal church","mosque","hindu temple","religious organization"];
+const CHURCH_HALL=["hall","banquet","parish centre","parish center","event centre","event center","community centre","community center"];
+const LODGING_HARD=["retirement home","assisted living facility","retirement community","apartment building","apartment complex"];
+/* members' sports clubs that rent ice/ranges, not weddings: removed unless a hall is tagged or named */
+const SPORTS_CLUB_HARD=["gun club","rod & gun","rod and gun","shooting range","firearms academy","hockey club","curling club","rugby club","tennis club"];
+/* registrable domains that host many venues of one chain: collapse to one lead */
+const CHAIN_HOSTS=["clublink.ca","golfnorth.ca","kaneffgolf.com"];
 const FARMISH=["farm","organic farm","dairy farm","poultry farm","ranch","orchard","pick your own farm produce","market","farmers' market","tourist attraction","agricultural product wholesaler"];
 /* halls worth a cold call when they have no website */
-const HALL_CATS_HARD=["village hall","community hall","town hall","auditorium","masonic center","masonic temple","veterans organization","scout hall","concert hall","fraternal organization","historical landmark","senior citizen center"];
+const HALL_CATS_HARD=["village hall","community hall","town hall","auditorium","masonic center","masonic temple","veterans organization","concert hall","fraternal organization","historical landmark","senior citizen center"];
 const HALL_CATS_SOFT=["community center","community centre","club","social club","association / organization","cultural center","cultural centre","civic center","live music venue"];
 const HALL_WORDS=["hall","halls","banquet","legion","lodge","masonic","moose","centre","center","pavilion","fairground","fairgrounds","barn","acres","estate","manor","club","event","events","conference","ballroom"];
 
@@ -254,15 +295,15 @@ const SOCIAL=["facebook.com","instagram.com","fb.com","fb.me","linktr.ee","linkt
 const DEAD_HOSTS=["business.site"];  /* Google retired these free sites in 2024 */
 /* Free site-builder subdomains: no domain of their own, so they count as NO website (boss, Oct 2026).
    A Wix/GoDaddy/Squarespace site on the venue's own domain is a real website and is not affected. */
-const BASIC_HOSTS=["wixsite.com","weebly.com","godaddysites.com","square.site","sites.google.com","webnode.com","jimdosite.com","wordpress.com","blogspot.com","carrd.co","mystrikingly.com","strikingly.com","site123.me","yolasite.com","ueniweb.com","webflow.io","netlify.app","vercel.app","github.io"];
+const BASIC_HOSTS=["wixsite.com","weebly.com","godaddysites.com","square.site","sites.google.com","webnode.com","jimdosite.com","wordpress.com","blogspot.com","carrd.co","mystrikingly.com","strikingly.com","site123.me","yolasite.com","ueniweb.com","webflow.io","netlify.app","vercel.app","github.io","honeybook.com","matterport.com","allweddingvenues.org"];
 /* Placeholder / template emails: dropped, the row is treated as having no email */
 const PLACEHOLDER_DOMS=["godaddy.com","wixpress.com","sentry.io","sentry.wixpress.com","example.com","domain.com","mysite.com","website.com","yourdomain.com","yoursite.com","mailservice.com","edge-themes.com","qodeinteractive.com","mikado-themes.com","select-themes.com"];
 const PLACEHOLDER_LOCAL=["filler","mymail","youremail","your-email","yourname","example","test","user","name","email","johndoe","john.doe"];
 const isPlaceholder=e=>{const [l,d]=String(e).toLowerCase().split("@");return !!d&&(PLACEHOLDER_DOMS.some(p=>d===p||d.endsWith("."+p))||PLACEHOLDER_LOCAL.includes(l))};
-const MARKETPLACE=["eventbrite.com","eventbrite.ca","sidedooraccess.com","expedia.com","expedia.ca","booking.com","tripadvisor.com","tripadvisor.ca","yelp.com","yelp.ca","decolar.com","despegar.com","tagvenue.com","giggster.com","eventective.com","peerspace.com","weddingwire.ca","weddingwire.com","theknot.com","bridebook.com","bluepillow.com","airbnb.com","airbnb.ca","vrbo.com","etsy.com","snappr.com","poi.place","wa.me","211centralsouth.ca","211ontario.ca","edan.io"];
+const MARKETPLACE=["eventbrite.com","eventbrite.ca","sidedooraccess.com","expedia.com","expedia.ca","booking.com","tripadvisor.com","tripadvisor.ca","yelp.com","yelp.ca","decolar.com","despegar.com","tagvenue.com","giggster.com","eventective.com","peerspace.com","weddingwire.ca","weddingwire.com","theknot.com","bridebook.com","bluepillow.com","airbnb.com","airbnb.ca","vrbo.com","etsy.com","snappr.com","poi.place","wa.me","211centralsouth.ca","211ontario.ca","edan.io","whereissanta.com"];
 const JUNK_DOMS=["betfuryx.com","eliteplaypalace.com","stellarsandscasino.com","phoenixpalacecasino.com","polianenovaes.com","casinoexplorerhub.com","treasuretrovescasino.com","gameglorygrove.com"];
-const UMBRELLA=["legion.ca","mooseintl.org","e-clubhouse.org","lionsclubs.org","kofc.org","kaneffgolf.com"];   /* branch of a club network: review */
-const UMBRELLA_ORG=["familysearch.org","toastmasters.org","the.ismaili","salvationarmy.ca","ymca.ca"];             /* organizations, not venues: remove */
+const UMBRELLA=["mooseintl.org","e-clubhouse.org","lionsclubs.org","kofc.org"];   /* branch of a club network: review */
+const UMBRELLA_ORG=["iicanada.net","icna.ca","icna.website","ana.it","scouts.ca","scouter.ca","familysearch.org","toastmasters.org","the.ismaili","salvationarmy.ca","ymca.ca"];             /* organizations, not venues: remove */
 const GAMBLING_DOMS=["greatcanadian.com","pickeringcasino.com","olg.ca","playolg.ca","caesarswindsor.com","fallsviewcasinoresort.com","casinorama.com"];
 /* builders that put many sites on one host: key by host + path */
 const PATH_BUILDERS={"wixsite.com":1,"sites.google.com":2};
@@ -301,6 +342,12 @@ function siteStatus(r){
 }
 
 function classify(r){
+  const out=classifyCore(r);
+  const dom=normDomain(r.website||r.domain);
+  if(out[0]==="KEEP"&&SOFT_GOV_TLD.some(t=>dom.endsWith(t))) return ["REVIEW",out[1]+" — but on a .on.ca domain: confirm it is not municipal","G2 .on.ca"];
+  return out;
+}
+function classifyCore(r){
   const cats=CAT_COLS.map(c=>norm(r[c])).filter(Boolean);
   const catStr=cats.join(" | ");
   const primary=cats[0]||"";
@@ -334,6 +381,8 @@ function classify(r){
   const um=onDom(dom,UMBRELLA);
   if(um) return R("REVIEW","umbrella/shared domain ("+um+") — confirm this branch has its own site","G0 umbrella");
   if(hasTerm(title,"closed")||hasTerm(title,"permanently closed")) return R("REMOVE","listing says closed","G0 junk");
+  /* Legion branches: removed by standing decision, whatever the domain or hall page */
+  if(hasTerm(title,"legion")||/legion/.test(dom)) return R("REMOVE","Legion branch (excluded by policy)","G7 legion");
 
   /* GATE 1 — halal: alcohol and gambling */
   const al=anyTerm(blob,ALCOHOL);
@@ -372,6 +421,8 @@ function classify(r){
   /* Names that mark a non-venue whatever Google tagged them (funeral homes, social services, closed) */
   const nvt=anyTerm(title+" "+dom.replace(/[^a-z]/g," "),NONVENUE_TITLE)||(/funeral/.test(dom)?"funeral":"");
   if(nvt) return R("REMOVE","name or domain says this is not a venue ("+nvt+")","G11 not a venue");
+  const lh=catIn(cats,LODGING_HARD);
+  if(lh) return R("REMOVE","residential ("+lh+"), not a venue","G11 not a venue");
 
   /* GATE 4 — low-ticket traps. A funeral celebrant tag beside event tags is not an officiant business. */
   const el=anyTerm(blob,ELOPE);
@@ -385,6 +436,10 @@ function classify(r){
   /* GATE 5 — shows, parades, expos: events, not venues */
   const sh=anyTerm(blob,SHOWS);
   if(sh) return R("REMOVE","event or show ("+sh+"), not a venue","G7 organization");
+  if(/(^|[^a-z])(conference|summit|gala|ball)$/.test(title.replace(/[^a-z ]/g,"").trim())) return R("REMOVE","the name is an event (conference/summit/gala/ball), not a venue","G7 organization");
+  const hardEv=anyTerm(catStr,HARD_EVENT);
+  const chu=catIn(cats,CHURCHY);
+  if(chu&&!hardEv&&!anyTerm(title,CHURCH_HALL)) return R("REMOVE","congregation ("+chu+") with no named hall — ceremonies and room rentals, low ticket","G7 organization");
 
   /* GATE 6 — event-venue trap, BEFORE the vendor/sports/org gates.
      A restaurant/fun/retail business with an event tag is that business with a room. */
@@ -394,6 +449,8 @@ function classify(r){
     if(!named&&(pf||(!hasStrong&&(f||fn||rt)))&&!(isGolf&&!pf)){
       const w=pf||f||fn||rt;
       if(clubby) return R("REVIEW","club/society with a "+w+" tag — club halls are leads, check the hall rents","G8 event-venue trap");
+      const pr=catIn(cats,PROTECT);
+      if(pr) return R("REVIEW",pr+" with a "+w+" tag — museums and galleries often market weddings, check","G8 event-venue trap");
       return R("REMOVE","food/fun/retail business ("+w+") with an event tag — not a dedicated venue","G8 event-venue trap");
     }
   }
@@ -412,10 +469,13 @@ function classify(r){
 
   /* GATE 8 — sports and recreation. Members' sports clubs always get a site check, even with a banquet tag. */
   const ssoft=anyTerm(blob,SPORTS_SOFT);
+  const ethnicCentre=!!(anyTerm(title,ETHNIC)&&anyTerm(title,["centre","center","club","hall","society","association"]));
+  const shc=anyTerm(blob,SPORTS_CLUB_HARD);
+  if(shc&&!hardEv&&!isGolf&&!hasWedding&&!anyTerm(title,["hall","banquet","optimist","lions","kinsmen","kiwanis","rotary","shrine","masonic","moose","columbus","richelieu"])) return R("REMOVE","members' sports club ("+shc+") with no hall tagged or named — ice, range or court rentals","G6 sports");
   if(ssoft) return R("REVIEW","members' sports club ("+ssoft+") — keep only if the hall is marketed for weddings and private events","G6 sports");
   if(!shielded){
     const sp=anyTerm(catStr,SPORTS);
-    const hallish=named||catIn(cats,["auditorium","banquet hall"])||(clubby&&anyTerm(title,ETHNIC));
+    const hallish=named||catIn(cats,["auditorium","banquet hall"])||(clubby&&anyTerm(title,ETHNIC))||ethnicCentre;
     if(sp&&!eventCat&&!hallish) return R("REMOVE","sports/recreation rental ("+sp+") — hourly bookings, no venue tours","G6 sports");
     if(sp) return R("REVIEW","sports facility ("+sp+")"+(eventCat?" with "+eventCat:"")+" — keep only if a hall is marketed for events","G6 sports");
   }
@@ -447,6 +507,15 @@ function classify(r){
     const onlyChapel=cats.every(c=>{const e=anyTerm(c,EVENT_CAT);return !e||e==="wedding chapel"})&&hasTerm(catStr,"wedding chapel");
     if(onlyChapel) return R("REVIEW","standalone wedding chapel — usually an elopement business, confirm it has reception capacity","G8 event-venue trap");
     if(hasTerm(title,"fair")&&!hasTerm(title,"fairground")&&!hasTerm(title,"fairgrounds")&&!hasTerm(title,"agricultural society")) return R("REVIEW","a fair (the event) on a fairground tag — confirm the society owns rentable grounds","G7 organization");
+    if(!hardEv){
+      const ct=catIn(cats,CONTRA);
+      if(ct) return R("REVIEW",eventCat+" beside "+ct+" — the venue tag needs a site check","G10 contradiction");
+      const fd=anyTerm(catStr,FOOD);
+      if(fd&&!anyTerm(title,FOOD_ESCAPE)) return R("REVIEW","restaurant ("+fd+") with "+eventCat+" and no venue in the name — keep only with a banquet/event hall","G8 event-venue trap");
+      const evs=cats.filter(c=>anyTerm(c,EVENT_CAT));
+      if(evs.every(c=>SOLO_SUSPECT.includes(c))&&!anyTerm(title,VENUE_NAME)&&!hasTerm(title,"wedding"))
+        return R("REVIEW","only "+evs.join(" / ")+" and the name doesn't say venue — site check","G10 contradiction");
+    }
     return R("KEEP","explicit event category: "+eventCat,"KEEP");
   }
 
@@ -454,7 +523,7 @@ function classify(r){
   const amb=cats.find(c=>AMBIGUOUS.includes(c)&&!AMBIG_WEAK.includes(c));
   if(!isGolf){
     const neg=cats.map(c=>anyTerm(c,FOOD)||anyTerm(c,FUN)||anyTerm(c,RETAIL)||anyTerm(c,NONVENUE)).find(Boolean);
-    if(neg&&!amb){
+    if(neg&&(!amb||AMBIG_NO_SHIELD.includes(amb))){
       if(named) return R("REVIEW","a "+neg+" that names a hall or event space — check the hall rents separately","G8 event-venue trap");
       return R("REMOVE","no event category; "+neg+" — not a venue","G11 not a venue");
     }
@@ -462,8 +531,6 @@ function classify(r){
       return R("REMOVE","farm attraction (u-pick, farm school, pumpkin patch), no event category","G11 not a venue");
   }
 
-  /* Legion branches on their own domain are a keep-list type */
-  if(hasTerm(title,"legion")&&dom&&!onDom(dom,UMBRELLA)) return R("KEEP","Legion branch on its own domain","KEEP");
 
   /* GATE 12 — golf */
   const hasCourse=catIn(cats,GOLF);
@@ -533,7 +600,7 @@ function stage1(rows,county){
     const ph=digits(phone);
     const site=siteStatus(row);
     let flag="";
-    if(emails.length>=20&&verdict!=="REMOVE"){verdict="REMOVE";reason=`bulk emails (${emails.length}): corp/gov mailbox dump`;gate="G2 government"}
+    if(emails.length>=20&&verdict!=="REMOVE"){verdict="REVIEW";reason=`bulk emails (${emails.length}): a corporate or institutional mailbox dump — check ownership before keeping`;gate="G0 bulk emails"}
     if(verdict!=="REMOVE"&&emails.length){
       /* judge ownership by the email we would actually use, or by all of them agreeing:
          sites often list a stray partner or council address */
@@ -552,9 +619,9 @@ function stage1(rows,county){
     if(chosen&&(chosen.split("@")[1]||"").endsWith(".edu")){verdict="REMOVE";reason="education email (.edu): "+chosen;gate="G2 government"}
     /* no website: halls become cold calls, everything else goes */
     if(verdict!=="REMOVE"&&site!=="own"){
-      const ok=coldCallable(row,verdict,gate);
+      const ok=coldCallable(row,verdict,gate)&&!!(ph||emails.length);
       const what=site==="social"?"social page only":site==="basic"?"free site-builder page only ("+onDom(normDomain(row.website),BASIC_HOSTS)+")":"no website";
-      if(!ok){verdict="REMOVE";reason=what+(emails.length?"":" and no email")+", and no venue signal";gate="G0 unreachable"}
+      if(!ok){verdict="REMOVE";reason=what+(emails.length?"":" and no email")+(!ph&&!emails.length?" and no phone: unreachable":", and no venue signal");gate="G0 unreachable"}
       else{
         verdict="REVIEW";
         flag=site==="social"?"COLD CALL: social page only":site==="basic"?(emails.length?"EMAIL ONLY: free site-builder page":"COLD CALL: free site-builder page, no email"):(emails.length?"EMAIL ONLY: no website":"COLD CALL: no website or email");
@@ -596,6 +663,22 @@ function stage1(rows,county){
     const a=keys[i],b=keys[j]; if(a.verdict==="REMOVE"||b.verdict==="REMOVE")continue;
     if(a.key!==b.key&&lev(a.key,b.key)<=1){const [best,worse]=score(a)<=score(b)?[a,b]:[b,a];
       worse.verdict="REVIEW";worse.gate="G0 typo domain";worse.reason="domain is one letter off "+best.key+" ("+best.base.title+") — likely a dead typo or duplicate";worse.flag="CHECK: typo domain"}}
+
+  /* same brand on two domains (marquisgardens.com / marquisgardenshamilton.com) */
+  const stem=k=>k.replace(/\.[a-z.]+$/,"");
+  const solo=live.filter(it=>it.verdict!=="REMOVE"&&it.key&&!it.key.includes("/"));
+  for(const a of solo)for(const b of solo){
+    if(a===b||a.verdict==="REMOVE"||b.verdict==="REMOVE")continue;
+    const sa=stem(a.key),sb=stem(b.key);
+    if(sa.length>=10&&sb!==sa&&sb.startsWith(sa)&&norm(a.base.title)===norm(b.base.title)) dupOf(b,a,"same brand, second domain");}
+
+  /* chains on one registrable domain (ClubLink subdomains, GolfNorth paths, Kaneff): one lead per chain */
+  const chainOf=it=>{const h=normDomain(it.base.website);return CHAIN_HOSTS.find(c=>h===c||h.endsWith("."+c))||""};
+  const chains=new Map();
+  for(const it of items){if(it.verdict==="REMOVE")continue;const c=chainOf(it);if(c)(chains.get(c)||chains.set(c,[]).get(c)).push(it)}
+  for(const [c,grp] of chains){grp.sort((a,b)=>score(a)-score(b));const lead=grp[0];
+    lead.verdict="REVIEW";lead.gate="G0 chain";lead.reason="chain lead for "+c+" ("+grp.length+" listings): events are sold centrally, decide once for the group";lead.flag="CHAIN: decide once";
+    for(const it of grp.slice(1))dupOf(it,lead,"same chain "+c)}
 
   /* email duplicates among keeps */
   const seenE=new Map();
@@ -668,8 +751,13 @@ const GATE_DESC={
 "G0 umbrella":"branch of a club network on the national domain: confirm it has its own site",
 "G0 cold call":"hall or venue with no website: call to confirm",
 "G0 typo domain":"one letter off another lead's domain",
+"G0 chain":"one lead per chain on a shared domain (ClubLink, GolfNorth, Kaneff): decide once",
+"G0 bulk emails":"20+ emails scraped: corporate or institutional, check ownership",
+"G2 .on.ca":"keep-worthy but on a .on.ca domain: confirm it is not municipal",
+"G7 legion":"Royal Canadian Legion branches: excluded by policy",
+"G10 contradiction":"venue tag beside a category that contradicts it, or a lone tag with no venue in the name",
 "G1 halal":"alcohol producers/retailers and gambling (casino, bingo)",
-"G2 government":"municipal, regional, agency, school, hospital: by domain, email, phone or name",
+"G2 government":"municipal, regional, agency, school, hospital: by domain, email, phone or name (.on.ca alone is review)",
 "G3 hotel":"hotels, motels, resorts (removed); inns, B&Bs, cottages that sell events (review)",
 "G4 low ticket":"elopement chapels, officiants, hourly desk rental with no event tag",
 "G5 vendor":"photographers, planners, florists, DJs, caterers, retail, real estate",

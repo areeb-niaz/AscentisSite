@@ -14,7 +14,7 @@ Disallow: /assets/maple-grove/
 Disallow: /assets/optimist/
 
 # Internal working pages, not part of the public site.
-Disallow: /ascentis_lead_pipeline_8.html
+Disallow: /ascentis_lead_pipeline_9.html
 
 # Fragments injected into other pages; nothing to index on their own.
 Disallow: /navbar.html
