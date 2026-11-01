@@ -117,6 +117,18 @@ td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
     <br><b>Still invisible to the gates</b>, so spot-check CLEANED: a venue run inside a hotel under its own brand (Harmony Event Centre was the Courtyard by Marriott's); members-only clubs; municipal ownership with no tell in the domain, email or phone; and dead domains.</div>
 </div>
 
+<!-- STAGE 1b -->
+<div class="card">
+  <h2><span>01b</span>Combine counties <span style="color:var(--dim);font-family:'Inter',sans-serif;font-size:12px;font-weight:400">optional</span></h2>
+  <div class="sub">Stacks two or more precheck workbooks into one: CLEANED with CLEANED, HUMAN_REVIEW with HUMAN_REVIEW, REMOVED with REMOVED. Nothing is filtered or deduped, every row keeps its County. Skip this card for a single-county run.</div>
+  <label class="drop" id="dmx">Drop two or more precheck workbooks here (.xlsx), or click to browse<input type="file" id="fmx" accept=".xlsx" multiple></label>
+  <div class="row"><button id="runmx" disabled>Combine</button><button class="ghost" id="clrmx" disabled>Clear files</button></div>
+  <div class="tblwrap" id="mxtbl"></div>
+  <div class="notice" id="mxnote"></div>
+  <div class="row" id="dlmxrow" style="display:none"><button class="ghost" id="dlmx">Download combined precheck</button><button class="ghost" id="usemx">Use in stage 02</button></div>
+  <div class="hint">Work HUMAN_REVIEW either per county before combining or once on the combined file. Rows missing a County take it from the file name (<code>Durham_precheck.xlsx</code> → Durham).</div>
+</div>
+
 <!-- STAGE 2 -->
 <div class="card">
   <h2><span>02</span>Merge results</h2>
@@ -626,7 +638,7 @@ function wireDrop(dropId,inputId,onFile){
 /* multi-file drop: every file dropped or picked is added to the list (same name replaces) */
 function wireDropMulti(dropId,inputId,onFiles){
   const d=document.getElementById(dropId),f=document.getElementById(inputId);
-  const loaded=new Map();
+  const loaded=new Map(), blank=d.firstChild.textContent;
   d.addEventListener("dragover",e=>{e.preventDefault();d.classList.add("over")});
   d.addEventListener("dragleave",()=>d.classList.remove("over"));
   d.addEventListener("drop",e=>{e.preventDefault();d.classList.remove("over");addAll(e.dataTransfer.files)});
@@ -641,12 +653,14 @@ function wireDropMulti(dropId,inputId,onFiles){
         if(--left===0){
           d.classList.add("loaded");
           d.firstChild.textContent="✓ "+loaded.size+" file"+(loaded.size>1?"s":"")+": "+[...loaded.keys()].join(", ")+" (drop more to add)";
-          onFiles([...loaded.values()]);
+          onFiles([...loaded.values()],[...loaded.keys()]);
         }
       };
       rd.readAsArrayBuffer(file);
     }
   }
+  /* returns a reset: forget every file and restore the drop label */
+  return ()=>{loaded.clear();d.classList.remove("loaded");d.firstChild.textContent=blank;onFiles([],[])};
 }
 const GATE_DESC={
 "G0 junk":"offshore casino pages, foreign phone numbers, listings marked closed",
@@ -723,6 +737,72 @@ document.getElementById("dl1").onclick=()=>{
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(pre.review.length?pre.review:[{}]),"HUMAN_REVIEW");
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(pre.removed.length?pre.removed:[{}]),"REMOVED");
   dlWB(wb,county+"_precheck.xlsx");
+};
+
+/* ================= Stage 1b: combine counties ================= */
+const PRE_SHEETS=["CLEANED","HUMAN_REVIEW","REMOVED"];
+let mxWBs=[],mxNames=[],mxOut=null;
+const resetMx=wireDropMulti("dmx","fmx",(wbs,names)=>{mxWBs=wbs;mxNames=names;
+  document.getElementById("runmx").disabled=wbs.length<2;
+  document.getElementById("clrmx").disabled=!wbs.length;
+  document.getElementById("mxtbl").innerHTML="";document.getElementById("mxnote").style.display="none";
+  document.getElementById("dlmxrow").style.display="none"});
+document.getElementById("clrmx").onclick=()=>resetMx();
+
+/* Pure: stack each precheck sheet across workbooks. Columns are the union, in first-seen order. */
+function combinePrechecks(wbs,names){
+  const sheets={},cols={},perFile=[],warn=[];
+  wbs.forEach((wb,i)=>{
+    const fileCounty=names[i].replace(/\.[^.]+$/,"").replace(/_precheck.*$/i,"").trim();
+    const counts={},counties=new Set();
+    const tabs=[...new Set([...PRE_SHEETS,...wb.SheetNames])].filter(s=>wb.Sheets[s]);
+    if(!wb.Sheets.CLEANED) warn.push(names[i]+" has no CLEANED sheet, is it a precheck workbook?");
+    for(const s of tabs){
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[s],{defval:""});
+      const hdr=XLSX.utils.sheet_to_json(wb.Sheets[s],{header:1})[0]||[];
+      cols[s]=cols[s]||[];
+      for(const h of hdr) if(h!==""&&!cols[s].includes(h)) cols[s].push(h);
+      for(const r of rows){if(!String(r.County||"").trim())r.County=fileCounty;counties.add(r.County)}
+      (sheets[s]=sheets[s]||[]).push(...rows);
+      counts[s]=rows.length;
+    }
+    perFile.push({file:names[i],counties:[...counties].join(", ")||fileCounty,counts});
+  });
+  /* a sheet with no County header still gets one, where the precheck puts it */
+  for(const s in cols) if(!cols[s].includes("County")){
+    const at=cols[s].indexOf("emails/0"); cols[s].splice(at<0?cols[s].length:at,0,"County")}
+  const seen={};
+  for(const p of perFile) for(const c of p.counties.split(", ")) (seen[c]=seen[c]||[]).push(p.file);
+  for(const [c,f] of Object.entries(seen)) if(f.length>1) warn.push("County "+c+" appears in "+f.join(" and ")+": rows are stacked as-is, not deduped");
+  return {sheets,cols,perFile,warn,counties:Object.keys(seen)};
+}
+
+document.getElementById("runmx").onclick=()=>{
+  mxOut=combinePrechecks(mxWBs,mxNames);
+  const {sheets,perFile,warn}=mxOut;
+  const tabs=[...new Set([...PRE_SHEETS,...Object.keys(sheets)])].filter(s=>sheets[s]);
+  const tot=s=>(sheets[s]||[]).length;
+  document.getElementById("mxtbl").innerHTML="<table><tr><th>File</th><th>County</th>"+tabs.map(s=>`<th>${esc(s)}</th>`).join("")+"</tr>"+
+    perFile.map(p=>`<tr><td>${esc(p.file)}</td><td>${esc(p.counties)}</td>`+tabs.map(s=>`<td>${p.counts[s]??0}</td>`).join("")+"</tr>").join("")+
+    `<tr><td><b>Combined</b></td><td>${esc(mxOut.counties.join(", "))}</td>`+tabs.map(s=>`<td><b>${tot(s)}</b></td>`).join("")+"</tr></table>";
+  const nt=document.getElementById("mxnote");
+  if(warn.length){nt.style.display="block";nt.textContent=warn.join(". ")+"."} else nt.style.display="none";
+  document.getElementById("dlmxrow").style.display="flex";
+};
+function mxWorkbook(){
+  const wb=XLSX.utils.book_new();
+  for(const s of [...new Set([...PRE_SHEETS,...Object.keys(mxOut.sheets)])]){
+    const rows=mxOut.sheets[s]; if(!rows)continue;
+    XLSX.utils.book_append_sheet(wb,rows.length?XLSX.utils.json_to_sheet(rows,{header:mxOut.cols[s]}):XLSX.utils.json_to_sheet([{}]),s);
+  }
+  return wb;
+}
+document.getElementById("dlmx").onclick=()=>dlWB(mxWorkbook(),mxOut.counties.join("+")+"_precheck.xlsx");
+document.getElementById("usemx").onclick=()=>{
+  preWB=mxWorkbook();
+  const d=document.getElementById("d2a"); d.classList.add("loaded");
+  d.firstChild.textContent="✓ combined precheck: "+mxOut.counties.join(" + ");
+  check2(); d.scrollIntoView({behavior:"smooth",block:"center"});
 };
 
 /* ================= Stage 2 ================= */
@@ -843,7 +923,7 @@ document.getElementById("dl2").onclick=()=>{
   XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(m.length?m:[{}]),"MASTER");
   const d=pick(window._duplicates); if(d.length)XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(d),"DUPLICATES");
   const rm=pick(window._removed2); if(rm.length)XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rm),"REMOVED");
-  const c=(m[0]&&m[0].County)||"leads";
+  const c=[...new Set(m.map(r=>r.County).filter(Boolean))].join("+")||"leads";
   dlWB(wb,c+"_master.xlsx");
 };
 </script>
