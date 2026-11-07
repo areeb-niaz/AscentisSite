@@ -839,23 +839,59 @@
         ];
         let labelIndex = Math.floor(Math.random() * labels.length);
 
-        // Pings can land anywhere on the grid except behind the demo card;
-        // measured live so it holds on mobile where the card stacks below.
+        // Pings can land anywhere on the grid except behind the hero text,
+        // the demo card or the navbar; measured live so it holds on mobile
+        // where the column and card stack.
         const card = document.querySelector('.al-card');
-        const clearOfCard = (el) => {
-          if (!card) return true;
+        const obstacles = [
+          document.querySelector('.al-hero-grid > div:first-child'),
+          card,
+          document.getElementById('main-navbar'),
+        ];
+        const clearOfCard = (el, pad = 28) => {
           const r = el.getBoundingClientRect();
-          const c = card.getBoundingClientRect();
-          const pad = 28;
-          return r.right < c.left - pad || r.left > c.right + pad || r.bottom < c.top - pad || r.top > c.bottom + pad;
+          return obstacles.every((o) => {
+            if (!o) return true;
+            const c = o.getBoundingClientRect();
+            return r.right < c.left - pad || r.left > c.right + pad || r.bottom < c.top - pad || r.top > c.bottom + pad;
+          });
         };
 
         function flare(withLabel) {
           if (!dots.length) return;
+          // navbar is injected after load, so look it up again if missing
+          if (!obstacles[2]) obstacles[2] = document.getElementById('main-navbar');
+          // Place a label above a dot's real on-screen position, clamped so it
+          // never bleeds off the hero; null if it would cover text or the card.
+          const placeLabel = (d) => {
+            const hostRect = host.getBoundingClientRect();
+            const dotRect = d.el.getBoundingClientRect();
+            const lx = ((dotRect.left + dotRect.width / 2 - hostRect.left) / hostRect.width) * 100;
+            const ly = ((dotRect.top + dotRect.height / 2 - hostRect.top) / hostRect.height) * 100;
+            const el = document.createElement('div');
+            el.className = 'al-map-label';
+            el.textContent = labels[labelIndex];
+            el.style.left = Math.min(80, Math.max(12, lx)) + '%';
+            el.style.top = Math.min(88, Math.max(7, ly)) + '%';
+            host.appendChild(el);
+            if (clearOfCard(el, 16)) return el;
+            el.remove();
+            return null;
+          };
+
+          // Labelled pings look for a dot where the label fits too; if none
+          // turns up, the ping still shows without one.
           let pick = null;
-          for (let tries = 0; tries < 12 && !pick; tries++) {
+          let tag = null;
+          for (let tries = 0; tries < 60 && !pick; tries++) {
             const d = dots[Math.floor(Math.random() * dots.length)];
-            if (clearOfCard(d.el)) pick = d;
+            if (!clearOfCard(d.el)) continue;
+            if (withLabel && tries < 50) {
+              tag = placeLabel(d);
+              if (!tag) continue;
+              labelIndex = (labelIndex + 1) % labels.length;
+            }
+            pick = d;
           }
           if (!pick) return;
           const { x, y } = pick;
@@ -870,24 +906,6 @@
           ring.setAttribute('class', 'al-map-ripple');
           svg.appendChild(ring);
           svg.appendChild(spot);
-
-          let tag = null;
-          if (withLabel) {
-            // place the label from the dot's real on-screen position, clamped
-            // so it never bleeds off the hero or over the demo card
-            const hostRect = host.getBoundingClientRect();
-            const dotRect = pick.el.getBoundingClientRect();
-            const lx = ((dotRect.left + dotRect.width / 2 - hostRect.left) / hostRect.width) * 100;
-            const ly = ((dotRect.top + dotRect.height / 2 - hostRect.top) / hostRect.height) * 100;
-            tag = document.createElement('div');
-            tag.className = 'al-map-label';
-            tag.textContent = labels[labelIndex];
-            labelIndex = (labelIndex + 1) % labels.length;
-            tag.style.left = Math.min(80, Math.max(12, lx)) + '%';
-            tag.style.top = Math.min(88, Math.max(7, ly)) + '%';
-            host.appendChild(tag);
-            if (!clearOfCard(tag)) { tag.remove(); tag = null; }
-          }
 
           setTimeout(() => { spot.remove(); ring.remove(); if (tag) tag.remove(); }, 3500);
         }
