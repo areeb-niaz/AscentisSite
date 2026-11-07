@@ -45,39 +45,39 @@
         /* Window */
         --chat--window--width: 400px;
         --chat--window--height: 600px;
-        --chat--window--border: 1px solid #35291f;
+        --chat--window--border: 1px solid #e8dfd2;
         --chat--window--border-radius: 1rem;
 
-        /* Surfaces (dark espresso) */
-        --chat--body--background: #171210;
-        --chat--header--background: #201914;
-        --chat--header--color: #f2ece3;
-        --chat--header--border-bottom: 1px solid #35291f;
-        --chat--footer--background: #201914;
-        --chat--footer--color: #a79484;
-        --chat--footer--border-top: 1px solid #35291f;
+        /* Surfaces (warm light) */
+        --chat--body--background: #fdfbf7;
+        --chat--header--background: #ffffff;
+        --chat--header--color: #1f1813;
+        --chat--header--border-bottom: 1px solid #e8dfd2;
+        --chat--footer--background: #ffffff;
+        --chat--footer--color: #66584c;
+        --chat--footer--border-top: 1px solid #e8dfd2;
 
         /* Messages */
         --chat--message--font-size: 0.9375rem;
         --chat--message--border-radius: 1rem;
-        --chat--message--bot--background: #201914;
-        --chat--message--bot--color: #f2ece3;
-        --chat--message--bot--border: 1px solid #35291f;
+        --chat--message--bot--background: #f5efe6;
+        --chat--message--bot--color: #1f1813;
+        --chat--message--bot--border: 1px solid #e8dfd2;
         --chat--message--user--background: #eb7813;
         --chat--message--user--color: #ffffff;
         --chat--message--user--border: none;
-        --chat--color-typing: #a79484;
+        --chat--color-typing: #66584c;
 
         /* Input */
-        --chat--input--container--background: #201914;
-        --chat--input--container--border: 1px solid #35291f;
-        --chat--input--background: #201914;
-        --chat--input--text-color: #f2ece3;
-        --chat--input--border: 1px solid #35291f;
+        --chat--input--container--background: #ffffff;
+        --chat--input--container--border: 1px solid #e8dfd2;
+        --chat--input--background: #ffffff;
+        --chat--input--text-color: #1f1813;
+        --chat--input--border: 1px solid #e8dfd2;
         --chat--input--border-active: 1px solid #eb7813;
         --chat--input--send--button--background: transparent;
         --chat--input--send--button--color: #eb7813;
-        --chat--input--send--button--color-hover: #e8c98f;
+        --chat--input--send--button--color-hover: #b0570d;
 
         /* Toggle bubble */
         --chat--toggle--background: #eb7813;
@@ -87,13 +87,14 @@
         --chat--toggle--size: 56px;
 
         /* Page tokens */
-        --ink: #171210; /* espresso ground */
-        --ink-2: #201914; /* raised surfaces */
-        --ivory: #f2ece3; /* primary text */
-        --taupe: #a79484; /* secondary text */
-        --copper: #eb7813; /* brand accent */
-        --champagne: #e8c98f; /* soft highlight */
-        --hairline: #35291f;
+        --paper: #fdfbf7; /* warm white ground */
+        --paper-2: #f5efe6; /* cream band / guest bubble */
+        --card: #ffffff; /* raised surfaces */
+        --text: #1f1813; /* espresso text */
+        --muted: #66584c; /* secondary text */
+        --copper: #eb7813; /* brand accent (fills) */
+        --accent: #b0570d; /* deep copper, safe for text on white */
+        --hairline: #e8dfd2;
         --serif: "Cormorant Garamond", Georgia, serif;
         --sans: "Outfit", "Inter", sans-serif;
       }
@@ -103,10 +104,10 @@
       }
 
       body.al-page {
-        background: var(--ink);
-        color: var(--ivory);
+        background: var(--paper);
+        color: var(--text);
         font-family: var(--sans);
-        font-weight: 300;
+        font-weight: 400;
         -webkit-font-smoothing: antialiased;
       }
 
@@ -128,28 +129,28 @@
         font-weight: 500;
         letter-spacing: 0.28em;
         text-transform: uppercase;
-        color: var(--taupe);
+        color: var(--muted);
       }
       .al-display {
         font-family: var(--serif);
         font-weight: 500;
         line-height: 1.06;
         letter-spacing: -0.01em;
-        color: var(--ivory);
+        color: var(--text);
       }
       .al-display em {
         font-style: italic;
-        color: var(--champagne);
+        color: var(--accent);
       }
       .al-h2 {
         font-family: var(--serif);
         font-weight: 600;
         font-size: clamp(1.9rem, 3.5vw, 2.6rem);
         line-height: 1.12;
-        color: var(--ivory);
+        color: var(--text);
       }
       .al-body {
-        color: var(--taupe);
+        color: var(--muted);
         font-size: 1.05rem;
         line-height: 1.75;
         max-width: 38rem;
@@ -170,7 +171,7 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       }
       .al-btn:focus-visible {
-        outline: 2px solid var(--champagne);
+        outline: 2px solid var(--copper);
         outline-offset: 3px;
       }
       .al-btn-primary {
@@ -183,12 +184,12 @@
       }
       .al-btn-ghost {
         border: 1px solid var(--hairline);
-        color: var(--ivory);
+        color: var(--text);
         background: transparent;
       }
       .al-btn-ghost:hover {
-        border-color: var(--champagne);
-        color: var(--champagne);
+        border-color: var(--copper);
+        color: var(--accent);
       }
 
       /* ---------- Hero ---------- */
@@ -229,7 +230,7 @@
         z-index: 1;
       }
       .al-map-dot {
-        fill: var(--champagne);
+        fill: var(--accent);
       }
       .al-map-flare {
         fill: var(--copper);
@@ -264,9 +265,10 @@
         font-weight: 500;
         letter-spacing: 0.18em;
         text-transform: uppercase;
-        color: var(--champagne);
-        background: rgba(23, 18, 16, 0.78);
-        border: 1px solid rgba(232, 201, 143, 0.28);
+        color: var(--accent);
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid var(--hairline);
+        box-shadow: 0 6px 18px rgba(70, 45, 20, 0.08);
         padding: 0.32rem 0.65rem;
         border-radius: 2px;
         white-space: nowrap;
@@ -310,11 +312,11 @@
       /* ---------- Signature: the 11:47 PM inquiry ---------- */
       .al-card {
         position: relative;
-        background: linear-gradient(160deg, #221a14, #1b1410);
+        background: var(--card);
         border: 1px solid var(--hairline);
         border-radius: 4px; /* stationery, not app */
         padding: 2rem 1.75rem 1.75rem;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+        box-shadow: 0 30px 60px rgba(70, 45, 20, 0.12);
         max-width: 27rem;
         margin: 0 auto;
         width: 100%;
@@ -324,7 +326,7 @@
         content: "";
         position: absolute;
         inset: 9px;
-        border: 1px solid rgba(232, 201, 143, 0.18);
+        border: 1px solid rgba(176, 87, 13, 0.16);
         border-radius: 2px;
         pointer-events: none;
       }
@@ -342,13 +344,13 @@
         font-family: var(--serif);
         font-size: 1.15rem;
         font-style: italic;
-        color: var(--champagne);
+        color: var(--accent);
       }
       .al-stamp {
         font-size: 0.68rem;
         letter-spacing: 0.22em;
         text-transform: uppercase;
-        color: var(--taupe);
+        color: var(--muted);
       }
       .al-msg {
         max-width: 88%;
@@ -370,14 +372,14 @@
         opacity: 0.65;
       }
       .al-msg-guest {
-        background: #2b211a;
-        color: var(--ivory);
+        background: var(--paper-2);
+        color: var(--text);
         border-bottom-left-radius: 3px;
       }
       .al-msg-bot {
-        background: rgba(235, 120, 19, 0.14);
-        border: 1px solid rgba(235, 120, 19, 0.35);
-        color: var(--ivory);
+        background: rgba(235, 120, 19, 0.08);
+        border: 1px solid rgba(235, 120, 19, 0.3);
+        color: var(--text);
         margin-left: auto;
         border-bottom-right-radius: 3px;
       }
@@ -399,12 +401,12 @@
         font-size: 0.72rem;
         letter-spacing: 0.2em;
         text-transform: uppercase;
-        color: var(--taupe);
+        color: var(--muted);
         opacity: 0;
         animation: al-msg-in 0.6s ease 5.4s forwards;
       }
       .al-card-foot strong {
-        color: var(--champagne);
+        color: var(--accent);
         font-weight: 500;
       }
       @media (prefers-reduced-motion: reduce) {
@@ -447,7 +449,7 @@
         }
       }
       .al-truth {
-        background: var(--ink);
+        background: var(--card);
         padding: 2.2rem 1.8rem;
       }
       .al-truth h3 {
@@ -455,11 +457,11 @@
         font-style: italic;
         font-weight: 500;
         font-size: 1.6rem;
-        color: var(--champagne);
+        color: var(--accent);
         margin-bottom: 0.7rem;
       }
       .al-truth p {
-        color: var(--taupe);
+        color: var(--muted);
         font-size: 0.95rem;
         line-height: 1.7;
       }
@@ -486,11 +488,11 @@
         font-family: var(--serif);
         font-weight: 600;
         font-size: 1.45rem;
-        color: var(--ivory);
+        color: var(--text);
         margin-bottom: 0.5rem;
       }
       .al-handle p {
-        color: var(--taupe);
+        color: var(--muted);
         font-size: 0.98rem;
         line-height: 1.7;
       }
@@ -506,7 +508,7 @@
         }
       }
       .al-step .al-stamp {
-        color: var(--copper);
+        color: var(--accent);
       }
       .al-step h3 {
         font-family: var(--serif);
@@ -515,7 +517,7 @@
         margin: 0.8rem 0 0.5rem;
       }
       .al-step p {
-        color: var(--taupe);
+        color: var(--muted);
         font-size: 0.98rem;
         line-height: 1.7;
       }
@@ -586,14 +588,14 @@
         letter-spacing: 0.01em;
       }
       .chat-header p {
-        color: var(--taupe);
+        color: var(--muted);
         font-size: 0.8125rem;
       }
       .chat-inputs textarea::placeholder {
-        color: var(--taupe);
+        color: var(--muted);
       }
       .chat-window {
-        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+        box-shadow: 0 24px 64px rgba(70, 45, 20, 0.18);
       }
       .chat-window-toggle {
         box-shadow: 0 8px 28px rgba(235, 120, 19, 0.35);
@@ -603,7 +605,7 @@
         border-top: 1px solid var(--hairline);
       }
       .chat-powered-by a {
-        color: var(--taupe);
+        color: var(--muted);
       }
     </style>
   </head>
@@ -794,19 +796,19 @@
           const l = document.createElementNS(svgNS, 'line');
           l.setAttribute('x1', x1); l.setAttribute('y1', y1);
           l.setAttribute('x2', x2); l.setAttribute('y2', y2);
-          l.setAttribute('stroke', '#e8c98f');
+          l.setAttribute('stroke', '#b0570d');
           l.setAttribute('stroke-width', '0.7');
           l.setAttribute('opacity', op.toFixed(3));
           svg.appendChild(l);
         };
 
         // Streets across the full hero
-        xs.forEach((x) => line(x, 0, x, H, 0.025 + Math.random() * 0.03));
-        ys.forEach((y) => line(0, y, W, y, 0.022 + Math.random() * 0.028));
+        xs.forEach((x) => line(x, 0, x, H, 0.04 + Math.random() * 0.04));
+        ys.forEach((y) => line(0, y, W, y, 0.035 + Math.random() * 0.035));
         // Diagonal avenues cutting across the grid
-        line(-40, H * 0.85, W * 0.65, -30, 0.04);
-        line(-30, H * 0.25, W * 0.6, H + 30, 0.032);
-        line(W * 0.45, -30, W + 40, H * 0.9, 0.03);
+        line(-40, H * 0.85, W * 0.65, -30, 0.06);
+        line(-30, H * 0.25, W * 0.6, H + 30, 0.05);
+        line(W * 0.45, -30, W + 40, H * 0.9, 0.045);
 
         // Intersections; skip some so blocks feel organic
         const dots = [];

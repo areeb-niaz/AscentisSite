@@ -33,7 +33,7 @@
     <style>
       :root {
         --chat--color-primary: #eb7813;
-        --chat--color-light: #181411;
+        --chat--color-light: #fdfbf7;
         --chat--header--background: var(--chat--color-primary);
         --chat--header--color: #ffffff;
         --chat--message--bot--background: var(--chat--color-primary);
@@ -43,13 +43,14 @@
         --chat--toggle--hover--background: #d36b11;
 
         /* Page tokens */
-        --ink: #171210; /* espresso ground */
-        --ink-2: #201914; /* raised surfaces */
-        --ivory: #f2ece3; /* primary text */
-        --taupe: #a79484; /* secondary text */
-        --copper: #eb7813; /* brand accent */
-        --champagne: #e8c98f; /* soft highlight */
-        --hairline: #35291f;
+        --paper: #fdfbf7; /* warm white ground */
+        --paper-2: #f5efe6; /* cream band / guest bubble */
+        --card: #ffffff; /* raised surfaces */
+        --text: #1f1813; /* espresso text */
+        --muted: #66584c; /* secondary text */
+        --copper: #eb7813; /* brand accent (fills) */
+        --accent: #b0570d; /* deep copper, safe for text on white */
+        --hairline: #e8dfd2;
         --serif: "Cormorant Garamond", Georgia, serif;
         --sans: "Outfit", "Inter", sans-serif;
       }
@@ -59,10 +60,10 @@
       }
 
       body.al-page {
-        background: var(--ink);
-        color: var(--ivory);
+        background: var(--paper);
+        color: var(--text);
         font-family: var(--sans);
-        font-weight: 300;
+        font-weight: 400;
         -webkit-font-smoothing: antialiased;
       }
 
@@ -84,28 +85,28 @@
         font-weight: 500;
         letter-spacing: 0.28em;
         text-transform: uppercase;
-        color: var(--taupe);
+        color: var(--muted);
       }
       .al-display {
         font-family: var(--serif);
         font-weight: 500;
         line-height: 1.06;
         letter-spacing: -0.01em;
-        color: var(--ivory);
+        color: var(--text);
       }
       .al-display em {
         font-style: italic;
-        color: var(--champagne);
+        color: var(--accent);
       }
       .al-h2 {
         font-family: var(--serif);
         font-weight: 600;
         font-size: clamp(1.9rem, 3.5vw, 2.6rem);
         line-height: 1.12;
-        color: var(--ivory);
+        color: var(--text);
       }
       .al-body {
-        color: var(--taupe);
+        color: var(--muted);
         font-size: 1.05rem;
         line-height: 1.75;
         max-width: 38rem;
@@ -126,7 +127,7 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       }
       .al-btn:focus-visible {
-        outline: 2px solid var(--champagne);
+        outline: 2px solid var(--copper);
         outline-offset: 3px;
       }
       .al-btn-primary {
@@ -139,12 +140,12 @@
       }
       .al-btn-ghost {
         border: 1px solid var(--hairline);
-        color: var(--ivory);
+        color: var(--text);
         background: transparent;
       }
       .al-btn-ghost:hover {
-        border-color: var(--champagne);
-        color: var(--champagne);
+        border-color: var(--copper);
+        color: var(--accent);
       }
 
       /* ---------- Hero ---------- */
@@ -177,18 +178,18 @@
       /* ---------- Flagship panel ---------- */
       .al-flagship {
         position: relative;
-        background: linear-gradient(160deg, #221a14, #1b1410);
+        background: var(--card);
         border: 1px solid var(--hairline);
         border-radius: 4px; /* stationery, not app */
         padding: 2.6rem 2rem;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+        box-shadow: 0 30px 60px rgba(70, 45, 20, 0.12);
       }
       .al-flagship::before {
         /* deckled inner keyline, like an invitation */
         content: "";
         position: absolute;
         inset: 9px;
-        border: 1px solid rgba(232, 201, 143, 0.18);
+        border: 1px solid rgba(176, 87, 13, 0.16);
         border-radius: 2px;
         pointer-events: none;
       }
@@ -202,12 +203,12 @@
         font-weight: 600;
         font-size: clamp(1.8rem, 3.2vw, 2.4rem);
         line-height: 1.12;
-        color: var(--ivory);
+        color: var(--text);
         margin: 0.9rem 0 1rem;
       }
       .al-flagship h2 em {
         font-style: italic;
-        color: var(--champagne);
+        color: var(--accent);
       }
       .al-flagship .al-body {
         margin-bottom: 1rem;
@@ -255,11 +256,11 @@
         font-family: var(--serif);
         font-weight: 600;
         font-size: 1.45rem;
-        color: var(--ivory);
+        color: var(--text);
         margin-bottom: 0.5rem;
       }
       .al-handle p {
-        color: var(--taupe);
+        color: var(--muted);
         font-size: 0.98rem;
         line-height: 1.7;
       }
@@ -351,7 +352,7 @@
         <section class="al-section">
           <div class="al-wrap">
             <div class="al-flagship animate-on-scroll">
-              <p class="al-eyebrow" style="color: var(--copper)">The flagship</p>
+              <p class="al-eyebrow" style="color: var(--accent)">The flagship</p>
               <h2>The AI concierge <em>for event venues.</em></h2>
               <p class="al-body">
                 It answers your venue's inquiries in seconds — day or night. It knows your spaces,
